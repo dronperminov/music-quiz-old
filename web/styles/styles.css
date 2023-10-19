@@ -1,0 +1,45 @@
+:root {
+    --main-background-color: hsl(257, 68%, 62%);
+    --border-color: hsl(257, 65%, 75%);
+    --text-color: #111111;
+    --disabled-color: #a0a0a0;
+    --disabled-text-color: #d0d0d0;
+    --error-color: #f44336;
+
+    --input-font-family: Roboto;
+    --button-font-family: Roboto;
+}
+
+@font-face {
+  font-family: PTSerif;
+  src: url("/fonts/PTSerif-Regular.ttf");
+}
+
+@font-face {
+  font-family: Roboto;
+  src: url("/fonts/Roboto-Regular.ttf");
+}
+
+body {
+    background: var(--main-background-color);
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 10px;
+    font-size: 100%;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+.hidden {
+    display: none !important;
+}
+
+@media (max-width: 767px) {
+    body {
+        max-width: 100%;
+        padding: 10px 0 0 0;
+    }
+}

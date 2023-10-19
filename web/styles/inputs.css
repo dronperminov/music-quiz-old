@@ -1,0 +1,78 @@
+.basic-input {
+    width: 100%;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: 1px solid;
+    border-color: transparent;
+    padding: 1px 0;
+    background: transparent;
+    font-family: var(--input-font-family);
+    font-size: 0.95em;
+    transition: border-color 150ms ease-in;
+}
+
+.basic-input:hover, .basic-input:focus {
+    outline: none;
+    border-color: 1px solid;
+    transition: border-color 150ms ease-in;
+}
+
+.basic-input:disabled, .basic-input:disabled:hover, .basic-input:disabled:focus {
+    color: var(--disabled-color);
+    border: none;
+}
+
+.default-input {
+    color: var(--text-color);
+}
+
+.default-input:hover {
+    border-bottom-color: var(--border-color);
+}
+
+.default-input:focus {
+    border-bottom-color: var(--main-background-color);
+}
+
+.error-input, .error-input:hover, .error-input:focus {
+    border-color: var(--error-color);
+}
+
+.basic-button {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid;
+    width: 100%;
+    font-family: var(--button-font-family);
+    font-size: 1em;
+    user-select: none;
+}
+
+.basic-button:hover {
+    cursor: pointer;
+}
+
+.basic-button:disabled, .basic-button:disabled:hover {
+    background: var(--disabled-color);
+    border: var(--disabled-color);
+    color: var(--disabled-text-color);
+    cursor: default;
+}
+
+.default-button {
+    background: var(--main-background-color);
+    color: #f6f6f6;
+    border-color: var(--main-background-color);
+}
+
+.default-button:active {
+    background: var(--border-color);
+    border-color: var(--border-color);
+    color: #f0f0f0;
+}
+
+.default-button:hover {
+    border-color: var(--border-color);
+    color: #fefefe;
+}

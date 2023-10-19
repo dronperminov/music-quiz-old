@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from uvicorn.config import LOGGING_CONFIG
 
 from src.api.api import router as api_router
+from src.api.auth import router as auth_router
 from src.database import database
 
 
@@ -23,6 +24,7 @@ app = FastAPI(lifespan=lifespan)
 
 def main() -> None:
     app.include_router(api_router)
+    app.include_router(auth_router)
 
     app.mount("/styles", StaticFiles(directory="web/styles"))
     app.mount("/js", StaticFiles(directory="web/js"))
