@@ -27,14 +27,17 @@ function SwitchForm(signUp) {
 
 function ClearError(inputId) {
     let input = document.getElementById(inputId)
+    let icon = document.getElementById(`${inputId}-icon`)
     let error = document.getElementById("error")
 
     input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
     error.innerText = ""
 }
 
 function GetTextField(inputId, errorMessage) {
     let input = document.getElementById(inputId)
+    let icon = document.getElementById(`${inputId}-icon`)
     let value = input.value.trim()
     let error = document.getElementById("error")
 
@@ -42,10 +45,12 @@ function GetTextField(inputId, errorMessage) {
         error.innerText = errorMessage
         input.focus()
         input.classList.add("error-input")
+        icon.classList.add("error-icon")
         return null
     }
 
     input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
     return value
 }
 
@@ -63,6 +68,8 @@ function GetPassword() {
     let error = document.getElementById("error")
     let passwordInput = document.getElementById("password")
     let passwordCheckInput = document.getElementById("password-check")
+    let passwordIcon = document.getElementById("password-icon")
+    let passwordCheckIcon = document.getElementById("password-check-icon")
 
     if (password == passwordCheck)
         return password
@@ -70,6 +77,10 @@ function GetPassword() {
     error.innerText = "Введённые пароли не совпадают"
     passwordInput.classList.add("error-input")
     passwordCheckInput.classList.add("error-input")
+    passwordCheckInput.focus()
+
+    passwordIcon.classList.add("error-icon")
+    passwordCheckIcon.classList.add("error-icon")
     return null
 }
 
@@ -132,4 +143,19 @@ function SignUp() {
         localStorage.setItem("music_quiz_token", response.token)
         window.location.href = "/"
     })
+}
+
+function KeyPress(e) {
+    if (event.key != "Enter")
+        return
+
+    e.preventDefault()
+    let signInButton = document.getElementById("sign-in-button")
+
+    if (signInButton.classList.contains("hidden")) {
+        SignUp()
+    }
+    else {
+        SignIn()
+    }
 }

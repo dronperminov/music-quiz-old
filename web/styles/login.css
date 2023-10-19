@@ -1,12 +1,5 @@
-:root {
-    --login-form-background: #f6f6f6;
-    --login-form-button-text-color: #090909;
-    --login-form-active-button-text-color: #f6f6f6;
-    --login-form-row-background: #ffffff;
-}
-
 .login-form {
-    background: var(--login-form-background);
+    background: #f6f6f6;
     padding: 20px 10px 15px 10px;
     border-radius: 15px;
 }
@@ -29,13 +22,13 @@
 
 .login-type-button:first-child {
     border-radius: 10px 0 0 10px;
-    color: var(--login-form-button-text-color);
+    color: var(--main-background-color);
 }
 
 .login-type-button:last-child {
     border-radius: 0 10px 10px 0;
     border-left: none;
-    color: var(--login-form-button-text-color);
+    color: var(--main-background-color);
 }
 
 .login-type-button:hover {
@@ -44,12 +37,12 @@
 
 .login-type-button-selected {
     background: var(--main-background-color);
-    color: var(--login-form-active-button-text-color) !important;
+    color: #f6f6f6 !important;
     transition: background-color 150ms ease-out;
 }
 
 .login-form-row {
-    background: var(--login-form-row-background);
+    background: #ffffff;
     padding: 10px;
     border-radius: 10px;
     display: table;
@@ -80,4 +73,13 @@
     margin-top: 10px;
     text-align: center;
     color: var(--error-color);
+    font-family: Roboto;
+}
+
+.error-icon .login-form-svg-fill-icon {
+    fill: var(--error-color);
+}
+
+.error-icon .login-form-svg-stroke-icon {
+    stroke: var(--error-color);
 }
