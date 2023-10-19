@@ -1,6 +1,7 @@
 :root {
-    --main-background-color: hsl(257, 68%, 62%);
-    --border-color: hsl(257, 65%, 75%);
+    --angle: 257;
+    --main-background-color: hsl(var(--angle), 68%, 62%);
+    --border-color: hsl(var(--angle), 65%, 75%);
     --text-color: #111111;
     --disabled-color: #a0a0a0;
     --disabled-text-color: #d0d0d0;
@@ -24,22 +25,54 @@ body {
     background: var(--main-background-color);
     max-width: 500px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 10px 10px 0 10px;
     font-size: 100%;
+    position: relative;
 }
 
 * {
     box-sizing: border-box;
 }
 
-
 .hidden {
     display: none !important;
+}
+
+.top-fill-icon {
+    fill: hsl(var(--angle), 85%, 95%);
+}
+
+.top-stroke-icon {
+    stroke: hsl(var(--angle), 85%, 95%);
+}
+
+.menu-icon {
+    position: absolute;
+    left: 5px;
+    top: 10px;
+}
+
+.settings-icon {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+}
+
+.top-icon:hover .top-fill-icon {
+    fill: #ffffff;
+}
+
+.top-icon:hover .top-stroke-icon {
+    stroke: #ffffff;
+}
+
+.menu-icon:hover, .settings-icon:hover {
+    cursor: pointer;
 }
 
 @media (max-width: 767px) {
     body {
         max-width: 100%;
-        padding: 10px 0 0 0;
+        padding: 10px 5px 0 5px;
     }
 }
