@@ -1,0 +1,12 @@
+beautifulsoup4
+fastapi
+Jinja2
+Levenshtein
+opencv-python
+passlib[bcrypt]
+pymongo
+pyjwt
+python-multipart
+requests
+uvicorn[standard]
+wget
