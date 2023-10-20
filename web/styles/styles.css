@@ -2,7 +2,7 @@
     --angle: 257;
     --main-background-color: hsl(var(--angle), 68%, 62%);
     --border-color: hsl(var(--angle), 65%, 75%);
-    --block-background-color: #f3f3f3;
+    --block-background-color: #f0f0f0;
     --text-color: #111111;
     --text-bg-color: #eeeeee;
     --disabled-color: #a0a0a0;
@@ -67,6 +67,15 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    color: var(--text-bg-color);
+    font-family: PTSerif;
+    font-size: 2em;
 }
 
 @media (max-width: 767px) {
