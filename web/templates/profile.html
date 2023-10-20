@@ -1,0 +1,20 @@
+{% include "header.html" %}
+<title>{{user.username}} | music-quiz</title>
+<link rel="stylesheet" type="text/css" href="/styles/profile.css?v=2">
+</head>
+<body>
+    {% include "menu.html" %}
+
+    <div class="profile-image">
+        <img src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}">
+    </div>
+
+    <div class="profile">
+        <div class="profile-name">
+            {{user.fullname}}<br>
+        </div>
+    </div>
+
+    {% include "footer.html" %}
+</body>
+</html>

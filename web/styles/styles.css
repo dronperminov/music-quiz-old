@@ -2,13 +2,45 @@
     --angle: 257;
     --main-background-color: hsl(var(--angle), 68%, 62%);
     --border-color: hsl(var(--angle), 65%, 75%);
+    --block-background-color: #f3f3f3;
     --text-color: #111111;
+    --text-bg-color: #eeeeee;
     --disabled-color: #a0a0a0;
     --disabled-text-color: #d0d0d0;
     --error-color: #f44336;
 
     --input-font-family: Roboto;
     --button-font-family: Roboto;
+
+    --form-row-background-color: #ffffff;
+    --login-type-button-color: var(--main-background-color);
+
+    --menu-background-color: #ffffff;
+    --menu-icon-color: #888888;
+    --menu-icon-hover-color: var(--border-color);
+    --menu-icon-active-color: var(--main-background-color);
+
+    --top-icons-color: hsl(var(--angle), 85%, 95%);
+    --top-icons-hover-color: #ffffff;
+}
+
+:root[data-theme=dark] {
+    --block-background-color: #323232;
+    --text-color: #eeeeee;
+    --text-bg-color: #eeeeee;
+    --disabled-color: #a0a0a0;
+    --disabled-text-color: #d0d0d0;
+    --error-color: #f44336;
+
+    --form-row-background-color: #424242;
+    --login-type-button-color: #dddddd;
+
+    --menu-background-color: #424242;
+    --menu-icon-hover-color: #dddddd;
+    --menu-icon-active-color: #ffffff;
+
+/*    --top-icons-color: hsl(var(--angle), 15%, 15%);
+    --top-icons-hover-color: #424242;*/
 }
 
 @font-face {
@@ -27,7 +59,6 @@ body {
     margin: 0 auto;
     padding: 10px 10px 0 10px;
     font-size: 100%;
-    position: relative;
 }
 
 * {
@@ -36,38 +67,6 @@ body {
 
 .hidden {
     display: none !important;
-}
-
-.top-fill-icon {
-    fill: hsl(var(--angle), 85%, 95%);
-}
-
-.top-stroke-icon {
-    stroke: hsl(var(--angle), 85%, 95%);
-}
-
-.menu-icon {
-    position: absolute;
-    left: 5px;
-    top: 10px;
-}
-
-.settings-icon {
-    position: absolute;
-    right: 5px;
-    top: 10px;
-}
-
-.top-icon:hover .top-fill-icon {
-    fill: #ffffff;
-}
-
-.top-icon:hover .top-stroke-icon {
-    stroke: #ffffff;
-}
-
-.menu-icon:hover, .settings-icon:hover {
-    cursor: pointer;
 }
 
 @media (max-width: 767px) {

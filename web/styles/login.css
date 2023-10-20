@@ -1,5 +1,5 @@
 .login-form {
-    background: #f6f6f6;
+    background: var(--block-background-color);
     padding: 20px 10px 15px 10px;
     border-radius: 15px;
 }
@@ -18,17 +18,16 @@
     padding: 10px 0;
     border: 2px solid var(--border-color);
     font-family: var(--button-font-family);
+    color: var(--login-type-button-color);
 }
 
 .login-type-button:first-child {
     border-radius: 10px 0 0 10px;
-    color: var(--main-background-color);
 }
 
 .login-type-button:last-child {
     border-radius: 0 10px 10px 0;
     border-left: none;
-    color: var(--main-background-color);
 }
 
 .login-type-button:hover {
@@ -37,12 +36,12 @@
 
 .login-type-button-selected {
     background: var(--main-background-color);
-    color: #f6f6f6 !important;
+    color: var(--text-bg-color) !important;
     transition: background-color 150ms ease-out;
 }
 
 .login-form-row {
-    background: #ffffff;
+    background: var(--form-row-background-color);
     padding: 10px;
     border-radius: 10px;
     display: table;
