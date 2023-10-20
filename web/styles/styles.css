@@ -38,9 +38,6 @@
     --menu-background-color: #424242;
     --menu-icon-hover-color: #dddddd;
     --menu-icon-active-color: #ffffff;
-
-/*    --top-icons-color: hsl(var(--angle), 15%, 15%);
-    --top-icons-hover-color: #424242;*/
 }
 
 @font-face {

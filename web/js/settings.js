@@ -19,6 +19,24 @@ function GetTextField(inputId, errorMessage) {
     return value
 }
 
+function LoadProfileImage() {
+    let input = document.getElementById("profile-input")
+    input.click()
+}
+
+function UpdateProfileImage(e) {
+    let input = document.getElementById("profile-input")
+    let image = document.getElementById("profile-image")
+    image.src = URL.createObjectURL(input.files[0])
+
+    ShowSaveButton()
+}
+
+function ShowSaveButton() {
+    let button = document.getElementById("save-btn")
+    button.classList.remove("hidden")
+}
+
 function ChangeField(inputId) {
     let input = document.getElementById(inputId)
     let icon = document.getElementById(`${inputId}-icon`)
@@ -27,6 +45,8 @@ function ChangeField(inputId) {
     input.classList.remove("error-input")
     icon.classList.remove("error-icon")
     error.innerText = ""
+
+    ShowSaveButton()
 }
 
 function ChangeTheme() {
@@ -41,6 +61,8 @@ function ChangeTheme() {
 
     let themeColor = document.querySelector('meta[name="theme-color"]')
     themeColor.setAttribute("content", themeColors[theme])
+
+    ShowSaveButton()
 }
 
 function SaveSettings() {
@@ -50,14 +72,25 @@ function SaveSettings() {
         return
 
     let theme = document.getElementById("theme").value
+    let input = document.getElementById("profile-input")
     let error = document.getElementById("error")
+    let button = document.getElementById("save-btn")
+
+    let formData = new FormData()
+    formData.append("fullname", fullname)
+    formData.append("theme", theme)
+
+    if (input.files.length == 1)
+        formData.append("image", input.files[0])
 
     error.innerText = ""
 
-    SendRequest("/settings", {"fullname": fullname, "theme": theme}).then(response => {
+    SendRequest("/settings", formData).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return
         }
+
+        button.classList.add("hidden")
     })
 }

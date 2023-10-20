@@ -19,4 +19,8 @@
 
 .profile-image img {
     max-width: 100%;
+    border-radius: 100%;
+    border: 2px solid var(--border-color);
+    object-fit: cover;
+    aspect-ratio: 1/1;
 }

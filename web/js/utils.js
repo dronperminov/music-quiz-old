@@ -1,19 +1,21 @@
-async function SendRequest(url, data) {
+async function SendRequest(url, data = null) {
     try {
         let params = {
             method: data == null ? 'GET' : 'POST',
             mode: 'cors',
             cache: 'no-cache',
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json'
-            },
             redirect: 'follow',
             referrerPolicy: 'no-referrer'
         }
 
+        let isForm = data !== null && data instanceof FormData
+
         if (data != null)
-            params.body = JSON.stringify(data)
+            params.body = isForm ? data : JSON.stringify(data)
+
+        if (!isForm)
+            params.headers = {'Content-Type': 'application/json'}
 
         const response = await fetch(url, params)
 

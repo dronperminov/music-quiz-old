@@ -1,7 +1,27 @@
 .content {
     background: var(--block-background-color);
+    border: 2px solid var(--border-color);
     padding: 10px;
     border-radius: 10px;
+    margin-top: 60px;
+}
+
+.profile {
+    text-align: center;
+}
+
+.profile img {
+    max-width: 100px;
+    border-radius: 100%;
+    margin-top: -60px;
+    border: 2px solid transparent;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+}
+
+.profile img:hover {
+    border: 2px solid var(--border-color);
+    cursor: pointer;
 }
 
 .form-row {

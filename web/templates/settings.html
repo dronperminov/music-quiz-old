@@ -8,6 +8,11 @@
     <h1>Настройки</h1>
 
     <div class="content">
+        <div class="profile">
+            <img id="profile-image" src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}" onclick="LoadProfileImage()">
+            <input type="file" class="hidden" id="profile-input" accept="image/png, image/gif, image/jpeg" onchange="UpdateProfileImage(event)">
+        </div>
+
         <div class="form-row" title="Полное имя">
             <div class="form-row-icon" id="fullname-icon">
                 <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +55,7 @@
             </div>
         </div>
 
-        <button class="basic-button default-button" onclick="SaveSettings()">Сохранить настройки</button>
+        <button id="save-btn" class="basic-button default-button hidden" onclick="SaveSettings()">Сохранить настройки</button>
         <div class="error" id="error"></div>
     </div>
 
