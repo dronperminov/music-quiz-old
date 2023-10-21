@@ -55,8 +55,8 @@ function ChangeTheme() {
     html.setAttribute("data-theme", theme)
 
     let themeColors = {
-        "dark": "#825ce0",
-        "light": "#825ce0"
+        "dark": "#1e2027",
+        "light": "#f7e06e"
     }
 
     let themeColor = document.querySelector('meta[name="theme-color"]')
