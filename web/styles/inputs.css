@@ -19,20 +19,20 @@
 }
 
 .basic-input:disabled, .basic-input:disabled:hover, .basic-input:disabled:focus {
-    color: var(--disabled-color);
+    color: var(--input-disabled-color);
     border: none;
 }
 
 .default-input {
-    color: var(--text-color);
+    color: var(--input-text-color);
 }
 
 .default-input:hover {
-    border-bottom-color: var(--border-color);
+    border-bottom-color: var(--input-border-color);
 }
 
 .default-input:focus {
-    border-bottom-color: var(--main-background-color);
+    border-bottom-color: var(--input-focus-border-color);
 }
 
 .error-input, .error-input:hover, .error-input:focus {
@@ -42,7 +42,8 @@
 .basic-button {
     padding: 10px;
     border-radius: 10px;
-    border: 1px solid;
+    border-width: 2px;
+    border-style: solid;
     width: 100%;
     font-family: var(--button-font-family);
     font-size: 1em;
@@ -54,25 +55,78 @@
 }
 
 .basic-button:disabled, .basic-button:disabled:hover {
-    background: var(--disabled-color);
-    border: var(--disabled-color);
-    color: var(--disabled-text-color);
+    background: var(--button-disabled-background-color);
+    border: var(--button-disabled-border-color);
+    color: var(--button-disabled-text-color);
     cursor: default;
 }
 
 .default-button {
-    background: var(--main-background-color);
-    color: #f6f6f6;
-    border-color: var(--main-background-color);
-}
-
-.default-button:active {
-    background: var(--border-color);
-    border-color: var(--border-color);
-    color: #f0f0f0;
+    background: var(--button-background-color);
+    border-color: var(--button-border-color);
+    color: var(--button-text-color);
 }
 
 .default-button:hover {
-    border-color: var(--border-color);
-    color: #fefefe;
+    background: var(--button-hover-background-color);
+    border-color: var(--button-hover-border-color);
+    color: var(--button-hover-text-color);
+}
+
+.default-button:active {
+    background: var(--button-active-background-color);
+    border-color: var(--button-active-border-color);
+    color: var(--button-active-text-color);
+}
+
+.switch-buttons {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+    user-select: none;
+}
+
+.switch-button {
+    display: table-cell;
+    text-align: center;
+    padding: 10px 0;
+    border-width: 2px;
+    border-style: solid;
+    font-family: var(--switch-button-font-family);
+}
+
+.switch-button:first-child {
+    border-radius: 10px 0 0 10px;
+}
+
+.switch-button:last-child {
+    border-radius: 0 10px 10px 0;
+}
+
+.switch-button:not(:last-child) {
+    border-right-width: 1px;
+    border-right-style: solid;
+}
+
+.switch-button:not(:first-child) {
+    border-left-width: 1px;
+    border-left-style: solid;
+}
+
+.switch-button:hover {
+    cursor: pointer;
+}
+
+.default-switch-button {
+    background: var(--switch-button-background-color);
+    border-color: var(--switch-button-border-color);
+    color: var(--switch-button-text-color);
+    transition: background-color 150ms ease-out;
+}
+
+.default-switch-button[selected] {
+    background: var(--switch-button-selected-background-color);
+    border-color: var(--switch-button-selected-border-color);
+    color: var(--switch-button-selected-text-color);
+    transition: background-color 150ms ease-out;
 }

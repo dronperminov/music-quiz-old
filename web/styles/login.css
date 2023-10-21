@@ -1,84 +1,8 @@
-.login-form {
-    background: var(--block-background-color);
-    padding: 20px 10px 15px 10px;
+.login {
+    padding: 15px 10px;
     border-radius: 15px;
 }
 
 .login-type {
-    display: table;
-    table-layout: fixed;
-    width: 100%;
-    user-select: none;
     margin-bottom: 15px;
-}
-
-.login-type-button {
-    display: table-cell;
-    text-align: center;
-    padding: 10px 0;
-    border: 2px solid var(--border-color);
-    font-family: var(--button-font-family);
-    color: var(--login-type-button-color);
-}
-
-.login-type-button:first-child {
-    border-radius: 10px 0 0 10px;
-}
-
-.login-type-button:last-child {
-    border-radius: 0 10px 10px 0;
-    border-left: none;
-}
-
-.login-type-button:hover {
-    cursor: pointer;
-}
-
-.login-type-button-selected {
-    background: var(--main-background-color);
-    color: var(--text-bg-color) !important;
-    transition: background-color 150ms ease-out;
-}
-
-.login-form-row {
-    background: var(--form-row-background-color);
-    padding: 10px;
-    border-radius: 10px;
-    display: table;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.login-form-row-icon {
-    display: table-cell;
-    width: 32px;
-    vertical-align: middle;
-}
-
-.login-form-row-input {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.login-form-svg-fill-icon {
-    fill: var(--main-background-color);
-}
-
-.login-form-svg-stroke-icon {
-    stroke: var(--main-background-color);
-}
-
-.login-error:not(:empty) {
-    margin-top: 10px;
-    text-align: center;
-    color: var(--error-color);
-    font-family: Roboto;
-}
-
-.error-icon .login-form-svg-fill-icon {
-    fill: var(--error-color);
-}
-
-.error-icon .login-form-svg-stroke-icon {
-    stroke: var(--error-color);
 }

@@ -5,14 +5,14 @@ function SwitchForm(signUp) {
     let signUpButton = document.getElementById("sign-up-button")
 
     if (signUp) {
-        signInTypeButton.classList.remove("login-type-button-selected")
-        signUpTypeButton.classList.add("login-type-button-selected")
+        signInTypeButton.removeAttribute("selected")
+        signUpTypeButton.setAttribute("selected", "")
         signInButton.classList.add("hidden")
         signUpButton.classList.remove("hidden")
     }
     else {
-        signInTypeButton.classList.add("login-type-button-selected")
-        signUpTypeButton.classList.remove("login-type-button-selected")
+        signInTypeButton.setAttribute("selected", "")
+        signUpTypeButton.removeAttribute("selected")
         signInButton.classList.remove("hidden")
         signUpButton.classList.add("hidden")
     }

@@ -9,7 +9,7 @@
 
     <div class="content">
         <div class="profile">
-            <img id="profile-image" src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}" onclick="LoadProfileImage()">
+            <img id="profile-image" src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}" onclick="LoadProfileImage()" title="Загрузить новую аватарку">
             <input type="file" class="hidden" id="profile-input" accept="image/png, image/gif, image/jpeg" onchange="UpdateProfileImage(event)">
         </div>
 

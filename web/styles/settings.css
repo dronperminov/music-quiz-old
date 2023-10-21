@@ -1,6 +1,4 @@
 .content {
-    background: var(--block-background-color);
-    border: 2px solid var(--border-color);
     padding: 10px;
     border-radius: 10px;
     margin-top: 60px;
@@ -22,47 +20,4 @@
 .profile img:hover {
     border: 2px solid var(--border-color);
     cursor: pointer;
-}
-
-.form-row {
-    background: var(--form-row-background-color);
-    padding: 10px;
-    border-radius: 10px;
-    display: table;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-.form-row-icon {
-    display: table-cell;
-    width: 32px;
-    vertical-align: middle;
-}
-
-.form-row-input {
-    display: table-cell;
-    vertical-align: middle;
-}
-
-.form-svg-fill-icon {
-    fill: var(--main-background-color);
-}
-
-.form-svg-stroke-icon {
-    stroke: var(--main-background-color);
-}
-
-.error-icon .form-svg-fill-icon {
-    fill: var(--error-color);
-}
-
-.error-icon .form-svg-stroke-icon {
-    stroke: var(--error-color);
-}
-
-.error:not(:empty) {
-    margin-top: 10px;
-    text-align: center;
-    color: var(--error-color);
-    font-family: Roboto;
 }
