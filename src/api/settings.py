@@ -7,6 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, File, Form, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
+from src import constants
 from src.api import templates
 from src.database import database
 from src.utils.auth import get_current_user
@@ -39,7 +40,7 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return RedirectResponse(url="/login")
 
     template = templates.get_template("settings.html")
-    content = template.render(user=user, page="settings")
+    content = template.render(user=user, page="settings", version=constants.VERSION)
     return HTMLResponse(content=content)
 
 

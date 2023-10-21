@@ -1,6 +1,6 @@
 {% include "header.html" %}
 <title>Вход | music-quiz</title>
-<link rel="stylesheet" type="text/css" href="/styles/login.css">
+<link rel="stylesheet" type="text/css" href="/styles/login.css?v={{version}}">
 </head>
 <body>
     <div class="content login">
@@ -62,8 +62,8 @@
         <div class="error" id="error"></div>
     </div>
 
-    <script src="/js/utils.js"></script>
-    <script src="/js/login.js"></script>
+    <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/login.js?v={{version}}"></script>
     <script>TryAutoSignIn()</script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {% include "footer.html" %}

@@ -1,6 +1,6 @@
 {% include "header.html" %}
 <title>Настройки | music-quiz</title>
-<link rel="stylesheet" type="text/css" href="/styles/settings.css">
+<link rel="stylesheet" type="text/css" href="/styles/settings.css?v={{version}}">
 </head>
 <body>
     {% include "menu.html" %}
@@ -59,8 +59,8 @@
         <div class="error" id="error"></div>
     </div>
 
-    <script src="/js/utils.js"></script>
-    <script src="/js/settings.js"></script>
+    <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/settings.js?v={{version}}"></script>
     {% include "footer.html" %}
 </body>
 </html>

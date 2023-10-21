@@ -5,6 +5,7 @@ from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from jinja2 import Environment, FileSystemLoader
 
+from src import constants
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.dataclasses.user import User
@@ -20,7 +21,7 @@ def login_get(user: Optional[dict] = Depends(auth.get_current_user)) -> Response
         return RedirectResponse(url="/", status_code=302)
 
     template = templates.get_template("login.html")
-    return HTMLResponse(content=template.render(page="login"))
+    return HTMLResponse(content=template.render(page="login", version=constants.VERSION))
 
 
 @router.post("/sign-in")
