@@ -3,18 +3,21 @@ function SwitchForm(signUp) {
     let signUpTypeButton = document.getElementById("sign-up-type-button")
     let signInButton = document.getElementById("sign-in-button")
     let signUpButton = document.getElementById("sign-up-button")
+    let captcha = document.getElementById("captcha-block")
 
     if (signUp) {
         signInTypeButton.removeAttribute("selected")
         signUpTypeButton.setAttribute("selected", "")
         signInButton.classList.add("hidden")
         signUpButton.classList.remove("hidden")
+        captcha.classList.remove("hidden")
     }
     else {
         signInTypeButton.setAttribute("selected", "")
         signUpTypeButton.removeAttribute("selected")
         signInButton.classList.remove("hidden")
         signUpButton.classList.add("hidden")
+        captcha.classList.add("hidden")
     }
 
     for (let block of document.getElementsByClassName("sign-up")) {
@@ -133,9 +136,16 @@ function SignUp() {
     if (password === null)
         return
 
+    let error = document.getElementById("error")
+    let response = grecaptcha.getResponse()
+
+    if (response.length == 0) {
+        error.innerText = "Капча не пройдена"
+        return
+    }
+
     SendRequest("/sign-up", {"username": username, "password": password, "fullname": fullname}).then(response => {
         if (response.status != "success") {
-            let error = document.getElementById("error")
             error.innerText = response.message
             return
         }

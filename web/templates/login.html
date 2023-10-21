@@ -53,16 +53,19 @@
             </div>
         </div>
 
+        <div class="captcha-block hidden" id="captcha-block">
+            <div class="g-recaptcha" id="captcha" data-sitekey="6LfodbsoAAAAAMlLezsg5BvOgdpiDZzpS4DLen2g"></div>
+        </div>
+
         <button id="sign-in-button" class="basic-button default-button" onclick="SignIn()">Войти</button>
         <button id="sign-up-button" class="basic-button default-button hidden" onclick="SignUp()">Зарегистрироваться</button>
-
         <div class="error" id="error"></div>
     </div>
 
     <script src="/js/utils.js"></script>
     <script src="/js/login.js"></script>
     <script>TryAutoSignIn()</script>
-
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     {% include "footer.html" %}
 </body>
 </html>
