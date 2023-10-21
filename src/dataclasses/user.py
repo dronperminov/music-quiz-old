@@ -9,4 +9,5 @@ class User:
     password_hash: str
     fullname: str
     settings: Settings
+    role: str = "user"
     image_src: str = "/images/profiles/default.png"

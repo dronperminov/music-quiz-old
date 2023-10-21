@@ -3,7 +3,8 @@
     border-left: none;
     border-right: none;
     border-top: none;
-    border-bottom: 1px solid;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
     border-color: transparent;
     padding: 1px 0;
     background: transparent;
@@ -36,7 +37,7 @@
 }
 
 .error-input, .error-input:hover, .error-input:focus {
-    border-color: var(--error-color);
+    border-color: var(--error-color) !important;
 }
 
 .basic-button {
@@ -129,4 +130,75 @@
     border-color: var(--switch-button-selected-border-color);
     color: var(--switch-button-selected-text-color);
     transition: background-color 150ms ease-out;
+}
+
+.basic-textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 2px;
+    resize: vertical;
+    background: transparent;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    font-family: var(--textarea-font-family);
+    font-size: 0.9rem;
+    min-height: 50px;
+}
+
+.basic-textarea:focus, .basic-textarea:hover {
+    outline: none;
+}
+
+.default-textarea {
+    border-color: var(--textarea-border-color);
+    color: var(--textarea-text-color);
+}
+
+.default-textarea:focus, .default-textarea:hover {
+    border-color: var(--textarea-hover-border-color);
+}
+
+.basic-multi-select {
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 5px;
+    padding: 5px;
+    font-family: var(--multi-select-font-family);
+    font-size: 1em;
+}
+
+.basic-multi-select .multi-select-title {
+    font-size: 0.85em;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.basic-multi-select .multi-select-row {
+    margin-bottom: 5px;
+}
+
+.basic-multi-select .multi-select-row label {
+    cursor: pointer;
+}
+
+.basic-multi-select .multi-select-row input {
+    cursor: pointer;
+}
+
+.default-multi-select {
+    border-color: var(--multi-select-border-color);
+    color: var(--multi-select-text-color);
+}
+
+.default-multi-select .multi-select-title {
+    color: var(--multi-select-border-color);
+}
+
+.error-input .multi-select-title {
+    color: var(--error-color);
+}
+
+.default-input::placeholder, .default-button::placeholder, .default-textarea::placeholder {
+    color: var(--placeholder-color);
 }

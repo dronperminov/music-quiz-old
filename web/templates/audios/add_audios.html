@@ -1,0 +1,67 @@
+{% include "header.html" %}
+<title>Добавлеине аудиозаписей | music-quiz</title>
+<link rel="stylesheet" type="text/css" href="/styles/audios.css?v={{version}}">
+</head>
+<body>
+    {% include "menu.html" %}
+
+    <h1>Добавление аудиозаписей</h1>
+
+    <div class="content">
+        <div class="form-row">
+            <div class="form-row-icon form-row-top-icon" id="code-icon">
+                <svg class="form-svg-stroke-icon" width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 8L3 11.6923L7 16M17 8L21 11.6923L17 16M14 4L10 20"  stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <textarea class="basic-textarea default-textarea" id="code" rows="7" placeholder="Вставьте html код или ссылку на страницу с аудио" oninput="ClearFormRowError('code')"></textarea>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-row-icon form-row-top-icon" id="genres-icon">
+                <svg class="form-svg-fill-icon" width="22px" height="22px" viewBox="-3 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="m18.07.169c-.148-.106-.333-.169-.532-.169-.111 0-.217.02-.316.055l.006-.002-11.077 3.938c-.361.131-.613.471-.613.869v.001 2.193.042 10.604c-.534-.295-1.169-.469-1.846-.471h-.001c-.043-.002-.093-.003-.143-.003-1.904 0-3.458 1.497-3.549 3.379v.008c.091 1.89 1.645 3.388 3.549 3.388.05 0 .1-.001.15-.003h-.007c.043.002.093.003.143.003 1.904 0 3.458-1.497 3.549-3.379v-.008-12.883l9.23-3.223v8.973c-.534-.294-1.17-.468-1.846-.47h-.001c-.043-.002-.094-.003-.144-.003-1.904 0-3.457 1.498-3.547 3.379v.008c.09 1.89 1.644 3.388 3.548 3.388.051 0 .101-.001.151-.003h-.007c.031.001.068.002.105.002 1.696 0 3.12-1.166 3.513-2.74l.005-.025c.042-.101.068-.217.069-.34v-15.754c0-.31-.153-.585-.388-.752l-.003-.002z"/>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <div class="basic-multi-select default-multi-select" id="genres">
+                    <div class="multi-select-title">Жанры аудио</div>
+
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="genre-rock" onchange="ClearFormRowError('genres')"> Рок</label>
+                    </div>
+
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="genre-pop" onchange="ClearFormRowError('genres')" checked> Попса</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-block">
+            <div class="table-cell hidden" id="remove-all-block">
+                <button class="basic-button default-button" onclick="RemoveAllAudios()">Удалить всё</button>
+            </div>
+            <div class="table-cell">
+                <button class="basic-button default-button" onclick="ParseAudios()">Распарсить</button>
+            </div>
+        </div>
+
+        <div class="error" id="error"></div>
+    </div>
+
+    <div class="content hidden" id="audios-block">
+        <h2>Результат парсинга</h2>
+        <div id="audios"></div>
+        <button class="basic-button default-button" onclick="SaveAudios()">Сохранить</button>
+        <div class="error" id="save-error"></div>
+        <div class="success" id="save-info"></div>
+    </div>
+
+    <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/add-audios.js?v={{version}}"></script>
+    {% include "footer.html" %}
+</body>
+</html>

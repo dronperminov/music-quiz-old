@@ -1,8 +1,9 @@
 .menu {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 1;
     background: var(--menu-background-color);
     padding: 15px 5px 5px 5px;
     border-radius: 15px 15px 0 0;
