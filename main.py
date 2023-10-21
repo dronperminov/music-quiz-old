@@ -5,6 +5,7 @@ from typing import AsyncContextManager
 import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
 from uvicorn.config import LOGGING_CONFIG
 
 from src.api.api import router as api_router
@@ -28,6 +29,9 @@ def main() -> None:
     app.include_router(auth_router)
     app.include_router(settings_router)
 
+    app.add_middleware(GZipMiddleware, minimum_size=500)
+
+    StaticFiles.is_not_modified = lambda *args, **kwargs: False
     app.mount("/styles", StaticFiles(directory="web/styles"))
     app.mount("/js", StaticFiles(directory="web/js"))
     app.mount("/fonts", StaticFiles(directory="web/fonts"))
