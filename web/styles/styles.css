@@ -128,6 +128,73 @@
     --menu-icon-active-color: var(--main-color);
 }
 
+@media (prefers-color-scheme: dark) {
+    :root {
+        --main-color: #f9dd4d;
+        --background-color: #1e2027;
+        --border-color: #e9d263;
+        --text-color: #eeeeee;
+        --text-bg-color: #eeeeee;
+        --error-color: #f44336;
+
+        /* input */
+        --input-font-family: Roboto;
+        --input-disabled-color: #d0d0d0;
+        --input-text-color: var(--text-color);
+        --input-border-color: var(--border-color);
+        --input-focus-border-color: var(--main-color);
+
+        /* button */
+        --button-font-family: Roboto;
+
+        --button-background-color: var(--main-color);
+        --button-border-color: var(--main-color);
+        --button-text-color: #2d3039;
+
+        --button-disabled-background-color: #d0d0d0;
+        --button-disabled-border-color: #d0d0d0;
+        --button-disabled-text-color: #d0d0d0;
+
+        --button-hover-background-color: var(--main-color);
+        --button-hover-border-color: var(--border-color);
+        --button-hover-text-color: #3a3941;
+
+        --button-active-background-color: var(--border-color);
+        --button-active-border-color: var(--border-color);
+        --button-active-text-color: #3a3941;
+
+        /* switch button */
+        --switch-button-font-family: Roboto;
+
+        --switch-button-background-color: transparent;
+        --switch-button-border-color: var(--border-color);
+        --switch-button-text-color: var(--main-color);
+
+        --switch-button-selected-background-color: var(--main-color);
+        --switch-button-selected-border-color: var(--border-color);
+        --switch-button-selected-text-color: #2d3039;
+
+        /* content  */
+        --content-background-color: #2d3039;
+        --content-border-color: var(--border-color);
+        --content-text-color: #eeeeee;
+
+        /* form-row */
+        --form-row-background-color: #3b3f4a;
+        --form-row-icon-color: var(--main-color);
+
+        /* top icons */
+        --top-icons-color: #dfdfdf;
+        --top-icons-hover-color: #ffffff;
+
+        /* menu */
+        --menu-background-color: #2d3039;
+        --menu-icon-color: #818489;
+        --menu-icon-hover-color: #caccce;
+        --menu-icon-active-color: var(--main-color);
+    }
+}
+
 @font-face {
   font-family: PTSerif;
   src: url("/fonts/PTSerif-Regular.ttf");
