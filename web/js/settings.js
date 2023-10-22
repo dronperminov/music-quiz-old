@@ -6,7 +6,7 @@ function GetTextField(inputId, errorMessage) {
 
     input.value = value
 
-    if (value === "") {
+    if (value === "" && errorMessage != "") {
         error.innerText = errorMessage
         input.focus()
         input.classList.add("error-input")
@@ -17,6 +17,44 @@ function GetTextField(inputId, errorMessage) {
     input.classList.remove("error-input")
     icon.classList.remove("error-icon")
     return value
+}
+
+function ToggleToken() {
+    let token = document.getElementById("token")
+    let hideIcon = document.getElementById("hide-token-icon")
+    let showIcon = document.getElementById("show-token-icon")
+
+    hideIcon.classList.toggle("hidden")
+    showIcon.classList.toggle("hidden")
+
+    if (token.type == "password")
+        token.type = "text"
+    else
+        token.type = "password"
+}
+
+function GetToken() {
+    let input = document.getElementById("token")
+    let icon = document.getElementById("token-icon")
+    let token = input.value.trim()
+    let error = document.getElementById("error")
+
+    input.value = token
+
+    if (token === "")
+        return token
+
+    if (token.indexOf('"') > -1) {
+        error.innerText = "Токен не должен содержать кавычек"
+        input.focus()
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    return token
 }
 
 function LoadProfileImage() {
@@ -71,6 +109,11 @@ function SaveSettings() {
     if (fullname === null)
         return
 
+    let token = GetToken()
+
+    if (token === null)
+        return
+
     let theme = document.getElementById("theme").value
     let input = document.getElementById("profile-input")
     let error = document.getElementById("error")
@@ -79,6 +122,7 @@ function SaveSettings() {
     let formData = new FormData()
     formData.append("fullname", fullname)
     formData.append("theme", theme)
+    formData.append("token", token)
 
     if (input.files.length == 1)
         formData.append("image", input.files[0])

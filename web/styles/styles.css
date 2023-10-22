@@ -279,6 +279,15 @@ body {
     vertical-align: top !important;
 }
 
+.form-row-icon-interactive {
+    text-align: right;
+    width: 25px;
+}
+
+.form-row-icon-interactive:hover {
+    cursor: pointer;
+}
+
 .form-row-input {
     display: table-cell;
     vertical-align: middle;

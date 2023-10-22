@@ -1,40 +1,71 @@
+import os
 import re
-import traceback
+from typing import List
 
-import requests
 from bs4 import BeautifulSoup
+from yandex_music import Client
+from yandex_music.exceptions import NotFoundError
 
 
-def parse_audio_html(html: str) -> dict:
-    if not html.strip():
-        return {"status": "error", "message": "html код пуст"}
+def parse_link(link: str) -> str:
+    regex = re.compile(r"/album/(?P<album>\d+)/track/(?P<track>\d+)")
+    match = regex.search(link)
+    album = match.group("album")
+    track = match.group("track")
+    return f"{track}:{album}"
 
-    if html.startswith("https://"):
-        response = requests.get(html)
 
-        if response.status_code != 200:
-            return {"status": "error", "message": "не удалось получить исходный код страницы"}
+def parse_lyrics(lyrics_str: str) -> List[dict]:
+    lyrics = []
 
-        html = response.text
-        soup = BeautifulSoup(html, "html.parser")
-        soup = soup.findAll("ul", class_="mainSongs")[0]
+    for line in lyrics_str.split("\n"):
+        match = re.search(r"^\[(?P<timecode>\d+:\d+\.\d+)] (?P<text>.*)$", line)
+        timecode = match.group("timecode")
+        minute, second = timecode.split(":")
+        time = round(int(minute) * 60 + float(second), 2)
+        text = match.group("text")
+        lyrics.append({"time": time, "text": text})
+
+    return lyrics
+
+
+def parse_yandex_music(html: str, token: str) -> dict:
+    if re.fullmatch(r".*/album/\d+/track/\d+", html):
+        links = [html]
     else:
         soup = BeautifulSoup(html, "html.parser")
+        links = [f'https://music.yandex.ru/{a["href"]}' for a in soup.findAll("a", class_="d-track__title", href=True)]
 
-    try:
-        audios = []
+    client = Client(token).init()
+    tracks = client.tracks([parse_link(link) for link in links])
+    audios = []
 
-        for li in soup.findAll("li", class_="item"):
-            link = li.findAll("li", class_="play")[0]["data-url"]
-            description = li.findAll("div", class_="desc")[0]
-            artist = re.sub(r"\s+", " ", description.findAll("span", class_="artist")[0].text).strip()
-            track = re.sub(r"\s+", " ", description.findAll("span", class_="track")[0].text).strip()
-            audios.append({"link": link, "artist": artist, "track": track})
+    for track in tracks:
+        track_id, album_id = track.track_id.split(":")
+        track_name = f"{album_id}_{track_id}.mp3"
+        track_path = os.path.join(os.path.dirname(__file__), "..", "..", "web", "audios", track_name)
 
-        if not audios:
-            return {"status": "error", "message": "не удалось распарсить ни одного аудио"}
+        if not os.path.isfile(track_path):
+            track.download(track_path)
 
-        return {"status": "success", "audios": audios}
-    except Exception:
-        stacktrace = traceback.format_exc().replace("\n", "<br>")
-        return {"status": "error", "message": f"не удалось распарсить html код<br>Стек вызовов: {stacktrace}"}
+        audio = {
+            "album_id": album_id,
+            "track_id": track_id,
+            "track_name": track_name,
+            "title": track.title,
+            "artists": [{"id": artist["id"], "name": artist["name"]} for artist in track.artists],
+            "lyrics": None
+        }
+
+        try:
+            lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
+            audio["lyrics"] = parse_lyrics(lyrics_str)
+        except NotFoundError:
+            pass
+
+        audios.append(audio)
+
+    if not audios:
+        return {"status": "error", "message": "не удалось распарсить ни одного аудио"}
+
+    return {"status": "success", "audios": audios}

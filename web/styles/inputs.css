@@ -159,6 +159,10 @@
     border-color: var(--textarea-hover-border-color);
 }
 
+.one-line-textarea {
+    white-space: nowrap;
+}
+
 .basic-multi-select {
     border-style: solid;
     border-width: 1px;

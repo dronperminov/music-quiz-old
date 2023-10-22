@@ -99,11 +99,11 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
         return MakeElement("basic-input default-input", inputBlock, {tag: "input", type: "text", value: inputValue, placeholder: placeholder, name: label})
 
     if (inputType == "textarea")
-        return MakeElement("basic-textarea default-textarea", inputBlock, {tag: "textarea", "rows": Math.max(inputValue.length, 2), innerHTML: inputValue.join("\n"), placeholder: placeholder, name: label})
+        return MakeElement("basic-textarea default-textarea", inputBlock, {tag: "textarea", "rows": Math.min(10, Math.max(inputValue.length, 2)), innerHTML: inputValue.join("\n"), placeholder: placeholder, name: label})
 
     if (inputType == "multi-select")
         return MakeMultiSelect("basic-multi-select default-multi-select", inputBlock, placeholder, label,inputValue)
 
     if (inputType == "audio")
-        return MakeElement("", inputBlock, {tag: "audio", controls: "", src: `/audio?link=${inputValue}`, "data-link": inputValue, "preload": "none", name: label})
+        return MakeElement("", inputBlock, {tag: "audio", controls: "", src: `/audios/${inputValue}`, "data-link": inputValue, "preload": "none", name: label})
 }

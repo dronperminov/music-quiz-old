@@ -19,6 +19,7 @@ router = APIRouter()
 class SettingsForm:
     fullname: str = Form(...)
     theme: str = Form(...)
+    token: str = Form("")
 
 
 def save_image(image: UploadFile, output_dir: str) -> str:
@@ -58,6 +59,7 @@ async def update_settings(settings: SettingsForm = Depends(), image: UploadFile 
 
     user["fullname"] = settings.fullname
     user["settings"]["theme"] = settings.theme
+    user["token"] = settings.token
 
     database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)
     return JSONResponse({"status": "success"})

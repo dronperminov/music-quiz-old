@@ -1,26 +1,35 @@
+import os
 from typing import List, Optional
 
-import requests
-from fastapi import APIRouter, Body, Depends, Query
-from fastapi.requests import Request
+from fastapi import APIRouter, Body, Depends, Header
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
 from src.api import make_error, templates
+from src.constants import AUDIO_CHUNK_SIZE
 from src.database import database
-from src.utils.audio import parse_audio_html
+from src.utils.audio import parse_yandex_music
 from src.utils.auth import get_current_user
 
 router = APIRouter()
 
 
-@router.get("/audio")
-async def get_audio(request: Request, link: str = Query("")) -> Response:
-    if await request.is_disconnected():
-        return JSONResponse({})
+@router.get("/audios/{name}")
+async def get_audio(name: str, range: str = Header(None)) -> Response:  # noqa
+    start, end = range.replace("bytes=", "").split("-")
+    start = int(start)
+    end = int(end) if end else start + AUDIO_CHUNK_SIZE
 
-    response = requests.get(link)
-    return Response(response.content, headers={"Accept-Ranges": "bytes"}, media_type="audio/mpeg")
+    audio_path = os.path.join(os.path.dirname(__file__), "..", "..", "web", "audios", f"{name}")
+
+    with open(audio_path, "rb") as video:
+        video.seek(start)
+        data = video.read(end - start)
+        headers = {
+            "Content-Range": f"bytes {start}-{end}/{os.path.getsize(audio_path)}",
+            "Accept-Ranges": "bytes"
+        }
+        return Response(data, status_code=206, headers=headers, media_type="audio/mpeg")
 
 
 @router.get("/audios")
@@ -52,16 +61,26 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
 @router.post("/parse-audios")
 def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = Body(..., embed=True)) -> JSONResponse:
     if not user:
-        return JSONResponse({"status": "error", "message": "пользователь не залогинен"})
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    parsed_data = parse_audio_html(code)
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    if not user.get("token", ""):
+        return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
+
+    parsed_data = parse_yandex_music(code, token=user["token"])
+
     return JSONResponse(parsed_data)
 
 
 @router.post("/add-audios")
 def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[dict] = Body(..., embed=True)) -> JSONResponse:
     if not user:
-        return JSONResponse({"status": "error", "message": "пользователь не залогинен"})
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
     database.audios.insert_many(audios)

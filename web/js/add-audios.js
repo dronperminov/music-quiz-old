@@ -40,6 +40,16 @@ const TRACK_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" vi
 </svg>
 `
 
+const LYRICS_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <path d="M27,3H5A1,1,0,0,0,5,5H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,7H5A1,1,0,0,0,5,9H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,11H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,15H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,19H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,23H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+    <path d="M27,27H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+</svg>`
+
 const REMOVE_SVG = `<svg class="form-svg-fill-icon" width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 4h3c.6 0 1 .4 1 1v1H3V5c0-.6.5-1 1-1h3c.2-1.1 1.3-2 2.5-2s2.3.9 2.5 2zM8 4h3c-.2-.6-.9-1-1.5-1S8.2 3.4 8 4zM4 7h11l-.9 10.1c0 .5-.5.9-1 .9H5.9c-.5 0-.9-.4-1-.9L4 7z"/>
 </svg>`
@@ -116,41 +126,41 @@ function RemoveAllAudios(withConfirm = true) {
     HideParsedAudios()
 }
 
-function ParseArtist(artist) {
-    let parts = artist.split(/ +feat +/gmi)
-    let artists = [parts[0].trim()]
-
-    for (let i = 1; i < parts.length; i++)
-        for (let part of parts[i].split(/ *, */gmi))
-        artists.push(part.trim())
-
-    return artists
-}
-
 function AddParsedAudio(block, audio, defaultGenres) {
-    let div = MakeElement("audio-form", block)
-    let caption = MakeElement("audio-caption", div, {innerText: `${audio.artist} - ${audio.track}`})
-    let removeIcon = MakeElement("audio-close-icon", div, {innerHTML: REMOVE_SVG, title: "Удалить"})
-    removeIcon.addEventListener("click", () => RemoveAudio(div))
-
-    let artists = ParseArtist(audio.artist)
-    let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.link, "Аудио", "audio", "audio")
+    let artists = audio.artists.map(artist => artist.name)
 
     let genres = []
 
     for (let genre of AUDIO_GENRES)
         genres.push({name: genre, title: AUDIO_GENRES_RUS[genre], value: defaultGenres.indexOf(genre) > -1})
 
+    let div = MakeElement("audio-form", block)
+    let caption = MakeElement("audio-caption", div, {innerText: `${artists.join(", ")} - ${audio.title}`})
+    let removeIcon = MakeElement("audio-close-icon", div, {innerHTML: REMOVE_SVG, title: "Удалить"})
+    removeIcon.addEventListener("click", () => RemoveAudio(div))
+
+    let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.track_name, "Аудио", "audio", "audio")
+    audioTag.addEventListener("play", () => StopOtherAudios(audioTag))
+    audioTag.setAttribute("data-album-id", audio.album_id)
+    audioTag.setAttribute("data-track-id", audio.track_id)
+
+    let artistInput = MakeIconInputRow(div, ARTIST_SVG, audio.artists.map(artist => JSON.stringify(artist)), "Исполнитель", "artists", "textarea")
+    artistInput.addEventListener("input", () => ClearSaveError(artistInput))
+    artistInput.setAttribute("readonly", "")
+
+    let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.title, "Трек", "track", "text")
+    trackInput.addEventListener("input", () => ClearSaveError(trackInput))
+
     let genresCheckboxes = MakeIconInputRow(div, GENRE_SVG, genres, "Жанры", "genres", "multi-select")
 
     for (let checkbox of genresCheckboxes)
         checkbox.addEventListener("change", () => ClearSaveError(checkbox.parentNode.parentNode.parentNode))
 
-    let artistInput = MakeIconInputRow(div, ARTIST_SVG, artists, "Исполнитель", "artists", "textarea")
-    artistInput.addEventListener("input", () => ClearSaveError(artistInput))
-
-    let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.track, "Трек", "track", "text")
-    trackInput.addEventListener("input", () => ClearSaveError(trackInput))
+    if (audio.lyrics) {
+        let lyricsInput = MakeIconInputRow(div, LYRICS_SVG, audio.lyrics.map(line => JSON.stringify(line)), "Текст", "lyrics", "textarea")
+        lyricsInput.addEventListener("input", () => ClearSaveError(lyricsInput))
+        lyricsInput.classList.add("one-line-textarea")
+    }
 
     MakeElement("error", div, {})
 }
@@ -193,20 +203,6 @@ function ParseAudios() {
     })
 }
 
-function GetArtists(textarea) {
-    let artists = []
-
-    for (let artist of textarea.value.trim().split("\n")) {
-        artist = artist.trim()
-
-        if (artist !== "")
-            artists.push(artist)
-    }
-
-    textarea.value = artists.join("\n")
-    return artists
-}
-
 function GetGenres(multiSelect) {
     let genres = []
 
@@ -242,6 +238,12 @@ function ClearSaveError(input) {
     icon.classList.remove("error-icon")
 }
 
+function StopOtherAudios(target) {
+    for (let audio of document.getElementsByTagName("audio"))
+        if (audio != target)
+            audio.pause()
+}
+
 function GetAudios() {
     let audios = []
 
@@ -252,8 +254,19 @@ function GetAudios() {
             let input = inputBlock.children[0]
             let name = input.getAttribute("name")
 
-            if (name == "artists") {
-                audio[name] = GetArtists(input)
+            if (name == "audio") {
+                audio["link"] = input.getAttribute("data-link")
+                audio["album_id"] = input.getAttribute("data-album-id")
+                audio["track_id"] = input.getAttribute("data-track-id")
+            }
+            else if (name == "artists") {
+                try {
+                    audio[name] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
+                }
+                catch (Error) {
+                    MakeSaveError("Исполнитель введён некорректно", inputBlock)
+                    return null
+                }
 
                 if (audio["artists"].length == 0) {
                     MakeSaveError("Исполнитель пуст", inputBlock)
@@ -268,14 +281,25 @@ function GetAudios() {
                     return null
                 }
             }
-            else if (name == "audio") {
-                audio["link"] = input.getAttribute("data-link")
-            }
             else if (name == "genres") {
                 audio["genres"] = GetGenres(input)
 
                 if (audio["genres"].length == 0) {
                     MakeSaveError("Не выбран ни один жанр", inputBlock)
+                    return null
+                }
+            }
+            else if (name == "lyrics") {
+                try {
+                    audio["lyrics"] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
+                }
+                catch (Error) {
+                    MakeSaveError("Текст введён некорректно", inputBlock)
+                    return null
+                }
+
+                if (audio["lyrics"].length == 0) {
+                    MakeSaveError("Текст пуст", inputBlock)
                     return null
                 }
             }
