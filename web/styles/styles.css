@@ -323,6 +323,19 @@ body {
     font-family: Roboto;
 }
 
+.status:before {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    content: "";
+    margin-right: 5px;
+}
+
+.success-status:before {
+    background: var(--success-color);
+}
+
 .table-block {
     display: table;
     width: 100%;

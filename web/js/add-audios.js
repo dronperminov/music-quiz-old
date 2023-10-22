@@ -139,10 +139,11 @@ function AddParsedAudio(block, audio, defaultGenres) {
     let removeIcon = MakeElement("audio-close-icon", div, {innerHTML: REMOVE_SVG, title: "Удалить"})
     removeIcon.addEventListener("click", () => RemoveAudio(div))
 
-    let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.track_name, "Аудио", "audio", "audio")
+    let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.direct_link, "Аудио", "audio", "audio")
     audioTag.addEventListener("play", () => StopOtherAudios(audioTag))
     audioTag.setAttribute("data-album-id", audio.album_id)
     audioTag.setAttribute("data-track-id", audio.track_id)
+    audioTag.setAttribute("data-direct-link", audio.direct_link)
 
     let artistInput = MakeIconInputRow(div, ARTIST_SVG, audio.artists.map(artist => JSON.stringify(artist)), "Исполнитель", "artists", "textarea")
     artistInput.addEventListener("input", () => ClearSaveError(artistInput))
@@ -255,9 +256,10 @@ function GetAudios() {
             let name = input.getAttribute("name")
 
             if (name == "audio") {
-                audio["link"] = input.getAttribute("data-link")
+                audio["direct_link"] = input.getAttribute("data-direct-link")
                 audio["album_id"] = input.getAttribute("data-album-id")
                 audio["track_id"] = input.getAttribute("data-track-id")
+                audio["link"] = `${audio["track_id"]}:${audio["album_id"]}`
             }
             else if (name == "artists") {
                 try {
