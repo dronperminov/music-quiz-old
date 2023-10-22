@@ -103,7 +103,7 @@ function RemoveAllAudios(withConfirm = true) {
 
 function ParseAudio(trackId) {
     let currentCount = document.getElementById("current-count")
-    let error = document.getElementById("save-error")
+    let error = document.getElementById("error")
 
     return SendRequest("/parse-audio", {track_id: trackId}).then(response => {
         if (response.status != "success") {
@@ -132,7 +132,6 @@ function AddParsedAudio(audio) {
 
     let artistInput = MakeIconInputRow(div, ARTIST_SVG, audio.artists.map(artist => JSON.stringify(artist)), "Исполнитель", "artists", "textarea")
     artistInput.addEventListener("input", () => ClearSaveError(artistInput))
-    artistInput.setAttribute("readonly", "")
 
     let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.title, "Трек", "track", "text")
     trackInput.addEventListener("input", () => ClearSaveError(trackInput))
@@ -168,6 +167,7 @@ function ParseAudios() {
     let parseBtn = document.getElementById("parse-btn")
     let saveBtn = document.getElementById("save-btn")
     parseBtn.setAttribute("disabled", "")
+    saveBtn.setAttribute("disabled", "")
 
     RemoveAllAudios(false)
 
@@ -184,6 +184,7 @@ function ParseAudios() {
             removeBlock.classList.remove("hidden")
 
             parseBtn.removeAttribute("disabled")
+            saveBtn.removeAttribute("disabled")
             saveBtn.scrollIntoView({behavior: "smooth"})
         })
     })

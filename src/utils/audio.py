@@ -2,7 +2,7 @@ import re
 from typing import List
 
 from bs4 import BeautifulSoup
-from yandex_music import Client
+from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
@@ -62,6 +62,22 @@ def parse_lyrics(lyrics_str: str) -> List[dict]:
     return lyrics
 
 
+def parse_artists(artists: List[Artist]) -> List[dict]:
+    parsed_artists = []
+
+    for artist in artists:
+        parsed_artists.append({"id": artist["id"], "name": artist["name"]})
+
+        if not artist.decomposed:
+            continue
+
+        for decomposed_artist in artist.decomposed:
+            if isinstance(decomposed_artist, Artist):
+                parsed_artists.append({"id": decomposed_artist["id"], "name": decomposed_artist["name"]})
+
+    return parsed_artists
+
+
 def parse_track(track_id: str, token: str) -> dict:
     client = Client(token).init()
     track = client.tracks([track_id])[0]
@@ -75,7 +91,7 @@ def parse_track(track_id: str, token: str) -> dict:
         "track_id": track_id,
         "title": track.title,
         "direct_link": direct_link,
-        "artists": [{"id": artist["id"], "name": artist["name"]} for artist in track.artists],
+        "artists": parse_artists(track.artists),
         "lyrics": None
     }
 
