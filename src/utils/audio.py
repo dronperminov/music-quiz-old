@@ -3,7 +3,7 @@ import re
 from typing import List
 
 from bs4 import BeautifulSoup
-from yandex_music import Client
+from yandex_music import Client, Track
 from yandex_music.exceptions import NotFoundError
 
 
@@ -13,6 +13,21 @@ def parse_link(link: str) -> str:
     album = match.group("album")
     track = match.group("track")
     return f"{track}:{album}"
+
+
+def get_tracks(code: str, client: Client) -> List[Track]:
+    match = re.search(r".*/album/(?P<album>\d+)/track/(?P<track>\d+)$", code)
+    if match:
+        return client.tracks([f'{match.group("track")}:{match.group("album")}'])
+
+    match = re.search(r".*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)", code)
+    if match:
+        playlist = client.users_playlists(match.group("playlist_id"), match.group("username"))
+        return [track.track for track in playlist.tracks]
+
+    soup = BeautifulSoup(code, "html.parser")
+    links = [f'https://music.yandex.ru/{a["href"]}' for a in soup.findAll("a", class_="d-track__title", href=True)]
+    return client.tracks([parse_link(link) for link in links])
 
 
 def parse_lyrics(lyrics_str: str) -> List[dict]:
@@ -29,18 +44,11 @@ def parse_lyrics(lyrics_str: str) -> List[dict]:
     return lyrics
 
 
-def parse_yandex_music(html: str, token: str) -> dict:
-    if re.fullmatch(r".*/album/\d+/track/\d+", html):
-        links = [html]
-    else:
-        soup = BeautifulSoup(html, "html.parser")
-        links = [f'https://music.yandex.ru/{a["href"]}' for a in soup.findAll("a", class_="d-track__title", href=True)]
-
+def parse_yandex_music(code: str, token: str) -> dict:
     client = Client(token).init()
-    tracks = client.tracks([parse_link(link) for link in links])
     audios = []
 
-    for track in tracks:
+    for track in get_tracks(code, client):
         track_id, album_id = track.track_id.split(":")
         track_name = f"{album_id}_{track_id}.mp3"
         track_path = os.path.join(os.path.dirname(__file__), "..", "..", "web", "audios", track_name)
