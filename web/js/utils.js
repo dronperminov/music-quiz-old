@@ -67,6 +67,29 @@ function MakeElement(className, parent = null, attributes = null) {
     return element
 }
 
+function MakeMultiSelect(className, parent, title, name, values) {
+    let select = MakeElement(className, parent, {name: name})
+    let checkboxes = []
+
+    MakeElement("multi-select-title", select, {innerHTML: title})
+
+    for (let value of values) {
+        let row = MakeElement("multi-select-row", select)
+        let label = MakeElement("", row, {tag: "label"})
+        let checkboxAttributes = {tag: "input", type: "checkbox", name: value["name"]}
+
+        if (value["value"])
+            checkboxAttributes["checked"] = ""
+
+        let checkbox = MakeElement("", label, checkboxAttributes)
+        let span = MakeElement("", label, {tag: "span", innerText: value["title"]})
+
+        checkboxes.push(checkbox)
+    }
+
+    return checkboxes
+}
+
 function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inputType = "text") {
     let formBlock = MakeElement("form-row", parent)
     let iconBlock = MakeElement("form-row-icon", formBlock, {innerHTML: iconHTML})
@@ -77,6 +100,9 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
 
     if (inputType == "textarea")
         return MakeElement("basic-textarea default-textarea", inputBlock, {tag: "textarea", "rows": Math.max(inputValue.length, 2), innerHTML: inputValue.join("\n"), placeholder: placeholder, name: label})
+
+    if (inputType == "multi-select")
+        return MakeMultiSelect("basic-multi-select default-multi-select", inputBlock, placeholder, label,inputValue)
 
     if (inputType == "audio")
         return MakeElement("", inputBlock, {tag: "audio", controls: "", src: `/audio?link=${inputValue}`, "data-link": inputValue, "preload": "none", name: label})
