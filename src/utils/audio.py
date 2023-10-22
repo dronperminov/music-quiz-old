@@ -2,7 +2,7 @@ import re
 from typing import List
 
 from bs4 import BeautifulSoup
-from yandex_music import Client, Track
+from yandex_music import Client
 from yandex_music.exceptions import NotFoundError
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
@@ -17,7 +17,8 @@ def parse_link(link: str) -> str:
     return f"{track}:{album}"
 
 
-def get_tracks(code: str, client: Client) -> List[Track]:
+def get_track_ids(code: str, token: str) -> List[str]:
+    client = Client(token).init()
     tracks = []
 
     for line in code.split("\n"):
@@ -27,12 +28,12 @@ def get_tracks(code: str, client: Client) -> List[Track]:
             continue
 
         if match := TRACK_REGEX.search(line):
-            tracks.extend(client.tracks([f'{match.group("track")}:{match.group("album")}']))
+            tracks.append(f'{match.group("track")}:{match.group("album")}')
             continue
 
         if match := PLAYLIST_REGEX.search(line):
             playlist = client.users_playlists(match.group("playlist_id"), match.group("username"))
-            tracks.extend(track.track for track in playlist.tracks)
+            tracks.extend(track.track.track_id for track in playlist.tracks)
             continue
 
     if tracks:
@@ -40,7 +41,7 @@ def get_tracks(code: str, client: Client) -> List[Track]:
 
     soup = BeautifulSoup(code, "html.parser")
     links = [f'https://music.yandex.ru/{a["href"]}' for a in soup.findAll("a", class_="d-track__title", href=True)]
-    return client.tracks([parse_link(link) for link in links])
+    return [parse_link(link) for link in links]
 
 
 def parse_lyrics(lyrics_str: str) -> List[dict]:
@@ -61,36 +62,27 @@ def parse_lyrics(lyrics_str: str) -> List[dict]:
     return lyrics
 
 
-def parse_yandex_music(code: str, token: str) -> dict:
+def parse_track(track_id: str, token: str) -> dict:
     client = Client(token).init()
-    audios = []
+    track = client.tracks([track_id])[0]
+    track_id, album_id = track.track_id.split(":")
 
-    for track in get_tracks(code, client):
-        track_id, album_id = track.track_id.split(":")
-        track_name = f"{album_id}_{track_id}.mp3"
+    info = track.get_specific_download_info("mp3", 192)
+    direct_link = info.get_direct_link()
 
-        info = track.get_specific_download_info("mp3", 192)
-        direct_link = info.get_direct_link()
+    audio = {
+        "album_id": album_id,
+        "track_id": track_id,
+        "title": track.title,
+        "direct_link": direct_link,
+        "artists": [{"id": artist["id"], "name": artist["name"]} for artist in track.artists],
+        "lyrics": None
+    }
 
-        audio = {
-            "album_id": album_id,
-            "track_id": track_id,
-            "track_name": track_name,
-            "title": track.title,
-            "direct_link": direct_link,
-            "artists": [{"id": artist["id"], "name": artist["name"]} for artist in track.artists],
-            "lyrics": None
-        }
+    try:
+        lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
+        audio["lyrics"] = parse_lyrics(lyrics_str)
+    except NotFoundError:
+        pass
 
-        try:
-            lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
-            audio["lyrics"] = parse_lyrics(lyrics_str)
-        except NotFoundError:
-            pass
-
-        audios.append(audio)
-
-    if not audios:
-        return {"status": "error", "message": "не удалось распарсить ни одного аудио"}
-
-    return {"status": "success", "audios": audios}
+    return audio

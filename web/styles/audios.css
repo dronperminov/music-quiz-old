@@ -12,6 +12,11 @@
     position: relative;
 }
 
+.audio-from-minimized {
+    height: 40px;
+    overflow: hidden;
+}
+
 .audio-caption {
     font-size: 0.9em;
     padding: 5px 0;

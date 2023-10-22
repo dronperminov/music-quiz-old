@@ -81,6 +81,11 @@ function RemoveAudio(audioBlock) {
     audioBlock.remove()
 
     let block = document.getElementById("audios")
+    let currentCount = document.getElementById("current-count")
+    let totalCount = document.getElementById("total-count")
+
+    currentCount.innerText = block.children.length
+    totalCount.innerText = block.children.length
 
     if (block.children.length == 0)
         HideParsedAudios()
@@ -96,6 +101,21 @@ function RemoveAllAudios(withConfirm = true) {
     HideParsedAudios()
 }
 
+function ParseAudio(trackId) {
+    let currentCount = document.getElementById("current-count")
+    let error = document.getElementById("save-error")
+
+    return SendRequest("/parse-audio", {track_id: trackId}).then(response => {
+        if (response.status != "success") {
+            error.innerText = "Некоторые треки не удалось скачать"
+            return
+        }
+
+        AddParsedAudio(response.track)
+        currentCount.innerText = 1 + +currentCount.innerText
+    })
+}
+
 function AddParsedAudio(audio) {
     let block = document.getElementById("audios")
     let artists = audio.artists.map(artist => artist.name)
@@ -109,7 +129,6 @@ function AddParsedAudio(audio) {
     audioTag.addEventListener("play", () => StopOtherAudios(audioTag))
     audioTag.setAttribute("data-album-id", audio.album_id)
     audioTag.setAttribute("data-track-id", audio.track_id)
-    audioTag.setAttribute("data-direct-link", audio.direct_link)
 
     let artistInput = MakeIconInputRow(div, ARTIST_SVG, audio.artists.map(artist => JSON.stringify(artist)), "Исполнитель", "artists", "textarea")
     artistInput.addEventListener("input", () => ClearSaveError(artistInput))
@@ -125,20 +144,18 @@ function AddParsedAudio(audio) {
     }
 
     MakeElement("error", div, {})
-    div.scrollIntoView({behavior: "smooth"})
 }
 
-function AddParsedAudios(audios) {
+function AddParsedAudios(trackIds) {
     let parentBlock = document.getElementById("audios-block")
-    let removeBlock = document.getElementById("remove-all-block")
-    let count = document.getElementById("count")
+    let currentCount = document.getElementById("current-count")
+    let totalCount = document.getElementById("total-count")
 
     parentBlock.classList.remove("hidden")
-    removeBlock.classList.remove("hidden")
-    count.innerText = audios.length
+    currentCount.innerText = "0"
+    totalCount.innerText = trackIds.length
 
-    for (let audio of audios)
-        AddParsedAudio(audio)
+    return Promise.all(trackIds.map(trackId => ParseAudio(trackId)))
 }
 
 function ParseAudios() {
@@ -149,20 +166,26 @@ function ParseAudios() {
 
     let error = document.getElementById("error")
     let parseBtn = document.getElementById("parse-btn")
+    let saveBtn = document.getElementById("save-btn")
     parseBtn.setAttribute("disabled", "")
 
     RemoveAllAudios(false)
 
     SendRequest("/parse-audios", {code: code}).then(response => {
-        parseBtn.removeAttribute("disabled")
-
         if (response.status != "success") {
             error.innerText = response.message
+            parseBtn.removeAttribute("disabled")
             return
         }
 
         error.innerText = ""
-        AddParsedAudios(response.audios)
+        AddParsedAudios(response.track_ids).then(() => {
+            let removeBlock = document.getElementById("remove-all-block")
+            removeBlock.classList.remove("hidden")
+
+            parseBtn.removeAttribute("disabled")
+            saveBtn.scrollIntoView({behavior: "smooth"})
+        })
     })
 }
 
@@ -204,7 +227,6 @@ function GetAudios() {
             let name = input.getAttribute("name")
 
             if (name == "audio") {
-                audio["direct_link"] = input.getAttribute("data-direct-link")
                 audio["album_id"] = input.getAttribute("data-album-id")
                 audio["track_id"] = input.getAttribute("data-track-id")
                 audio["link"] = `${audio["track_id"]}:${audio["album_id"]}`

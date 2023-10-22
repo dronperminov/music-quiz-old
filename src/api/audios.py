@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from src import constants
 from src.api import make_error, templates
 from src.database import database
-from src.utils.audio import parse_yandex_music
+from src.utils.audio import get_track_ids, parse_track
 from src.utils.auth import get_current_user
 
 router = APIRouter()
@@ -71,9 +71,27 @@ def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = B
     if not user.get("token", ""):
         return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
 
-    parsed_data = parse_yandex_music(code, token=user["token"])
+    track_ids = get_track_ids(code, user["token"])
 
-    return JSONResponse(parsed_data)
+    if not track_ids:
+        return JSONResponse({"status": "error", "message": "Не удалось распарсить ни одного аудио"})
+
+    return JSONResponse({"status": "success", "track_ids": track_ids})
+
+
+@router.post("/parse-audio")
+def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True)) -> JSONResponse:
+    if not user:
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    if not user.get("token", ""):
+        return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
+
+    track = parse_track(track_id, user["token"])
+    return JSONResponse({"status": "success", "track": track})
 
 
 @router.post("/add-audios")

@@ -32,9 +32,9 @@
     </div>
 
     <div class="content hidden" id="audios-block">
-        <h2>Результат парсинга (<span id="count"></span>)</h2>
+        <h2>Результат парсинга (<span id="current-count"></span> / <span id="total-count"></span>)</h2>
         <div id="audios"></div>
-        <button class="basic-button default-button" onclick="SaveAudios()">Сохранить</button>
+        <button class="basic-button default-button" id="save-btn" onclick="SaveAudios()">Сохранить</button>
         <div class="error" id="save-error"></div>
         <div class="success" id="save-info"></div>
     </div>
