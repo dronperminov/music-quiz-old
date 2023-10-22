@@ -1,35 +1,15 @@
-import os
 from typing import List, Optional
 
-from fastapi import APIRouter, Body, Depends, Header
+from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
 from src.api import make_error, templates
-from src.constants import AUDIO_CHUNK_SIZE
 from src.database import database
 from src.utils.audio import parse_yandex_music
 from src.utils.auth import get_current_user
 
 router = APIRouter()
-
-
-@router.get("/audios/{name}")
-async def get_audio(name: str, range: str = Header(None)) -> Response:  # noqa
-    start, end = range.replace("bytes=", "").split("-")
-    start = int(start)
-    end = int(end) if end else start + AUDIO_CHUNK_SIZE
-
-    audio_path = os.path.join(os.path.dirname(__file__), "..", "..", "web", "audios", f"{name}")
-
-    with open(audio_path, "rb") as video:
-        video.seek(start)
-        data = video.read(end - start)
-        headers = {
-            "Content-Range": f"bytes {start}-{end}/{os.path.getsize(audio_path)}",
-            "Accept-Ranges": "bytes"
-        }
-        return Response(data, status_code=206, headers=headers, media_type="audio/mpeg")
 
 
 @router.get("/audios")
@@ -60,6 +40,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
     artist2count = dict()
     for artist in artists:
         artist2count[artist["id"]] = database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}})
+    artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]], artist["name"]))
 
     template = templates.get_template("audios/artists.html")
     content = template.render(user=user, page="artists", version=constants.VERSION, artists=artists, artist2count=artist2count)

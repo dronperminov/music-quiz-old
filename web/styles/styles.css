@@ -31,7 +31,7 @@
 
     --button-disabled-background-color: #d0d0d0;
     --button-disabled-border-color: #d0d0d0;
-    --button-disabled-text-color: #d0d0d0;
+    --button-disabled-text-color: #888888;
 
     --button-hover-background-color: var(--main-color);
     --button-hover-border-color: var(--border-color);
@@ -108,7 +108,7 @@
 
     --button-disabled-background-color: #d0d0d0;
     --button-disabled-border-color: #d0d0d0;
-    --button-disabled-text-color: #d0d0d0;
+    --button-disabled-text-color: #888888;
 
     --button-hover-background-color: var(--main-color);
     --button-hover-border-color: var(--border-color);
@@ -181,7 +181,7 @@
 
         --button-disabled-background-color: #d0d0d0;
         --button-disabled-border-color: #d0d0d0;
-        --button-disabled-text-color: #d0d0d0;
+        --button-disabled-text-color: #888888;
 
         --button-hover-background-color: var(--main-color);
         --button-hover-border-color: var(--border-color);

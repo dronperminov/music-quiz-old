@@ -1,8 +1,4 @@
-const AUDIO_SVG = `<svg class="form-svg-fill-icon width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M3 5.49686C3 3.17662 5.52116 1.73465 7.52106 2.91106L18.5764 9.41423C20.5484 10.5742 20.5484 13.4259 18.5764 14.5858L7.52106 21.089C5.52116 22.2654 3 20.8234 3 18.5032V5.49686Z" />
-</svg>`
-
-const GENRE_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="-3 0 24 24" xmlns="http://www.w3.org/2000/svg">
+const AUDIO_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="-3 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="m18.07.169c-.148-.106-.333-.169-.532-.169-.111 0-.217.02-.316.055l.006-.002-11.077 3.938c-.361.131-.613.471-.613.869v.001 2.193.042 10.604c-.534-.295-1.169
     -.469-1.846-.471h-.001c-.043-.002-.093-.003-.143-.003-1.904 0-3.458 1.497-3.549 3.379v.008c.091 1.89 1.645 3.388 3.549 3.388.05 0 .1-.001.15-.003h-.007c.043.002.093
     .003.143.003 1.904 0 3.458-1.497 3.549-3.379v-.008-12.883l9.23-3.223v8.973c-.534-.294-1.17-.468-1.846-.47h-.001c-.043-.002-.094-.003-.144-.003-1.904 0-3.457 1.498-3.547
@@ -54,10 +50,6 @@ const REMOVE_SVG = `<svg class="form-svg-fill-icon" width="20px" height="20px" v
     <path d="M12 4h3c.6 0 1 .4 1 1v1H3V5c0-.6.5-1 1-1h3c.2-1.1 1.3-2 2.5-2s2.3.9 2.5 2zM8 4h3c-.2-.6-.9-1-1.5-1S8.2 3.4 8 4zM4 7h11l-.9 10.1c0 .5-.5.9-1 .9H5.9c-.5 0-.9-.4-1-.9L4 7z"/>
 </svg>`
 
-const AUDIO_GENRES = ["rock", "pop", "rap"]
-const AUDIO_GENRES_RUS = {"rock": "Рок", "pop": "Попса", "rap": "Рэп"}
-
-
 function GetCode() {
     let input = document.getElementById("code")
     let icon = document.getElementById("code-icon")
@@ -75,28 +67,6 @@ function GetCode() {
     input.classList.remove("error-input")
     icon.classList.remove("error-icon")
     return code
-}
-
-function GetDefaultGenres() {
-    let input = document.getElementById("genres")
-    let icon = document.getElementById("genres-icon")
-    let error = document.getElementById("error")
-    let genres = []
-
-    for (let genre of AUDIO_GENRES)
-        if (document.getElementById(`genre-${genre}`).checked)
-            genres.push(genre)
-
-    if (genres.length == 0) {
-        error.innerText = "Не выбран ни один жанр"
-        input.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    return genres
 }
 
 function HideParsedAudios() {
@@ -126,13 +96,9 @@ function RemoveAllAudios(withConfirm = true) {
     HideParsedAudios()
 }
 
-function AddParsedAudio(block, audio, defaultGenres) {
+function AddParsedAudio(audio) {
+    let block = document.getElementById("audios")
     let artists = audio.artists.map(artist => artist.name)
-
-    let genres = []
-
-    for (let genre of AUDIO_GENRES)
-        genres.push({name: genre, title: AUDIO_GENRES_RUS[genre], value: defaultGenres.indexOf(genre) > -1})
 
     let div = MakeElement("audio-form", block)
     let caption = MakeElement("audio-caption", div, {innerText: `${artists.join(", ")} - ${audio.title}`})
@@ -152,11 +118,6 @@ function AddParsedAudio(block, audio, defaultGenres) {
     let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.title, "Трек", "track", "text")
     trackInput.addEventListener("input", () => ClearSaveError(trackInput))
 
-    let genresCheckboxes = MakeIconInputRow(div, GENRE_SVG, genres, "Жанры", "genres", "multi-select")
-
-    for (let checkbox of genresCheckboxes)
-        checkbox.addEventListener("change", () => ClearSaveError(checkbox.parentNode.parentNode.parentNode))
-
     if (audio.lyrics) {
         let lyricsInput = MakeIconInputRow(div, LYRICS_SVG, audio.lyrics.map(line => JSON.stringify(line)), "Текст", "lyrics", "textarea")
         lyricsInput.addEventListener("input", () => ClearSaveError(lyricsInput))
@@ -164,20 +125,20 @@ function AddParsedAudio(block, audio, defaultGenres) {
     }
 
     MakeElement("error", div, {})
+    div.scrollIntoView({behavior: "smooth"})
 }
 
-function AddParsedAudios(audios, genres) {
+function AddParsedAudios(audios) {
     let parentBlock = document.getElementById("audios-block")
-    let block = document.getElementById("audios")
     let removeBlock = document.getElementById("remove-all-block")
+    let count = document.getElementById("count")
 
-    block.innerHTML = ""
     parentBlock.classList.remove("hidden")
     removeBlock.classList.remove("hidden")
+    count.innerText = audios.length
 
-    for (let audio of audios) {
-        AddParsedAudio(block, audio, genres)
-    }
+    for (let audio of audios)
+        AddParsedAudio(audio)
 }
 
 function ParseAudios() {
@@ -186,36 +147,23 @@ function ParseAudios() {
     if (code === null)
         return
 
-    let genres = GetDefaultGenres()
-
-    if (genres === null)
-        return
-
     let error = document.getElementById("error")
+    let parseBtn = document.getElementById("parse-btn")
+    parseBtn.setAttribute("disabled", "")
 
-    SendRequest("/parse-audios", {code: code, genres: genres}).then(response => {
+    RemoveAllAudios(false)
+
+    SendRequest("/parse-audios", {code: code}).then(response => {
+        parseBtn.removeAttribute("disabled")
+
         if (response.status != "success") {
             error.innerText = response.message
             return
         }
 
         error.innerText = ""
-        AddParsedAudios(response.audios, genres)
+        AddParsedAudios(response.audios)
     })
-}
-
-function GetGenres(multiSelect) {
-    let genres = []
-
-    for (let i = 1; i < multiSelect.children.length; i++) {
-        let row = multiSelect.children[i]
-        let input = row.getElementsByTagName("input")[0]
-
-        if (input.checked)
-            genres.push(input.getAttribute("name"))
-    }
-
-    return genres
 }
 
 function MakeSaveError(message, inputBlock) {
@@ -226,7 +174,7 @@ function MakeSaveError(message, inputBlock) {
     error.innerText = message
     input.classList.add("error-input")
     icon.classList.add("error-icon")
-    inputBlock.parentNode.parentNode.scrollIntoView()
+    inputBlock.parentNode.parentNode.scrollIntoView({behavior: "smooth"})
 }
 
 function ClearSaveError(input) {
@@ -283,14 +231,6 @@ function GetAudios() {
                     return null
                 }
             }
-            else if (name == "genres") {
-                audio["genres"] = GetGenres(input)
-
-                if (audio["genres"].length == 0) {
-                    MakeSaveError("Не выбран ни один жанр", inputBlock)
-                    return null
-                }
-            }
             else if (name == "lyrics") {
                 try {
                     audio["lyrics"] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
@@ -321,20 +261,22 @@ function SaveAudios() {
 
     let error = document.getElementById("save-error")
     let info = document.getElementById("save-info")
+    let code = document.getElementById("code")
 
     SendRequest("/add-audios", {audios: audios}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
-            error.scrollIntoView()
+            error.scrollIntoView({behavior: "smooth"})
             return
         }
 
         error.innerText = ""
         info.innerText = "Аудиозаписи успешно добавлены"
-        info.scrollIntoView()
+        info.scrollIntoView({behavior: "smooth"})
 
         setTimeout(() => {
             info.innerText = ""
+            code.value = ""
             RemoveAllAudios(false)
         }, 1500)
     })
