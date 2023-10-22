@@ -40,8 +40,29 @@ def get_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
+    audios_count = database.audios.count_documents({})
+    lyrics_count = database.audios.count_documents({"lyrics": {"$exists": True}})
+
     template = templates.get_template("audios/audios.html")
-    content = template.render(user=user, page="audios", version=constants.VERSION)
+    content = template.render(user=user, page="audios", version=constants.VERSION, audios_count=audios_count, lyrics_count=lyrics_count)
+    return HTMLResponse(content=content)
+
+
+@router.get("/artists")
+def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
+    if not user:
+        return RedirectResponse(url="/login")
+
+    if user["role"] != "admin":
+        return make_error(message="Эта страница доступна только администраторам.", user=user)
+
+    artists = list(database.artists.find({}))
+    artist2count = dict()
+    for artist in artists:
+        artist2count[artist["id"]] = database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}})
+
+    template = templates.get_template("audios/artists.html")
+    content = template.render(user=user, page="artists", version=constants.VERSION, artists=artists, artist2count=artist2count)
     return HTMLResponse(content=content)
 
 
@@ -81,6 +102,13 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
 
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    # TODO: make more optimal
+    existed_artists = {artist["id"] for artist in database.artists.find({}, {"id": 1})}
+    new_artists = {artist["id"]: artist for audio in audios for artist in audio["artists"] if artist["id"] not in existed_artists}
+
+    if new_artists:
+        database.artists.insert_many(new_artists.values())
 
     database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
     database.audios.insert_many(audios)

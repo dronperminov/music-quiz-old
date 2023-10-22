@@ -4,7 +4,11 @@
 </head>
 <body>
     {% include "menu.html" %}
+    <h1>Управление аудиозаписями</h1>
 
+    <div class="text">В настоящий момент в базе содержится {{audios_count}} записей. Из них {{lyrics_count}} содержат текст.</div>
+    <div class="text"><a href="/add-audios">Добавление новых аудио</a></div>
+    <div class="text"><a href="/artists">Список имеющихся исполнителей</a></div>
     {% include "footer.html" %}
 </body>
 </html>

@@ -1,0 +1,19 @@
+{% include "header.html" %}
+<title>Исполнители | music-quiz</title>
+<link rel="stylesheet" type="text/css" href="/styles/audios.css?v={{version}}">
+</head>
+<body>
+    {% include "menu.html" %}
+    <h1>Исполнители</h1>
+
+    <div class="content">
+    {% for artist in artists %}
+    <div class="form-row">
+        <b>{{artist.name}}</b>: {{artist2count[artist.id]}}
+    </div>
+    {% endfor %}
+    </div>
+
+    {% include "footer.html" %}
+</body>
+</html>
