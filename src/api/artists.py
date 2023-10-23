@@ -32,8 +32,8 @@ def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
     artist2count = dict()
     for artist in artists:
         artist2count[artist["id"]] = {
-            "total": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}}),
-            "with_lyrics": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}, "lyrics": {"$exists": True, "$ne": []}}),
+            "total": database.audios.count_documents({"artists.id": artist["id"]}),
+            "with_lyrics": database.audios.count_documents({"artists.id": artist["id"], "lyrics": {"$exists": True, "$ne": []}}),
         }
 
     artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
@@ -58,9 +58,6 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
 
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
-
-    if not user.get("token", ""):
-        return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
 
     artist = database.artists.find_one({"id": artist_id})
     audios = list(database.audios.find({"artists.id": artist_id}))

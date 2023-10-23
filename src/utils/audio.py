@@ -1,9 +1,11 @@
 import re
-from typing import List
+from typing import Dict, List
 
 from bs4 import BeautifulSoup
 from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
+
+from src import constants
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
 PLAYLIST_REGEX = re.compile(r"^.*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)(\?.*)?$")
@@ -109,3 +111,27 @@ def parse_direct_link(track_id: str, token: str) -> str:
     track = client.tracks([track_id])[0]
     info = track.get_specific_download_info("mp3", 192)
     return info.get_direct_link()
+
+
+def parse_artist_genres(artist_ids: List[int], token: str) -> Dict[int, List[str]]:
+    client = Client(token)
+    genres = dict()
+
+    for artist_id, artist in zip(artist_ids, client.artists(artist_ids)):
+        if not artist.genres:
+            genres[artist_id] = []
+            continue
+
+        artist_genres = set()
+
+        for genre in artist.genres:
+            if genre in constants.ROCK_GENRES:
+                artist_genres.add(constants.ROCK_GENRE)
+            elif genre in constants.POP_GENRES:
+                artist_genres.add(constants.POP_GENRE)
+            elif genre in constants.HIP_HOP_GENRES:
+                artist_genres.add(constants.HIP_HOP_GENRE)
+
+        genres[artist_id] = list(artist_genres)
+
+    return genres

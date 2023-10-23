@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from src import constants
 from src.api import make_error, templates
 from src.database import database
-from src.utils.audio import get_track_ids, parse_direct_link, parse_track
+from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_track
 from src.utils.auth import get_current_user
 
 router = APIRouter()
@@ -80,6 +80,15 @@ def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str 
     return JSONResponse({"status": "success", "track": track})
 
 
+def add_artists(new_artists: dict, token: str) -> None:
+    artist_genres = parse_artist_genres([artist_id for artist_id in new_artists], token)
+
+    for artist_id, artist in new_artists.items():
+        artist["genres"] = artist_genres[artist_id]
+
+    database.artists.insert_many(new_artists.values())
+
+
 @router.post("/add-audios")
 def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[dict] = Body(..., embed=True)) -> JSONResponse:
     if not user:
@@ -88,14 +97,17 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
+    if not user.get("token", ""):
+        return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
+
+    database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
+    database.audios.insert_many(audios)
+
     existed_artists = {artist["id"] for artist in database.artists.find({}, {"id": 1})}
     new_artists = {artist["id"]: artist for audio in audios for artist in audio["artists"] if artist["id"] not in existed_artists}
 
     if new_artists:
-        database.artists.insert_many(new_artists.values())
-
-    database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
-    database.audios.insert_many(audios)
+        add_artists(new_artists, user["token"])
 
     return JSONResponse({"status": "success"})
 

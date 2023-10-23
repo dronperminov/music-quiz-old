@@ -49,7 +49,7 @@ function ChangeField(inputId) {
     ShowSaveButton()
 }
 
-function GetMultiSelect(multiSelectId, names, errorMessage) {
+function GetMultiSelect(multiSelectId, names, errorMessage = "") {
     let values = []
     let input = document.getElementById(multiSelectId)
     let icon = document.getElementById(`${multiSelectId}-icon`)
@@ -59,7 +59,7 @@ function GetMultiSelect(multiSelectId, names, errorMessage) {
         if (document.getElementById(`${multiSelectId}-${name}`).checked)
             values.push(name)
 
-    if (values.length == 0) {
+    if (values.length == 0 && errorMessage != "") {
         error.innerText = errorMessage
         input.classList.add("error-input")
         icon.classList.add("error-icon")
@@ -80,7 +80,7 @@ function SaveArtist(artistId) {
     if (creation === null)
         return
 
-    let genres = GetMultiSelect("genres", ["rock", "pop", "rap"], "Жанры не выбраны")
+    let genres = GetMultiSelect("genres", ["rock", "pop", "hip-hop"])
 
     if (genres === null)
         return
