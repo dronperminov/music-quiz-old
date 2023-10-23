@@ -2,6 +2,7 @@ import os
 import shutil
 import tempfile
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, UploadFile
@@ -20,6 +21,9 @@ class SettingsForm:
     fullname: str = Form(...)
     theme: str = Form(...)
     token: str = Form("")
+    questions: str = Form(...)
+    start_year: int = Form(...)
+    end_year: int = Form(...)
 
 
 def save_image(image: UploadFile, output_dir: str) -> str:
@@ -41,7 +45,15 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return RedirectResponse(url="/login")
 
     template = templates.get_template("settings.html")
-    content = template.render(user=user, page="settings", version=constants.VERSION)
+    content = template.render(
+        user=user,
+        page="settings",
+        version=constants.VERSION,
+        year=datetime.now().year,
+        questions=constants.QUESTIONS,
+        question2rus=constants.QUESTION_TO_RUS
+    )
+
     return HTMLResponse(content=content)
 
 
@@ -59,6 +71,9 @@ async def update_settings(settings: SettingsForm = Depends(), image: UploadFile 
 
     user["fullname"] = settings.fullname
     user["settings"]["theme"] = settings.theme
+    user["settings"]["questions"] = settings.questions.split(",")
+    user["settings"]["start_year"] = settings.start_year
+    user["settings"]["end_year"] = settings.end_year
     user["token"] = settings.token
 
     database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)

@@ -116,3 +116,25 @@ function StopOtherAudios(target) {
         if (audio != target)
             audio.pause()
 }
+
+function GetMultiSelect(multiSelectId, names, errorMessage = "") {
+    let values = []
+    let input = document.getElementById(multiSelectId)
+    let icon = document.getElementById(`${multiSelectId}-icon`)
+    let error = document.getElementById("error")
+
+    for (let name of names)
+        if (document.getElementById(`${multiSelectId}-${name}`).checked)
+            values.push(name)
+
+    if (values.length == 0 && errorMessage != "") {
+        error.innerText = errorMessage
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    return values
+}

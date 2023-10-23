@@ -57,6 +57,48 @@ function GetToken() {
     return token
 }
 
+function GetYears() {
+    let icon = document.getElementById("years-icon")
+    let error = document.getElementById("error")
+
+    let startYearInput = document.getElementById("years-start")
+    let endYearInput = document.getElementById("years-end")
+
+    if (startYearInput.value.match(/^\d\d\d\d$/g) === null) {
+        error.innerText = "Начало периода введено некорректно"
+        startYearInput.focus()
+        startYearInput.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    if (endYearInput.value.match(/^\d\d\d\d$/g) === null) {
+        error.innerText = "Конец периода введён некорректно"
+        endYearInput.focus()
+        endYearInput.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    let year1 = Math.max(+startYearInput.min, Math.min(+startYearInput.max, +startYearInput.value))
+    let year2 = Math.max(+endYearInput.min, Math.min(+endYearInput.max, +endYearInput.value))
+
+    let startYear = Math.min(year1, year2)
+    let endYear = Math.max(year1, year2)
+
+    startYearInput.value = startYear
+    endYearInput.value = endYear
+
+    startYearInput.classList.remove("error-input")
+    endYearInput.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+
+    return {
+        start: Math.min(startYear, endYear),
+        end: Math.max(startYear, endYear)
+    }
+}
+
 function LoadProfileImage() {
     let input = document.getElementById("profile-input")
     input.click()
@@ -75,9 +117,9 @@ function ShowSaveButton() {
     button.classList.remove("hidden")
 }
 
-function ChangeField(inputId) {
+function ChangeField(inputId, iconId = null) {
     let input = document.getElementById(inputId)
-    let icon = document.getElementById(`${inputId}-icon`)
+    let icon = document.getElementById(iconId == null ? `${inputId}-icon` : iconId)
     let error = document.getElementById("error")
 
     input.classList.remove("error-input")
@@ -114,6 +156,16 @@ function SaveSettings() {
     if (token === null)
         return
 
+    let questions = GetMultiSelect("questions", ["artist_by_track", "artist_by_intro", "name_by_track", "line_by_text", "line_by_chorus"], "Не выбран ни один тип вопросов")
+
+    if (questions === null)
+        return
+
+    let years = GetYears()
+
+    if (years === null)
+        return
+
     let theme = document.getElementById("theme").value
     let input = document.getElementById("profile-input")
     let error = document.getElementById("error")
@@ -123,6 +175,9 @@ function SaveSettings() {
     formData.append("fullname", fullname)
     formData.append("theme", theme)
     formData.append("token", token)
+    formData.append("questions", questions.join(","))
+    formData.append("start_year", years.start)
+    formData.append("end_year", years.end)
 
     if (input.files.length == 1)
         formData.append("image", input.files[0])

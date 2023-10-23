@@ -271,6 +271,18 @@ body {
     display: none !important;
 }
 
+.center {
+    text-align: center;
+}
+
+.left {
+    text-align: left;
+}
+
+.right {
+    text-align: right;
+}
+
 .content {
     background: var(--content-background-color);
     border: 2px solid var(--content-border-color);
@@ -361,7 +373,7 @@ body {
 
 .table-cell {
     display: table-cell;
-    padding: 0 2px;
+    padding: 0 4px;
 }
 
 .table-cell:first-child {
@@ -370,6 +382,10 @@ body {
 
 .table-cell:last-child {
     padding-right: 0
+}
+
+.table-cell-no-width {
+    width: 0;
 }
 
 .text {
