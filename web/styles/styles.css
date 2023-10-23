@@ -77,6 +77,12 @@
     --menu-icon-hover-color: var(--border-color);
     --menu-icon-active-color: #ffd500;
 
+    /* details */
+    --details-font-family: Roboto;
+    --details-background-color: #ffffff;
+    --details-text-color: var(--text-color);
+    --details-hover-text-color: #626262;
+
     /* other */
     --hover-link-color: #626262;
 }
@@ -148,6 +154,12 @@
     --menu-icon-color: #818489;
     --menu-icon-hover-color: #caccce;
     --menu-icon-active-color: var(--main-color);
+
+    /* details */
+    --details-font-family: Roboto;
+    --details-background-color: #3b3f4a;
+    --details-text-color: var(--text-color);
+    --details-hover-text-color: var(--main-color);
 
     /* other */
     --hover-link-color: var(--main-color);
@@ -221,6 +233,12 @@
         --menu-icon-color: #818489;
         --menu-icon-hover-color: #caccce;
         --menu-icon-active-color: var(--main-color);
+
+        /* details */
+        --details-font-family: Roboto;
+        --details-background-color: #3b3f4a;
+        --details-text-color: var(--text-color);
+        --details-hover-text-color: var(--main-color)
 
         /* other */
         --hover-link-color: var(--main-color);
@@ -387,6 +405,26 @@ h1, h2 {
 
 h1.top {
     margin-top: 25px;
+}
+
+summary {
+    border-radius: 10px;
+    background: var(--details-background-color);
+    padding: 10px;
+    user-select: none;
+    font-family: var(--details-font-family);
+    font-size: 1em;
+    color: var(--details-text-color);
+}
+
+summary:hover {
+    cursor: pointer;
+    color: var(--details-hover-text-color);
+}
+
+details[open] summary {
+    margin-bottom: 10px;
+    border-radius: 10px 10px 0 0;
 }
 
 @media (max-width: 767px) {

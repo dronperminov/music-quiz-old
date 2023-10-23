@@ -9,7 +9,7 @@
     <div class="content">
         <div class="form-row">
             <div class="form-row-icon form-row-top-icon" id="creation-icon">
-                <svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2">
+                <svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2" fill="none">
                     <circle cx="12" cy="12" r="10"/>
                     <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"/>
                     <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"/>
@@ -60,6 +60,8 @@
         <details>
             <summary>Треки</summary>
 
+            <button class="basic-button default-button" id="load-audios-btn" onclick="LoadAudios()">Загрузить аудиозаписи</button>
+
             {% for audio in audios %}
             <div class="form-row">
                 <div class="text">{{audio.artists|map(attribute='name')|join(", ")}} - {{audio.track}}</div>
@@ -72,10 +74,6 @@
 
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/artist.js?v={{version}}"></script>
-    <script>
-        for (let audio of document.getElementsByTagName("audio"))
-            LoadAudio(audio)
-    </script>
     {% include "footer.html" %}
 </body>
 </html>
