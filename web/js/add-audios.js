@@ -98,6 +98,9 @@ function RemoveAllAudios(withConfirm = true) {
     let block = document.getElementById("audios")
     block.innerHTML = ""
 
+    let error = document.getElementById("error")
+    error.innerText = ""
+
     HideParsedAudios()
 }
 
@@ -218,12 +221,6 @@ function ClearSaveError(input) {
     error.innerText = ""
     input.classList.remove("error-input")
     icon.classList.remove("error-icon")
-}
-
-function StopOtherAudios(target) {
-    for (let audio of document.getElementsByTagName("audio"))
-        if (audio != target)
-            audio.pause()
 }
 
 function GetAudios() {

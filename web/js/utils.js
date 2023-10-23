@@ -107,3 +107,9 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
     if (inputType == "audio")
         return MakeElement("", inputBlock, {tag: "audio", controls: "", src: inputValue, name: label, preload: "metadata"})
 }
+
+function StopOtherAudios(target) {
+    for (let audio of document.getElementsByTagName("audio"))
+        if (audio != target)
+            audio.pause()
+}

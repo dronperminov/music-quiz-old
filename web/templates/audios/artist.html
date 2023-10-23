@@ -65,7 +65,7 @@
             {% for audio in audios %}
             <div class="form-row">
                 <div class="text">{{audio.artists|map(attribute='name')|join(", ")}} - {{audio.track}}</div>
-                <audio data-link="{{audio.link}}" controls preload="metadata"></audio>
+                <audio data-link="{{audio.link}}" controls preload="metadata" onplay="StopOtherAudios(this)"></audio>
                 <div class="error" id="error-{{audio.link}}"></div>
             </div>
             {% endfor %}
