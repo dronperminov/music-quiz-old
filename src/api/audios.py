@@ -1,12 +1,13 @@
 from typing import List, Optional
 
+import yandex_music.exceptions
 from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
 from src.api import make_error, templates
 from src.database import database
-from src.utils.audio import get_track_ids, parse_track
+from src.utils.audio import get_track_ids, parse_direct_link, parse_track
 from src.utils.auth import get_current_user
 
 router = APIRouter()
@@ -28,37 +29,6 @@ def get_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
     return HTMLResponse(content=content)
 
 
-@router.get("/artists")
-def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
-    if not user:
-        return RedirectResponse(url="/login")
-
-    if user["role"] != "admin":
-        return make_error(message="Эта страница доступна только администраторам.", user=user)
-
-    artists = list(database.artists.find({}))
-    artist2count = dict()
-    for artist in artists:
-        artist2count[artist["id"]] = {
-            "total": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}}),
-            "with_lyrics": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}, "lyrics": {"$exists": True, "$ne": []}}),
-        }
-
-    artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
-
-    template = templates.get_template("audios/artists.html")
-    content = template.render(
-        user=user,
-        page="artists",
-        version=constants.VERSION,
-        artists=artists,
-        artist2count=artist2count,
-        creation2rus=constants.CREATION_TO_RUS,
-        genre2rus=constants.GENRE_TO_RUS
-    )
-    return HTMLResponse(content=content)
-
-
 @router.get("/add-audios")
 def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
     if not user:
@@ -68,7 +38,7 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
     template = templates.get_template("audios/add_audios.html")
-    content = template.render(user=user, page="add_audios", version=constants.VERSION)
+    content = template.render(user=user, page="add-audios", version=constants.VERSION)
     return HTMLResponse(content=content)
 
 
@@ -118,7 +88,6 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    # TODO: make more optimal
     existed_artists = {artist["id"] for artist in database.artists.find({}, {"id": 1})}
     new_artists = {artist["id"]: artist for audio in audios for artist in audio["artists"] if artist["id"] not in existed_artists}
 
@@ -129,3 +98,22 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     database.audios.insert_many(audios)
 
     return JSONResponse({"status": "success"})
+
+
+@router.post("/get-direct-link")
+def get_direct_link(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True)) -> JSONResponse:
+    if not user:
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    if not user.get("token", ""):
+        return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
+
+    try:
+        direct_link = parse_direct_link(track_id, user["token"])
+    except yandex_music.exceptions.BadRequestError:
+        return JSONResponse({"status": "error", "message": "Не удалось получить ссылку на аудио"})
+
+    return JSONResponse({"status": "success", "direct_link": direct_link})

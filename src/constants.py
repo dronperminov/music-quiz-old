@@ -13,6 +13,6 @@ CREATION_TO_RUS = {
 
 GENRE_TO_RUS = {
     "rock": "рок",
-    "pop": "пок",
+    "pop": "поп",
     "rap": "рэп",
 }

@@ -102,3 +102,10 @@ def parse_track(track_id: str, token: str, make_link: bool) -> dict:
         pass
 
     return audio
+
+
+def parse_direct_link(track_id: str, token: str) -> str:
+    client = Client(token).init()
+    track = client.tracks([track_id])[0]
+    info = track.get_specific_download_info("mp3", 192)
+    return info.get_direct_link()

@@ -385,6 +385,10 @@ h1, h2 {
     font-family: PTSerif;
 }
 
+h1.top {
+    margin-top: 25px;
+}
+
 @media (max-width: 767px) {
     body {
         max-width: 100%;
