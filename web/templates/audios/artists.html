@@ -4,12 +4,17 @@
 </head>
 <body>
     {% include "menu.html" %}
-    <h1>Исполнители</h1>
+    <h1>Исполнители ({{artists|length}})</h1>
 
     <div class="content">
     {% for artist in artists %}
     <div class="form-row">
-        <b>{{artist.name}}</b>: {{artist2count[artist.id]}}
+        <div class="text">
+            <b>{{artist.name}}</b>: {{artist2count[artist.id]["total"]}}
+            {% if artist2count[artist.id]["with_lyrics"] %}({{artist2count[artist.id]["with_lyrics"]}} с текстом){% endif %}
+        </div>
+        {% if artist.creation %}<div class="text"><b>Творчество</b>: {% for creation_type in artist.creation %}{{creation2rus[creation_type]}}{% endfor %}</div>{% endif %}
+        {% if artist.genres %}<div class="text"><b>Жанры</b>: {% for genre in artist.genres %}{{genre2rus[genre]}}{% endfor %}</div>{% endif %}
     </div>
     {% endfor %}
     </div>

@@ -21,7 +21,7 @@ def get_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
     audios_count = database.audios.count_documents({})
-    lyrics_count = database.audios.count_documents({"lyrics": {"$exists": True}})
+    lyrics_count = database.audios.count_documents({"lyrics": {"$exists": True, "$ne": []}})
 
     template = templates.get_template("audios/audios.html")
     content = template.render(user=user, page="audios", version=constants.VERSION, audios_count=audios_count, lyrics_count=lyrics_count)
@@ -39,11 +39,23 @@ def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
     artists = list(database.artists.find({}))
     artist2count = dict()
     for artist in artists:
-        artist2count[artist["id"]] = database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}})
-    artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]], artist["name"]))
+        artist2count[artist["id"]] = {
+            "total": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}}),
+            "with_lyrics": database.audios.count_documents({"artists.id": {"$in": [artist["id"]]}, "lyrics": {"$exists": True, "$ne": []}}),
+        }
+
+    artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
 
     template = templates.get_template("audios/artists.html")
-    content = template.render(user=user, page="artists", version=constants.VERSION, artists=artists, artist2count=artist2count)
+    content = template.render(
+        user=user,
+        page="artists",
+        version=constants.VERSION,
+        artists=artists,
+        artist2count=artist2count,
+        creation2rus=constants.CREATION_TO_RUS,
+        genre2rus=constants.GENRE_TO_RUS
+    )
     return HTMLResponse(content=content)
 
 

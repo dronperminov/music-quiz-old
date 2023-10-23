@@ -361,6 +361,10 @@ body {
     color: var(--text-color);
 }
 
+.text:last-child {
+    margin-bottom: 0;
+}
+
 .text a {
     color: var(--text-color);
     text-decoration: none;

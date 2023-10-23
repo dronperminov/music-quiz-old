@@ -4,4 +4,15 @@ MONGO_USERS_COLLECTION = "users"
 MONGO_AUDIOS_COLLECTION = "audios"
 MONGO_ARTISTS_COLLECTION = "artists"
 
-VERSION = "2023-10-23-02-00"
+VERSION = "2023-10-23-13-00"
+
+CREATION_TO_RUS = {
+    "russian": "русское",
+    "foreign": "зарубежное"
+}
+
+GENRE_TO_RUS = {
+    "rock": "рок",
+    "pop": "пок",
+    "rap": "рэп",
+}
