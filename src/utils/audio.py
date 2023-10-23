@@ -90,8 +90,13 @@ def parse_track(track_id: str, token: str, make_link: bool) -> dict:
         "track_id": track_id,
         "title": track.title,
         "artists": parse_artists(track.artists),
+        "year": 0,
         "lyrics": None
     }
+
+    album = client.albums([album_id])[0]
+    if album.year:
+        audio["year"] = album.year
 
     if make_link:
         info = track.get_specific_download_info("mp3", 192)
