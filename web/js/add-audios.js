@@ -104,8 +104,9 @@ function RemoveAllAudios(withConfirm = true) {
 function ParseAudio(trackId) {
     let currentCount = document.getElementById("current-count")
     let error = document.getElementById("error")
+    let makeLink = document.getElementById("show-player").checked
 
-    return SendRequest("/parse-audio", {track_id: trackId}).then(response => {
+    return SendRequest("/parse-audio", {track_id: trackId, make_link: makeLink}).then(response => {
         if (response.status != "success") {
             error.innerText = "Некоторые треки не удалось скачать"
             return
@@ -121,14 +122,17 @@ function AddParsedAudio(audio) {
     let artists = audio.artists.map(artist => artist.name)
 
     let div = MakeElement("audio-form", block)
+    div.setAttribute("data-album-id", audio.album_id)
+    div.setAttribute("data-track-id", audio.track_id)
+
     let caption = MakeElement("audio-caption", div, {innerText: `${artists.join(", ")} - ${audio.title}`})
     let removeIcon = MakeElement("audio-close-icon", div, {innerHTML: REMOVE_SVG, title: "Удалить"})
     removeIcon.addEventListener("click", () => RemoveAudio(div))
 
-    let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.direct_link, "Аудио", "audio", "audio")
-    audioTag.addEventListener("play", () => StopOtherAudios(audioTag))
-    audioTag.setAttribute("data-album-id", audio.album_id)
-    audioTag.setAttribute("data-track-id", audio.track_id)
+    if (audio.direct_link) {
+        let audioTag = MakeIconInputRow(div, AUDIO_SVG, audio.direct_link, "Аудио", "audio", "audio")
+        audioTag.addEventListener("play", () => StopOtherAudios(audioTag))
+    }
 
     let artistInput = MakeIconInputRow(div, ARTIST_SVG, audio.artists.map(artist => JSON.stringify(artist)), "Исполнитель", "artists", "textarea")
     artistInput.addEventListener("input", () => ClearSaveError(artistInput))
@@ -163,6 +167,8 @@ function ParseAudios() {
     if (code === null)
         return
 
+    let ignoreExisting = document.getElementById("ignore-existing").checked
+
     let error = document.getElementById("error")
     let parseBtn = document.getElementById("parse-btn")
     let saveBtn = document.getElementById("save-btn")
@@ -171,7 +177,7 @@ function ParseAudios() {
 
     RemoveAllAudios(false)
 
-    SendRequest("/parse-audios", {code: code}).then(response => {
+    SendRequest("/parse-audios", {code: code, ignore_existing: ignoreExisting}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             parseBtn.removeAttribute("disabled")
@@ -180,12 +186,15 @@ function ParseAudios() {
 
         error.innerText = ""
         AddParsedAudios(response.track_ids).then(() => {
-            let removeBlock = document.getElementById("remove-all-block")
-            removeBlock.classList.remove("hidden")
+            if (response.track_ids.length > 0) {
+                let removeBlock = document.getElementById("remove-all-block")
+                removeBlock.classList.remove("hidden")
+
+                saveBtn.removeAttribute("disabled")
+                saveBtn.scrollIntoView({behavior: "smooth"})
+            }
 
             parseBtn.removeAttribute("disabled")
-            saveBtn.removeAttribute("disabled")
-            saveBtn.scrollIntoView({behavior: "smooth"})
         })
     })
 }
@@ -222,17 +231,15 @@ function GetAudios() {
 
     for (let audioBlock of document.getElementsByClassName("audio-form")) {
         let audio = {}
+        audio["album_id"] = audioBlock.getAttribute("data-album-id")
+        audio["track_id"] = audioBlock.getAttribute("data-track-id")
+        audio["link"] = `${audio["track_id"]}:${audio["album_id"]}`
 
         for (let inputBlock of audioBlock.getElementsByClassName("form-row-input")) {
             let input = inputBlock.children[0]
             let name = input.getAttribute("name")
 
-            if (name == "audio") {
-                audio["album_id"] = input.getAttribute("data-album-id")
-                audio["track_id"] = input.getAttribute("data-track-id")
-                audio["link"] = `${audio["track_id"]}:${audio["album_id"]}`
-            }
-            else if (name == "artists") {
+            if (name == "artists") {
                 try {
                     audio[name] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
                 }

@@ -78,22 +78,22 @@ def parse_artists(artists: List[Artist]) -> List[dict]:
     return parsed_artists
 
 
-def parse_track(track_id: str, token: str) -> dict:
+def parse_track(track_id: str, token: str, make_link: bool) -> dict:
     client = Client(token).init()
     track = client.tracks([track_id])[0]
     track_id, album_id = track.track_id.split(":")
-
-    info = track.get_specific_download_info("mp3", 192)
-    direct_link = info.get_direct_link()
 
     audio = {
         "album_id": album_id,
         "track_id": track_id,
         "title": track.title,
-        "direct_link": direct_link,
         "artists": parse_artists(track.artists),
         "lyrics": None
     }
+
+    if make_link:
+        info = track.get_specific_download_info("mp3", 192)
+        audio["direct_link"] = info.get_direct_link()
 
     try:
         lyrics_str = track.get_lyrics("LRC").fetch_lyrics()

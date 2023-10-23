@@ -61,7 +61,7 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
 
 
 @router.post("/parse-audios")
-def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = Body(..., embed=True)) -> JSONResponse:
+def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = Body(..., embed=True), ignore_existing: bool = Body(..., embed=True)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
@@ -76,11 +76,15 @@ def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = B
     if not track_ids:
         return JSONResponse({"status": "error", "message": "Не удалось распарсить ни одного аудио"})
 
+    if ignore_existing:
+        existed_track_ids = {audio["link"] for audio in database.audios.find({}, {"link": 1})}
+        track_ids = [track_id for track_id in track_ids if track_id not in existed_track_ids]
+
     return JSONResponse({"status": "success", "track_ids": track_ids})
 
 
 @router.post("/parse-audio")
-def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True)) -> JSONResponse:
+def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True), make_link: bool = Body(..., embed=True)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
@@ -90,7 +94,7 @@ def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str 
     if not user.get("token", ""):
         return JSONResponse({"status": "error", "message": "Не указан токен для Яндекс.Музыки"})
 
-    track = parse_track(track_id, user["token"])
+    track = parse_track(track_id, user["token"], make_link)
     return JSONResponse({"status": "success", "track": track})
 
 

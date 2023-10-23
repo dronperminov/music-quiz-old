@@ -105,5 +105,5 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
         return MakeMultiSelect("basic-multi-select default-multi-select", inputBlock, placeholder, label,inputValue)
 
     if (inputType == "audio")
-        return MakeElement("", inputBlock, {tag: "audio", controls: "", src: inputValue, name: label})
+        return MakeElement("", inputBlock, {tag: "audio", controls: "", src: inputValue, name: label, preload: "metadata"})
 }
