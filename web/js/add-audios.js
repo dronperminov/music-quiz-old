@@ -36,6 +36,24 @@ const TRACK_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" vi
 </svg>
 `
 
+const YEAR_SVG = `<svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">
+    <path d="M408.204,54.922h-23.111V33.845C385.093,15.174,369.913,0,351.251,0c-18.658,0-33.838,15.174-33.838,33.845v21.078
+        h-48.297V33.845C269.116,15.174,253.938,0,235.278,0c-18.66,0-33.844,15.174-33.844,33.845v21.078h-53.001V33.845
+        c0-18.671-15.18-33.845-33.84-33.845C95.938,0,80.758,15.174,80.758,33.845v21.078H48.656c-9.929,0-17.976,5.062-17.976,11.302
+        v51.164c-0.024,0.449-0.137,0.875-0.137,1.335v308.552c0,16.23,13.209,29.45,29.453,29.45h336.592
+        c16.239,0,29.448-13.209,29.448-29.45v-260.1c0.046-0.293,0.145-0.561,0.145-0.854V66.219
+        C426.186,59.984,418.127,54.922,408.204,54.922z M334.241,33.845c0-9.382,7.615-17.013,17.005-17.013
+        c9.381,0,17.009,7.631,17.009,17.013v21.078h-34.014V33.845z M218.263,33.845c0-9.382,7.626-17.013,17.011-17.013
+        c9.38,0,17.006,7.631,17.006,17.013v21.078h-34.017V33.845z M97.579,33.845c0-9.382,7.629-17.013,17.01-17.013
+        S131.6,24.463,131.6,33.845v21.078H97.579V33.845z M400.79,427.275c0,2.322-1.881,4.203-4.201,4.203H59.992
+        c-2.32,0-4.209-1.881-4.209-4.203V177.629H400.79V427.275z M165.4,282.673c-2.848-2.923-4.271-6.326-4.271-10.168
+        c0-4.465,1.401-7.747,4.203-9.849c2.801-2.102,7.749-4.815,14.837-8.143c10.597-5.001,19.062-10.244,25.413-15.759
+        c6.346-5.517,11.972-11.689,16.875-18.523c4.903-6.829,8.099-11.031,9.591-12.607c1.487-1.573,4.289-2.364,8.4-2.364
+        c4.641,0,8.362,1.795,11.164,5.385c2.801,3.593,4.202,8.534,4.202,14.835v150.376c0,17.598-5.997,26.396-17.991,26.396
+        c-5.342,0-9.632-1.794-12.87-5.384c-3.24-3.595-4.859-8.892-4.859-15.896V261.475c-22.239,17.072-37.212,25.598-44.917,25.598
+        C171.507,287.082,168.242,285.616,165.4,282.673z"/>
+</svg>`
+
 const LYRICS_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
     <path d="M27,3H5A1,1,0,0,0,5,5H27a1,1,0,0,0,0-2Z"/>
     <path d="M27,7H5A1,1,0,0,0,5,9H27a1,1,0,0,0,0-2Z"/>
@@ -144,6 +162,9 @@ function AddParsedAudio(audio) {
     let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.title, "Трек", "track", "text")
     trackInput.addEventListener("input", () => ClearSaveError(trackInput))
 
+    let yearInput = MakeIconInputRow(div, YEAR_SVG, audio.year, "Год", "year", "number")
+    yearInput.addEventListener("input", () => ClearSaveError(yearInput))
+
     if (audio.lyrics) {
         let lyricsInput = MakeIconInputRow(div, LYRICS_SVG, audio.lyrics.map(line => JSON.stringify(line)), "Текст", "lyrics", "textarea")
         lyricsInput.addEventListener("input", () => ClearSaveError(lyricsInput))
@@ -231,7 +252,6 @@ function GetAudios() {
         let audio = {}
         audio["album_id"] = audioBlock.getAttribute("data-album-id")
         audio["track_id"] = audioBlock.getAttribute("data-track-id")
-        audio["year"] = +audioBlock.getAttribute("data-year")
         audio["link"] = `${audio["track_id"]}:${audio["album_id"]}`
 
         for (let inputBlock of audioBlock.getElementsByClassName("form-row-input")) {
@@ -247,7 +267,7 @@ function GetAudios() {
                     return null
                 }
 
-                if (audio["artists"].length == 0) {
+                if (audio[name].length == 0) {
                     MakeSaveError("Исполнитель пуст", inputBlock)
                     return null
                 }
@@ -255,24 +275,32 @@ function GetAudios() {
             else if (name == "track"){
                 audio[name] = input.value.trim()
 
-                if (audio["track"].length == 0) {
+                if (audio[name].length == 0) {
                     MakeSaveError("Исполнитель пуст", inputBlock)
                     return null
                 }
             }
             else if (name == "lyrics") {
                 try {
-                    audio["lyrics"] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
+                    audio[name] = JSON.parse(`[${input.value.split("\n").join(",").trim()}]`)
                 }
                 catch (Error) {
                     MakeSaveError("Текст введён некорректно", inputBlock)
                     return null
                 }
 
-                if (audio["lyrics"].length == 0) {
+                if (audio[name].length == 0) {
                     MakeSaveError("Текст пуст", inputBlock)
                     return null
                 }
+            }
+            else if (name == "year") {
+                if (input.value.match(/^\d{1,4}$/gi) === null) {
+                    MakeSaveError("Год введён некорректно", inputBlock)
+                    return null
+                }
+
+                audio[name] = +input.value
             }
         }
 

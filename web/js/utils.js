@@ -98,6 +98,9 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
     if (inputType == "text")
         return MakeElement("basic-input default-input", inputBlock, {tag: "input", type: "text", value: inputValue, placeholder: placeholder, name: label})
 
+    if (inputType == "number")
+        return MakeElement("basic-input default-input", inputBlock, {tag: "input", type: "number", value: inputValue, placeholder: placeholder, name: label, min: 0})
+
     if (inputType == "textarea")
         return MakeElement("basic-textarea default-textarea", inputBlock, {tag: "textarea", "rows": Math.min(10, Math.max(inputValue.length, 2)), innerHTML: inputValue.join("\n"), placeholder: placeholder, name: label})
 
