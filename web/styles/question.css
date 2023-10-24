@@ -47,5 +47,6 @@
 }
 
 .audio-text-line-curr {
-    color: var(--main-color);
+    color: var(--audio-text-color);
+    font-weight: var(--audio-text-font-weight);
 }

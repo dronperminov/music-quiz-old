@@ -32,6 +32,9 @@ function MakeFullTrack(player) {
 }
 
 function UpdateLyrics(currentTime) {
+    if (lyrics === null)
+        return
+
     for (let line of document.getElementsByClassName("audio-text-line"))
         line.classList.remove("audio-text-line-curr")
 
