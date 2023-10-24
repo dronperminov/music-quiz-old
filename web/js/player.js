@@ -1,6 +1,6 @@
-function Player(audio) {
+function Player(audio, onUpdate) {
     this.audio = audio
-    this.isLoaded = false
+    this.onUpdate = onUpdate
 
     this.controls = document.getElementById("player-controls")
     this.playIcon = document.getElementById("player-play-icon")
@@ -11,14 +11,16 @@ function Player(audio) {
     this.time = document.getElementById("player-time")
 
     this.InitEvents()
+    this.ResetTimecode()
     this.UpdateLoop()
 }
 
 Player.prototype.InitEvents = function() {
+    this.pressed = false
+
     this.playIcon.addEventListener("click", () => this.Play())
     this.pauseIcon.addEventListener("click", () => this.Pause())
 
-    this.pressed = false
     this.progressBar.parentNode.addEventListener("mousedown", (e) => this.ProgressMouseDown(e.offsetX))
     this.progressBar.parentNode.addEventListener("mousemove", (e) => this.ProgressMouseMove(e.offsetX))
     this.progressBar.parentNode.addEventListener("mouseup", (e) => this.ProgressMouseUp())
@@ -32,7 +34,7 @@ Player.prototype.UpdateLoop = function() {
     window.requestAnimationFrame(() => this.UpdateLoop())
 }
 
-Player.prototype.Reset = function() {
+Player.prototype.Init = function() {
     this.audio.currentTime = this.startTime
     this.audio.pause()
 
@@ -45,7 +47,6 @@ Player.prototype.Reset = function() {
 }
 
 Player.prototype.ParseTimecode = function(timecode) {
-    this.isLoaded = true
     this.startTime = 0
     this.endTime = this.audio.duration
 
@@ -74,11 +75,10 @@ Player.prototype.TimeToString = function(time) {
 }
 
 Player.prototype.UpdateProgressBar = function() {
-    if (!this.isLoaded)
-        return
-
     if (this.audio.currentTime >= this.endTime)
         this.audio.currentTime = this.startTime
+
+    this.onUpdate(this.audio.currentTime)
 
     let currentTime = this.audio.currentTime - this.startTime
     let duration = this.endTime - this.startTime

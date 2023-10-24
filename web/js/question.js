@@ -30,3 +30,19 @@ function MakeFullTrack(player) {
 
     player.ResetTimecode()
 }
+
+function UpdateLyrics(currentTime) {
+    for (let line of document.getElementsByClassName("audio-text-line"))
+        line.classList.remove("audio-text-line-curr")
+
+    if (currentTime < lyrics[0]["time"])
+        return
+
+    let index = 0
+    while (index < lyrics.length - 1 && currentTime > lyrics[index + 1]["time"])
+        index++
+
+    let line = document.getElementById(`text-line-${index}`)
+    line.classList.add("audio-text-line-curr")
+    line.parentNode.scrollTop = line.offsetTop - line.parentNode.offsetTop
+}

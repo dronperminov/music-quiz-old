@@ -21,7 +21,7 @@
         {% endif %}
 
         <div class="error" id="error"></div>
-        <button class="basic-button default-button" id="show-btn" onclick="ShowAnswer(player)">Показать ответ</button>
+        <button class="basic-button default-button" id="show-btn" disabled onclick="ShowAnswer(player)">Показать ответ</button>
 
         <div class="question-answer hidden" id="answer">
             <h3>Ответ:</h3>
@@ -105,7 +105,7 @@
 
             {% if audio.lyrics %}
             <div class="form-row" title="Текст">
-                <div class="form-row-icon">
+                <div class="form-row-icon form-row-top-icon">
                     <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                         <rect x="4" y="23" width="22" height="2"/>
                         <rect x="4" y="19" width="12" height="2"/>
@@ -115,8 +115,11 @@
                     </svg>
                 </div>
                 <div class="form-row-input">
-                    <textarea class="basic-textarea default-textarea" readonly rows=7>{% for line in audio.lyrics %}
-{{line.text}}{% endfor %}</textarea>
+                    <div class="audio-text">
+                        {% for line in audio.lyrics %}
+                        <div class="audio-text-line" id="text-line-{{loop.index - 1}}">{{line.text}}</div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -128,7 +131,7 @@
                 </div>
                 {% endif %}
 
-                {% if question_type not in ["artist_by_track", "artist_by_intro", "name_by_track"] %}
+                {% if question_type not in ["artist_by_track", "name_by_track"] %}
                 <div class="table-cell" id="full-track">
                     <button class="basic-button default-button" onclick="MakeFullTrack(player)">Трек целиком</button>
                 </div>
@@ -142,12 +145,16 @@
     <script src="/js/question.js?v={{version}}"></script>
     <script>
         let audio = document.getElementById("audio")
-        let player = new Player(audio)
+        let lyrics = {% if audio.lyrics %}{{audio.lyrics}}{% else %}null{% endif %}
+        let player = null
 
-        let timecode = audio.getAttribute("data-question-timecode")
         audio.addEventListener("loadedmetadata", () => {
-            player.ParseTimecode(timecode)
-            player.Reset()
+            let button = document.getElementById("show-btn")
+            button.removeAttribute("disabled")
+
+            player = new Player(audio, UpdateLyrics)
+            player.ParseTimecode(audio.getAttribute("data-question-timecode"))
+            player.Init()
         })
 
         LoadAudio(audio)

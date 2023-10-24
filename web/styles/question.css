@@ -35,3 +35,17 @@
 .question .form-row:last-child {
     margin-bottom: 0;
 }
+
+.audio-text {
+    height: 100px;
+    overflow-y: auto;
+    resize: vertical;
+}
+
+.audio-text-line {
+    margin-bottom: 10px;
+}
+
+.audio-text-line-curr {
+    color: var(--main-color);
+}
