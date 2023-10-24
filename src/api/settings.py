@@ -11,6 +11,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from src import constants
 from src.api import templates
 from src.database import database
+from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
 
 router = APIRouter()
@@ -58,7 +59,7 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
 
 @router.post("/settings")
-async def update_settings(settings: SettingsForm = Depends(), image: UploadFile = File(None), user: Optional[dict] = Depends(get_current_user)) -> JSONResponse:
+async def update_settings(settings_form: SettingsForm = Depends(), image: UploadFile = File(None), user: Optional[dict] = Depends(get_current_user)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
@@ -69,12 +70,14 @@ async def update_settings(settings: SettingsForm = Depends(), image: UploadFile 
             shutil.move(file_path, target_path)
             user["image_src"] = f'images/profiles/{user["username"]}.jpg'
 
-    user["fullname"] = settings.fullname
-    user["settings"]["theme"] = settings.theme
-    user["settings"]["questions"] = settings.questions.split(",")
-    user["settings"]["start_year"] = settings.start_year
-    user["settings"]["end_year"] = settings.end_year
-    user["token"] = settings.token
+    settings = Settings(settings_form.theme, settings_form.questions.split(","), settings_form.start_year, settings_form.end_year)
+
+    if database.audios.count_documents(settings.to_query()) == 0:
+        return JSONResponse({"status": "error", "message": "Для данных настроек нет ни одного трека"})
+
+    user["fullname"] = settings_form.fullname
+    user["settings"] = settings.to_dict()
+    user["token"] = settings_form.token
 
     database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)
     return JSONResponse({"status": "success"})
