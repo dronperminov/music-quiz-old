@@ -38,7 +38,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
     artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
 
-    template = templates.get_template("audios/artists.html")
+    template = templates.get_template("artists/artists.html")
     content = template.render(
         user=user,
         page="artists",
@@ -62,7 +62,7 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
     artist = database.artists.find_one({"id": artist_id})
     audios = list(database.audios.find({"artists.id": artist_id}))
 
-    template = templates.get_template("audios/artist.html")
+    template = templates.get_template("artists/artist.html")
     content = template.render(
         user=user,
         page="artist",
