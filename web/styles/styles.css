@@ -413,6 +413,10 @@ body {
     width: 100%;
 }
 
+.table-equal-block {
+    table-layout: fixed;
+}
+
 .table-cell {
     display: table-cell;
     padding: 0 4px;

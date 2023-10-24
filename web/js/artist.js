@@ -59,3 +59,21 @@ function SaveArtist(artistId) {
         button.classList.add("hidden")
     })
 }
+
+function RemoveAudio(link) {
+    if (!confirm("Вы уверены, что хотите удалить эту аудиозапись?"))
+        return
+
+    let block = document.getElementById(`audio-${link}`)
+    let error = document.getElementById(`error-${link}`)
+    error.innerText = ""
+
+    SendRequest("/remove-audio", {link: link}).then(response => {
+        if (response.status != "success") {
+            error.innerText = response.message
+            return
+        }
+
+        block.remove()
+    })
+}

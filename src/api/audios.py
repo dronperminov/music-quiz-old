@@ -169,3 +169,20 @@ def update_audio(user: Optional[dict] = Depends(get_current_user), params: Audio
     }, upsert=True)
 
     return JSONResponse({"status": "success"})
+
+
+@router.post("/remove-audio")
+def remove_audio(user: Optional[dict] = Depends(get_current_user), link: str = Body(..., embed=True)) -> JSONResponse:
+    if not user:
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    audio = database.audios.find_one({"link": link})
+
+    if not audio:
+        return JSONResponse({"status": "error", "message": "Указанная аудиозапись не найдена. Возможно, она уже была удалена"})
+
+    database.audios.delete_one({"link": link})
+    return JSONResponse({"status": "success"})
