@@ -117,7 +117,7 @@
                 <div class="form-row-input">
                     <div class="audio-text">
                         {% for line in audio.lyrics %}
-                        <div class="audio-text-line" id="text-line-{{loop.index - 1}}">{{line.text}}</div>
+                        <div class="audio-text-line" id="text-line-{{loop.index - 1}}" onclick="player.Seek({{line.time}})">{{line.text}}</div>
                         {% endfor %}
                     </div>
                 </div>

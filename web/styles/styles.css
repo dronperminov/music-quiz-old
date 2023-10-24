@@ -93,6 +93,7 @@
 
     /* audio text  */
     --audio-text-color: #000000;
+    --audio-text-hover-color: #626262;
     --audio-text-font-weight: bold;
 
     /* other */
@@ -183,6 +184,7 @@
 
     /* audio text  */
     --audio-text-color: var(--main-color);
+    --audio-text-hover-color: #ffffff;
     --audio-text-font-weight: normal;
 
     /* other */
@@ -274,6 +276,7 @@
 
         /* audio text  */
         --audio-text-color: var(--main-color);
+        --audio-text-hover-color: #ffffff;
         --audio-text-font-weight: normal;
 
         /* other */

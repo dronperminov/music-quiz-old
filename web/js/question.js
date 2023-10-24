@@ -42,7 +42,7 @@ function UpdateLyrics(currentTime) {
         return
 
     let index = 0
-    while (index < lyrics.length - 1 && currentTime > lyrics[index + 1]["time"])
+    while (index < lyrics.length - 1 && currentTime >= lyrics[index + 1]["time"])
         index++
 
     let line = document.getElementById(`text-line-${index}`)

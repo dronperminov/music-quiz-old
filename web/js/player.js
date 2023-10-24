@@ -99,6 +99,11 @@ Player.prototype.Pause = function() {
     this.audio.pause()
 }
 
+Player.prototype.Seek = function(time) {
+    this.audio.currentTime = time
+    this.UpdateProgressBar()
+}
+
 Player.prototype.ProgressMouseDown = function(x) {
     let part = x / this.progressBar.clientWidth
     this.audio.currentTime = this.startTime + part * (this.endTime - this.startTime)
