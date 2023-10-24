@@ -5,8 +5,6 @@
 <body>
     {% include "menu.html" %}
 
-    <h1>Настройки</h1>
-
     <div class="content">
         <div class="profile">
             <div class="profile-image">
@@ -20,6 +18,8 @@
                 </div>
             </div>
         </div>
+
+        <h3>Настройки профиля</h3>
 
         <div class="form-row" title="Полное имя">
             <div class="form-row-icon" id="fullname-icon">
@@ -85,6 +85,40 @@
         </div>
         {% endif %}
 
+        <h3>Настройки вопросов</h3>
+        <div class="form-row" title="Годы выхода">
+            <div class="form-row-icon" id="years-icon">
+                <svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">
+                    <path d="M408.204,54.922h-23.111V33.845C385.093,15.174,369.913,0,351.251,0c-18.658,0-33.838,15.174-33.838,33.845v21.078
+                        h-48.297V33.845C269.116,15.174,253.938,0,235.278,0c-18.66,0-33.844,15.174-33.844,33.845v21.078h-53.001V33.845
+                        c0-18.671-15.18-33.845-33.84-33.845C95.938,0,80.758,15.174,80.758,33.845v21.078H48.656c-9.929,0-17.976,5.062-17.976,11.302
+                        v51.164c-0.024,0.449-0.137,0.875-0.137,1.335v308.552c0,16.23,13.209,29.45,29.453,29.45h336.592
+                        c16.239,0,29.448-13.209,29.448-29.45v-260.1c0.046-0.293,0.145-0.561,0.145-0.854V66.219
+                        C426.186,59.984,418.127,54.922,408.204,54.922z M334.241,33.845c0-9.382,7.615-17.013,17.005-17.013
+                        c9.381,0,17.009,7.631,17.009,17.013v21.078h-34.014V33.845z M218.263,33.845c0-9.382,7.626-17.013,17.011-17.013
+                        c9.38,0,17.006,7.631,17.006,17.013v21.078h-34.017V33.845z M97.579,33.845c0-9.382,7.629-17.013,17.01-17.013
+                        S131.6,24.463,131.6,33.845v21.078H97.579V33.845z M400.79,427.275c0,2.322-1.881,4.203-4.201,4.203H59.992
+                        c-2.32,0-4.209-1.881-4.209-4.203V177.629H400.79V427.275z M165.4,282.673c-2.848-2.923-4.271-6.326-4.271-10.168
+                        c0-4.465,1.401-7.747,4.203-9.849c2.801-2.102,7.749-4.815,14.837-8.143c10.597-5.001,19.062-10.244,25.413-15.759
+                        c6.346-5.517,11.972-11.689,16.875-18.523c4.903-6.829,8.099-11.031,9.591-12.607c1.487-1.573,4.289-2.364,8.4-2.364
+                        c4.641,0,8.362,1.795,11.164,5.385c2.801,3.593,4.202,8.534,4.202,14.835v150.376c0,17.598-5.997,26.396-17.991,26.396
+                        c-5.342,0-9.632-1.794-12.87-5.384c-3.24-3.595-4.859-8.892-4.859-15.896V261.475c-22.239,17.072-37.212,25.598-44.917,25.598
+                        C171.507,287.082,168.242,285.616,165.4,282.673z"/>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <div class="table-block">
+                    <div class="table-cell">
+                        <input class="basic-input default-input right" type="number" min="1987" max="{{year}}" value="{{user.settings.start_year or 1987}}" id="years-start" oninput="ChangeField('years-start', 'years-icon')">
+                    </div>
+                    <div class="table-cell table-cell-no-width center">-</div>
+                    <div class="table-cell">
+                        <input class="basic-input default-input left" type="number" min="1987" max="{{year}}" value="{{user.settings.end_year or year}}" id="years-end" oninput="ChangeField('years-end', 'years-icon')">
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="form-row" title="Виды вопросов">
             <div class="form-row-icon" id="questions-icon">
                 <svg class="form-svg-fill-icon" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -115,35 +149,24 @@
             </div>
         </div>
 
-        <div class="form-row" title="Годы выхода">
-            <div class="form-row-icon" id="years-icon">
-                <svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">
-                    <path d="M408.204,54.922h-23.111V33.845C385.093,15.174,369.913,0,351.251,0c-18.658,0-33.838,15.174-33.838,33.845v21.078
-                        h-48.297V33.845C269.116,15.174,253.938,0,235.278,0c-18.66,0-33.844,15.174-33.844,33.845v21.078h-53.001V33.845
-                        c0-18.671-15.18-33.845-33.84-33.845C95.938,0,80.758,15.174,80.758,33.845v21.078H48.656c-9.929,0-17.976,5.062-17.976,11.302
-                        v51.164c-0.024,0.449-0.137,0.875-0.137,1.335v308.552c0,16.23,13.209,29.45,29.453,29.45h336.592
-                        c16.239,0,29.448-13.209,29.448-29.45v-260.1c0.046-0.293,0.145-0.561,0.145-0.854V66.219
-                        C426.186,59.984,418.127,54.922,408.204,54.922z M334.241,33.845c0-9.382,7.615-17.013,17.005-17.013
-                        c9.381,0,17.009,7.631,17.009,17.013v21.078h-34.014V33.845z M218.263,33.845c0-9.382,7.626-17.013,17.011-17.013
-                        c9.38,0,17.006,7.631,17.006,17.013v21.078h-34.017V33.845z M97.579,33.845c0-9.382,7.629-17.013,17.01-17.013
-                        S131.6,24.463,131.6,33.845v21.078H97.579V33.845z M400.79,427.275c0,2.322-1.881,4.203-4.201,4.203H59.992
-                        c-2.32,0-4.209-1.881-4.209-4.203V177.629H400.79V427.275z M165.4,282.673c-2.848-2.923-4.271-6.326-4.271-10.168
-                        c0-4.465,1.401-7.747,4.203-9.849c2.801-2.102,7.749-4.815,14.837-8.143c10.597-5.001,19.062-10.244,25.413-15.759
-                        c6.346-5.517,11.972-11.689,16.875-18.523c4.903-6.829,8.099-11.031,9.591-12.607c1.487-1.573,4.289-2.364,8.4-2.364
-                        c4.641,0,8.362,1.795,11.164,5.385c2.801,3.593,4.202,8.534,4.202,14.835v150.376c0,17.598-5.997,26.396-17.991,26.396
-                        c-5.342,0-9.632-1.794-12.87-5.384c-3.24-3.595-4.859-8.892-4.859-15.896V261.475c-22.239,17.072-37.212,25.598-44.917,25.598
-                        C171.507,287.082,168.242,285.616,165.4,282.673z"/>
+        <div class="form-row" title="Исполнители">
+            <div class="form-row-icon" id="question-artists-icon">
+                <svg class="form-svg-fill-icon" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+                    <ellipse transform="matrix(0.1607 -0.987 0.987 0.1607 -3.8377 74.789)" cx="42.1" cy="39.7" rx="17.3" ry="17.3"/>
+                    <path d="M84.7,40.1c-0.6-1.6-1.6-3-3-4.1c-3.9-2.8-9.3-2-12.1,1.9c-2.8,3.9-2,9.3,1.9,12.1c3.9,2.8,9.3,2,12.1-1.9
+                        c0.1-0.2,0.2-0.3,0.3-0.5l5.9,0.6L66.3,65.2l-32.2-5.4c-5.4-0.9-10.4,2.7-11.2,8.1l-7.3,45.1h35.8c1.6-5.6,2.8-11.4,3.8-17.3
+                        c0.1-0.9,0.5-3,0.5-3.3c0.8-4.8,0.4-9.9-1.2-14.3l12.7,2.1c1.8,0.3,3.9-0.1,5.7-1.4l28.1-20.2c2.7-2,3.7-5.6,2.7-8.6l10.9,1.2
+                        l0.8-7.5L84.7,40.1z"/>
                 </svg>
             </div>
             <div class="form-row-input">
-                <div class="table-block">
-                    <div class="table-cell">
-                        <input class="basic-input default-input right" type="number" min="1987" max="{{year}}" value="{{user.settings.start_year or 1987}}" id="years-start" oninput="ChangeField('years-start', 'years-icon')">
+                <div class="basic-multi-select default-multi-select" id="question-artists">
+                    <div class="multi-select-title">Исполнители</div>
+                    {% for question_artist in question_artists %}
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="question-artists-{{question_artist}}" {% if question_artist in user.settings.question_artists or not user.settings.question_artists %}checked{% endif %} oninput="ChangeField('question-artists')"> {{question_artists2rus[question_artist]|capitalize}}</label>
                     </div>
-                    <div class="table-cell table-cell-no-width center">-</div>
-                    <div class="table-cell">
-                        <input class="basic-input default-input left" type="number" min="1987" max="{{year}}" value="{{user.settings.end_year or year}}" id="years-end" oninput="ChangeField('years-end', 'years-icon')">
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@ MONGO_USERS_COLLECTION = "users"
 MONGO_AUDIOS_COLLECTION = "audios"
 MONGO_ARTISTS_COLLECTION = "artists"
 
-VERSION = "2023-10-24-11-00"
+VERSION = "2023-10-24-12-00"
 
 ROCK_GENRE = "rock"
 POP_GENRE = "pop"
@@ -52,4 +52,13 @@ QUESTION_TO_RUS = {
     QUESTION_NAME_BY_TRACK: "название по треку",
     QUESTION_LINE_BY_TEXT: "строка по тексту",
     QUESTION_LINE_BY_CHORUS: "строка по припеву"
+}
+
+QUESTION_ARTISTS_SOLE = "sole"
+QUESTION_ARTISTS_FEATS = "feats"
+QUESTION_ARTISTS = [QUESTION_ARTISTS_SOLE, QUESTION_ARTISTS_FEATS]
+
+QUESTION_ARTISTS_TO_RUS = {
+    QUESTION_ARTISTS_SOLE: "единственный исполнитель",
+    QUESTION_ARTISTS_FEATS: "несколько исполнителей (фиты)"
 }

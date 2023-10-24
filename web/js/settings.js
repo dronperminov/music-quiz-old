@@ -158,24 +158,26 @@ function ChangeTheme() {
 
 function SaveSettings(withToken = false) {
     let fullname = GetTextField("fullname", "Полное имя не заполнено")
-
     if (fullname === null)
         return
 
-    let questions = GetMultiSelect("questions", ["artist_by_track", "artist_by_intro", "name_by_track", "line_by_text", "line_by_chorus"], "Не выбран ни один тип вопросов")
+    let years = GetYears()
+    if (years === null)
+        return
 
+    let questions = GetMultiSelect("questions", ["artist_by_track", "artist_by_intro", "name_by_track", "line_by_text", "line_by_chorus"], "Не выбран ни один тип вопросов")
     if (questions === null)
         return
 
-    let years = GetYears()
-
-    if (years === null)
+    let questionArtists = GetMultiSelect("question-artists", ["sole", "feats"], "Не выбран ни один вид исполнителей в вопросах")
+    if (questionArtists === null)
         return
 
     let data = {
         fullname: fullname,
         theme: document.getElementById("theme").value,
         questions: questions,
+        question_artists: questionArtists,
         start_year: years.start,
         end_year: years.end
     }

@@ -53,7 +53,9 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         version=constants.VERSION,
         year=datetime.now().year,
         questions=constants.QUESTIONS,
-        question2rus=constants.QUESTION_TO_RUS
+        question2rus=constants.QUESTION_TO_RUS,
+        question_artists=constants.QUESTION_ARTISTS,
+        question_artists2rus=constants.QUESTION_ARTISTS_TO_RUS
     )
 
     return HTMLResponse(content=content)

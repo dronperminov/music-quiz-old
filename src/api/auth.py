@@ -47,7 +47,7 @@ def sign_up(username: str = Body(..., embed=True), password: str = Body(..., emb
     if user is not None:
         return JSONResponse({"status": "error", "message": f'Пользователь "{username}" уже существует'})
 
-    settings = Settings()
+    settings = Settings.from_dict({})
     user = User(username=username, password_hash=auth.get_password_hash(password), fullname=fullname, settings=settings)
 
     database.users.insert_one(asdict(user))
