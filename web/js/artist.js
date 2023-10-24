@@ -32,23 +32,6 @@ function LoadAudios() {
     })
 }
 
-function ShowSaveButton() {
-    let button = document.getElementById("save-btn")
-    button.classList.remove("hidden")
-}
-
-function ChangeField(inputId) {
-    let input = document.getElementById(inputId)
-    let icon = document.getElementById(`${inputId}-icon`)
-    let error = document.getElementById("error")
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    error.innerText = ""
-
-    ShowSaveButton()
-}
-
 function GetCreation() {
 }
 

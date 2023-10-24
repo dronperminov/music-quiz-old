@@ -1,0 +1,28 @@
+.content {
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.audio-player {
+    margin-bottom: 10px;
+}
+
+.audio-text {
+    height: 150px;
+    overflow-y: auto;
+    resize: vertical;
+}
+
+.audio-text-line {
+    margin-bottom: 10px;
+}
+
+.audio-text:not([contenteditable]) .audio-text-line:hover {
+    cursor: pointer;
+    color: var(--audio-text-hover-color);
+}
+
+.audio-text-line-curr {
+    color: var(--audio-text-color) !important;
+    font-weight: var(--audio-text-font-weight);
+}

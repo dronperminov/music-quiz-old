@@ -78,7 +78,8 @@ Player.prototype.UpdateProgressBar = function() {
     if (this.audio.currentTime >= this.endTime)
         this.audio.currentTime = this.startTime
 
-    this.onUpdate(this.audio.currentTime)
+    if (this.onUpdate !== null)
+        this.onUpdate(this.audio.currentTime)
 
     let currentTime = this.audio.currentTime - this.startTime
     let duration = this.endTime - this.startTime

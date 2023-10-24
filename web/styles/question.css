@@ -12,10 +12,6 @@
     font-size: 1em;
 }
 
-.question-audio-player {
-    margin-bottom: 10px;
-}
-
 .question-text {
     margin-bottom: 10px;
     border: 2px solid var(--border-color);
@@ -34,24 +30,4 @@
 
 .question .form-row:last-child {
     margin-bottom: 0;
-}
-
-.audio-text {
-    height: 150px;
-    overflow-y: auto;
-    resize: vertical;
-}
-
-.audio-text-line {
-    margin-bottom: 10px;
-}
-
-.audio-text-line:hover {
-    cursor: pointer;
-    color: var(--audio-text-hover-color);
-}
-
-.audio-text-line-curr {
-    color: var(--audio-text-color) !important;
-    font-weight: var(--audio-text-font-weight);
 }

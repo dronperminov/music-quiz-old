@@ -1,24 +1,3 @@
-function GetTextField(inputId, errorMessage) {
-    let input = document.getElementById(inputId)
-    let icon = document.getElementById(`${inputId}-icon`)
-    let value = input.value.trim()
-    let error = document.getElementById("error")
-
-    input.value = value
-
-    if (value === "" && errorMessage != "") {
-        error.innerText = errorMessage
-        input.focus()
-        input.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    return value
-}
-
 function GetYears() {
     let icon = document.getElementById("years-icon")
     let error = document.getElementById("error")
@@ -83,23 +62,6 @@ function UpdateProfileImage(e) {
             return
         }
     })
-}
-
-function ShowSaveButton() {
-    let button = document.getElementById("save-btn")
-    button.classList.remove("hidden")
-}
-
-function ChangeField(inputId, iconId = null) {
-    let input = document.getElementById(inputId)
-    let icon = document.getElementById(iconId == null ? `${inputId}-icon` : iconId)
-    let error = document.getElementById("error")
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    error.innerText = ""
-
-    ShowSaveButton()
 }
 
 function ChangeTheme() {

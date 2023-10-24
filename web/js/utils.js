@@ -117,6 +117,98 @@ function StopOtherAudios(target) {
             audio.pause()
 }
 
+function GetTextField(inputId, errorMessage = "") {
+    let input = document.getElementById(inputId)
+    let icon = document.getElementById(`${inputId}-icon`)
+    let value = input.value.trim()
+    let error = document.getElementById("error")
+
+    input.value = value
+
+    if (value === "" && errorMessage != "") {
+        error.innerText = errorMessage
+        input.focus()
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    return value
+}
+
+function GetJSONField(inputId, parseErrorMessage, errorMessage = "") {
+    let input = document.getElementById(inputId)
+    let icon = document.getElementById(`${inputId}-icon`)
+    let error = document.getElementById("error")
+    let value
+
+    if (input.tagName == "TEXTAREA") {
+        value = input.value.trim()
+        input.value = value
+    }
+    else {
+        let lines = []
+
+        for (let div of input.children) {
+            div.innerText = div.innerText.trim()
+            lines.push(div.innerText)
+        }
+
+        value = lines.join("\n")
+    }
+
+    if (value === "" && errorMessage != "") {
+        error.innerText = errorMessage
+        input.focus()
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    try {
+        value = JSON.parse(`[${value.split("\n").join(",")}]`)
+    }
+    catch (exception) {
+        error.innerText = parseErrorMessage
+        input.focus()
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    return value
+}
+
+function GetNumberField(inputId, regex, errorMessage = "") {
+    let input = document.getElementById(inputId)
+    let icon = document.getElementById(`${inputId}-icon`)
+    let value = input.value
+    let error = document.getElementById("error")
+
+    if (value.match(regex) === null && errorMessage != "") {
+        error.innerText = errorMessage
+        input.focus()
+        input.classList.add("error-input")
+        icon.classList.add("error-icon")
+        return null
+    }
+
+    if (input.hasAttribute("min"))
+        value = Math.max(+value, +input.min)
+
+    if (input.hasAttribute("max"))
+        value = Math.min(+value, +input.max)
+
+    input.value = value
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    return +value
+}
+
 function GetMultiSelect(multiSelectId, names, errorMessage = "") {
     let values = []
     let input = document.getElementById(multiSelectId)
@@ -137,4 +229,21 @@ function GetMultiSelect(multiSelectId, names, errorMessage = "") {
     input.classList.remove("error-input")
     icon.classList.remove("error-icon")
     return values
+}
+
+function ShowSaveButton() {
+    let button = document.getElementById("save-btn")
+    button.classList.remove("hidden")
+}
+
+function ChangeField(inputId, iconId = null) {
+    let input = document.getElementById(inputId)
+    let icon = document.getElementById(iconId == null ? `${inputId}-icon` : iconId)
+    let error = document.getElementById("error")
+
+    input.classList.remove("error-input")
+    icon.classList.remove("error-icon")
+    error.innerText = ""
+
+    ShowSaveButton()
 }

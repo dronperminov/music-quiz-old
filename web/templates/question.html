@@ -2,6 +2,7 @@
 <title>{{title | capitalize}} | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/question.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
 </head>
 <body>
     {% include "menu.html" %}
@@ -10,7 +11,7 @@
         <audio id="audio" src data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-answer-timecode="{{question.answer_timecode}}" preload="metadata"></audio>
 
         <div class="question-header">{{title | capitalize}}:</div>
-        <div class="question-audio-player" id="player">
+        <div class="audio-player" id="player">
             {% include "components/player.html" %}
         </div>
 
@@ -141,6 +142,7 @@
     </div>
 
     <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/audio.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
     <script src="/js/question.js?v={{version}}"></script>
     <script>

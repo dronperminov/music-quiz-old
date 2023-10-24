@@ -86,6 +86,7 @@
     /* player  */
     --player-border-color: var(--border-color);
     --player-background-color: var(--form-row-background-color);
+    --player-text-color: #111111;
     --player-controls-icon-color: #333333;
     --player-controls-icon-hover-color: var(--border-color);
     --player-progress-bar-color: #999999;
@@ -177,6 +178,7 @@
     /* player  */
     --player-border-color: var(--border-color);
     --player-background-color: var(--form-row-background-color);
+    --player-text-color: #eeeeee;
     --player-controls-icon-color: var(--content-text-color);
     --player-controls-icon-hover-color: var(--main-color);
     --player-progress-bar-color: #999999;
@@ -269,6 +271,7 @@
         /* player  */
         --player-border-color: var(--border-color);
         --player-background-color: var(--form-row-background-color);
+        --player-text-color: #eeeeee;
         --player-controls-icon-color: var(--content-text-color);
         --player-controls-icon-hover-color: var(--main-color);
         --player-progress-bar-color: #999999;

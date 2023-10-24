@@ -38,25 +38,6 @@ function ClearError(inputId) {
     error.innerText = ""
 }
 
-function GetTextField(inputId, errorMessage) {
-    let input = document.getElementById(inputId)
-    let icon = document.getElementById(`${inputId}-icon`)
-    let value = input.value.trim()
-    let error = document.getElementById("error")
-
-    if (value === "") {
-        error.innerText = errorMessage
-        input.focus()
-        input.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    return value
-}
-
 function GetPassword() {
     let password = GetTextField("password", "Пароль не заполнен")
 

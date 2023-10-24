@@ -1,4 +1,5 @@
 import random
+from dataclasses import dataclass
 from typing import List, Optional
 
 import yandex_music.exceptions
@@ -10,6 +11,16 @@ from src.api import make_error, templates, tokens
 from src.database import database
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_track
 from src.utils.auth import get_current_user
+
+
+@dataclass
+class AudioForm:
+    link: str = Body(..., embed=True)
+    artists: List[dict] = Body(..., embed=True)
+    track: str = Body(..., embed=True)
+    year: int = Body(..., embed=True)
+    lyrics: List[dict] = Body(..., embed=True)
+
 
 router = APIRouter()
 
@@ -27,6 +38,24 @@ def get_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
     template = templates.get_template("audios/audios.html")
     content = template.render(user=user, page="audios", version=constants.VERSION, audios_count=audios_count, lyrics_count=lyrics_count)
+    return HTMLResponse(content=content)
+
+
+@router.get("/audios/{link}")
+def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Response:
+    if not user:
+        return RedirectResponse(url="/login")
+
+    if user["role"] != "admin":
+        return make_error(message="Эта страница доступна только администраторам.", user=user)
+
+    audio = database.audios.find_one({"link": link})
+
+    if not audio:
+        return make_error(message="Запрашиваемого аудио не существует", user=user)
+
+    template = templates.get_template("audios/audio.html")
+    content = template.render(user=user, page="audio", version=constants.VERSION, audio=audio)
     return HTMLResponse(content=content)
 
 
@@ -115,3 +144,28 @@ def get_direct_link(user: Optional[dict] = Depends(get_current_user), track_id: 
         return JSONResponse({"status": "error", "message": "Не удалось получить ссылку на аудио"})
 
     return JSONResponse({"status": "success", "direct_link": direct_link})
+
+
+@router.post("/update-audio")
+def update_audio(user: Optional[dict] = Depends(get_current_user), params: AudioForm = Depends()) -> JSONResponse:
+    if not user:
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    if user["role"] != "admin":
+        return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
+
+    audio = database.audios.find_one({"link": params.link})
+
+    if not audio:
+        return JSONResponse({"status": "error", "message": "Указанная аудиозапись не найдена. Возможно, она была удалена"})
+
+    database.audios.update_one({"link": params.link}, {
+        "$set": {
+            "artists": params.artists,
+            "track": params.track,
+            "lyrics": params.lyrics,
+            "year": params.year
+        }
+    }, upsert=True)
+
+    return JSONResponse({"status": "success"})

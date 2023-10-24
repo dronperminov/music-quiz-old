@@ -34,6 +34,7 @@
     font-size: 12px;
     font-family: Roboto;
     white-space: nowrap;
+    color: var(--player-text-color);
 }
 
 .player-progress-bar {
