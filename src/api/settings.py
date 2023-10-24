@@ -90,8 +90,5 @@ async def update_settings(request: Request, user: Optional[dict] = Depends(get_c
     user["fullname"] = data["fullname"]
     user["settings"] = settings.to_dict()
 
-    if user["role"] == "admin" and "token" in data:
-        user["token"] = data["token"]
-
     database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)
     return JSONResponse({"status": "success"})

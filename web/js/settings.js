@@ -19,44 +19,6 @@ function GetTextField(inputId, errorMessage) {
     return value
 }
 
-function ToggleToken() {
-    let token = document.getElementById("token")
-    let hideIcon = document.getElementById("hide-token-icon")
-    let showIcon = document.getElementById("show-token-icon")
-
-    hideIcon.classList.toggle("hidden")
-    showIcon.classList.toggle("hidden")
-
-    if (token.type == "password")
-        token.type = "text"
-    else
-        token.type = "password"
-}
-
-function GetToken() {
-    let input = document.getElementById("token")
-    let icon = document.getElementById("token-icon")
-    let token = input.value.trim()
-    let error = document.getElementById("error")
-
-    input.value = token
-
-    if (token === "")
-        return token
-
-    if (token.indexOf('"') > -1) {
-        error.innerText = "Токен не должен содержать кавычек"
-        input.focus()
-        input.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    input.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-    return token
-}
-
 function GetYears() {
     let icon = document.getElementById("years-icon")
     let error = document.getElementById("error")
@@ -156,7 +118,7 @@ function ChangeTheme() {
     ShowSaveButton()
 }
 
-function SaveSettings(withToken = false) {
+function SaveSettings() {
     let fullname = GetTextField("fullname", "Полное имя не заполнено")
     if (fullname === null)
         return
@@ -180,13 +142,6 @@ function SaveSettings(withToken = false) {
         question_artists: questionArtists,
         start_year: years.start,
         end_year: years.end
-    }
-
-    if (withToken) {
-        data.token = GetToken()
-
-        if (data.token === null)
-            return
     }
 
     let button = document.getElementById("save-btn")
