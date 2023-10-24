@@ -15,7 +15,6 @@
 
 .basic-input:hover, .basic-input:focus {
     outline: none;
-    border-color: 1px solid;
     transition: border-color 150ms ease-in;
 }
 
@@ -30,6 +29,7 @@
 
 .basic-input[type=number] {
     -moz-appearance: textfield;
+    border-bottom-color: var(--input-text-color);
 }
 
 .default-input {

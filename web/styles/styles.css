@@ -83,6 +83,14 @@
     --details-text-color: var(--text-color);
     --details-hover-text-color: #626262;
 
+    /* player  */
+    --player-border-color: var(--border-color);
+    --player-background-color: var(--form-row-background-color);
+    --player-controls-icon-color: #333333;
+    --player-controls-icon-hover-color: var(--border-color);
+    --player-progress-bar-color: #999999;
+    --player-current-progress-color: var(--border-color);
+
     /* other */
     --hover-link-color: #626262;
 }
@@ -161,6 +169,14 @@
     --details-text-color: var(--text-color);
     --details-hover-text-color: var(--main-color);
 
+    /* player  */
+    --player-border-color: var(--border-color);
+    --player-background-color: var(--form-row-background-color);
+    --player-controls-icon-color: var(--content-text-color);
+    --player-controls-icon-hover-color: var(--main-color);
+    --player-progress-bar-color: #999999;
+    --player-current-progress-color: var(--main-color);
+
     /* other */
     --hover-link-color: var(--main-color);
 }
@@ -238,7 +254,15 @@
         --details-font-family: Roboto;
         --details-background-color: #3b3f4a;
         --details-text-color: var(--text-color);
-        --details-hover-text-color: var(--main-color)
+        --details-hover-text-color: var(--main-color);
+
+        /* player  */
+        --player-border-color: var(--border-color);
+        --player-background-color: var(--form-row-background-color);
+        --player-controls-icon-color: var(--content-text-color);
+        --player-controls-icon-hover-color: var(--main-color);
+        --player-progress-bar-color: #999999;
+        --player-current-progress-color: var(--main-color);
 
         /* other */
         --hover-link-color: var(--main-color);

@@ -55,13 +55,11 @@ const YEAR_SVG = `<svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/
 </svg>`
 
 const LYRICS_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-    <path d="M27,3H5A1,1,0,0,0,5,5H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,7H5A1,1,0,0,0,5,9H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,11H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,15H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,19H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,23H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
-    <path d="M27,27H5a1,1,0,0,0,0,2H27a1,1,0,0,0,0-2Z"/>
+    <rect x="4" y="23" width="22" height="2"/>
+    <rect x="4" y="19" width="12" height="2"/>
+    <rect x="4" y="15" width="20" height="2"/>
+    <rect x="4" y="11" width="24" height="2"/>
+    <rect x="4" y="7" width="16" height="2"/>
 </svg>`
 
 const REMOVE_SVG = `<svg class="form-svg-fill-icon" width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

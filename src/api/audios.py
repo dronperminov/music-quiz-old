@@ -117,6 +117,7 @@ def get_direct_link(user: Optional[dict] = Depends(get_current_user), track_id: 
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
+    # TODO: not only admin
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
