@@ -105,11 +105,22 @@ function LoadProfileImage() {
 }
 
 function UpdateProfileImage(e) {
+    let error = document.getElementById("error")
     let input = document.getElementById("profile-input")
     let image = document.getElementById("profile-image")
     image.src = URL.createObjectURL(input.files[0])
 
-    ShowSaveButton()
+    let formData = new FormData()
+    formData.append("image", input.files[0])
+
+    error.innerText = ""
+
+    SendRequest("/update-avatar", formData).then(response => {
+        if (response.status != "success") {
+            error.innerText = response.message
+            return
+        }
+    })
 }
 
 function ShowSaveButton() {
@@ -145,15 +156,10 @@ function ChangeTheme() {
     ShowSaveButton()
 }
 
-function SaveSettings() {
+function SaveSettings(withToken = false) {
     let fullname = GetTextField("fullname", "Полное имя не заполнено")
 
     if (fullname === null)
-        return
-
-    let token = GetToken()
-
-    if (token === null)
         return
 
     let questions = GetMultiSelect("questions", ["artist_by_track", "artist_by_intro", "name_by_track", "line_by_text", "line_by_chorus"], "Не выбран ни один тип вопросов")
@@ -166,25 +172,26 @@ function SaveSettings() {
     if (years === null)
         return
 
-    let theme = document.getElementById("theme").value
-    let input = document.getElementById("profile-input")
-    let error = document.getElementById("error")
+    let data = {
+        fullname: fullname,
+        theme: document.getElementById("theme").value,
+        questions: questions,
+        start_year: years.start,
+        end_year: years.end
+    }
+
+    if (withToken) {
+        data.token = GetToken()
+
+        if (data.token === null)
+            return
+    }
+
     let button = document.getElementById("save-btn")
-
-    let formData = new FormData()
-    formData.append("fullname", fullname)
-    formData.append("theme", theme)
-    formData.append("token", token)
-    formData.append("questions", questions.join(","))
-    formData.append("start_year", years.start)
-    formData.append("end_year", years.end)
-
-    if (input.files.length == 1)
-        formData.append("image", input.files[0])
-
+    let error = document.getElementById("error")
     error.innerText = ""
 
-    SendRequest("/settings", formData).then(response => {
+    SendRequest("/update-settings", data).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return

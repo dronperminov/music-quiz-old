@@ -63,6 +63,7 @@
             </div>
         </div>
 
+        {% if user.role == "admin" %}
         <div class="form-row" title="Токен для Яндекс.Музыки">
             <div class="form-row-icon" id="token-icon">
                 <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -82,6 +83,7 @@
                 </svg>
             </div>
         </div>
+        {% endif %}
 
         <div class="form-row" title="Виды вопросов">
             <div class="form-row-icon" id="questions-icon">
@@ -146,7 +148,7 @@
             </div>
         </div>
 
-        <button id="save-btn" class="basic-button default-button hidden" onclick="SaveSettings()">Сохранить настройки</button>
+        <button id="save-btn" class="basic-button default-button hidden" onclick="SaveSettings({% if user.role == 'admin' %}true{% endif %})">Сохранить настройки</button>
         <div class="error" id="error"></div>
     </div>
 

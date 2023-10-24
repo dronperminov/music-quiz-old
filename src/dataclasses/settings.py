@@ -8,14 +8,22 @@ from src import constants
 @dataclass
 class Settings:
     theme: str = "light"
-    question_types: List[str] = field(default_factory=lambda: constants.QUESTIONS)
+    questions: List[str] = field(default_factory=lambda: constants.QUESTIONS)
     start_year: int = 1900
-    end_year: int = datetime.now().year
+    end_year: int = datetime.today().year
+
+    @classmethod
+    def from_dict(cls: "Settings", data: dict) -> "Settings":
+        theme = data.get("theme", "light")
+        questions = data.get("questions", constants.QUESTIONS)
+        start_year = data.get("start_year", 1900)
+        end_year = data.get("end_year", datetime.today().year)
+        return cls(theme, questions, start_year, end_year)
 
     def to_dict(self) -> dict:
         return {
             "theme": self.theme,
-            "question_types": self.question_types,
+            "questions": self.questions,
             "start_year": self.start_year,
             "end_year": self.end_year
         }
