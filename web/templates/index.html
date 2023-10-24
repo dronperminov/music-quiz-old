@@ -14,7 +14,9 @@
             <a href="/profile"><img src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}"></a>
         </div>
     </div>
-    {%endif%}
+    {% else %}
+    <div class="text">Пока что можно только <a href="/login">войти</a>. Потом тут будет что-то красивое (надеюсь)</div>
+    {% endif %}
 
     {% include "footer.html" %}
 </body>
