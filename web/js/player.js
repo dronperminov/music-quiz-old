@@ -21,6 +21,10 @@ Player.prototype.InitEvents = function() {
     this.playIcon.addEventListener("click", () => this.Play())
     this.pauseIcon.addEventListener("click", () => this.Pause())
 
+    this.progressBar.parentNode.addEventListener("touchstart", (e) => this.ProgressMouseDown(e.touches[0].clientX - this.progressBar.parentNode.offsetLeft))
+    this.progressBar.parentNode.addEventListener("touchmove", (e) => this.ProgressMouseMove(e.touches[0].clientX - this.progressBar.parentNode.offsetLeft))
+    this.progressBar.parentNode.addEventListener("touchend", (e) => this.ProgressMouseUp())
+
     this.progressBar.parentNode.addEventListener("mousedown", (e) => this.ProgressMouseDown(e.offsetX))
     this.progressBar.parentNode.addEventListener("mousemove", (e) => this.ProgressMouseMove(e.offsetX))
     this.progressBar.parentNode.addEventListener("mouseup", (e) => this.ProgressMouseUp())
