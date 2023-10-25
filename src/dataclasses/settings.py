@@ -1,16 +1,15 @@
 import random
 from dataclasses import dataclass
-from datetime import datetime
 from typing import List, Set
 
 from src import constants
+from src.utils.common import get_default_question_years
 
 
 @dataclass
 class Settings:
     theme: str
-    start_year: int
-    end_year: int
+    question_years: List[List[int]]
     questions: List[str]
     question_artists: List[str]
     text_languages: List[str]
@@ -18,18 +17,16 @@ class Settings:
     @classmethod
     def from_dict(cls: "Settings", data: dict) -> "Settings":
         theme = data.get("theme", "light")
-        start_year = data.get("start_year", 1900)
-        end_year = data.get("end_year", datetime.today().year)
+        question_years = data.get("question_years", get_default_question_years())
         questions = data.get("questions", constants.QUESTIONS)
         question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
-        return cls(theme, start_year, end_year, questions, question_artists, text_languages)
+        return cls(theme, question_years, questions, question_artists, text_languages)
 
     def to_dict(self) -> dict:
         return {
             "theme": self.theme,
-            "start_year": self.start_year,
-            "end_year": self.end_year,
+            "question_years": self.question_years,
             "questions": self.questions,
             "question_artists": self.question_artists,
             "text_languages": self.text_languages
@@ -37,8 +34,10 @@ class Settings:
 
     def to_query(self) -> dict:
         query = {
-            "year": {"$gte": self.start_year, "$lte": self.end_year},
-            "$or": [self.__question_to_query(question_type) for question_type in self.questions],
+            "$and": [
+                {"$or": [{"year": {"$gte": start_year, "$lte": end_year}} for start_year, end_year in self.question_years]},
+                {"$or": [self.__question_to_query(question_type) for question_type in self.questions]}
+            ],
             **self.__question_artists_to_query()
         }
 

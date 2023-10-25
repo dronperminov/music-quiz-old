@@ -1,45 +1,3 @@
-function GetYears() {
-    let icon = document.getElementById("years-icon")
-    let error = document.getElementById("error")
-
-    let startYearInput = document.getElementById("years-start")
-    let endYearInput = document.getElementById("years-end")
-
-    if (startYearInput.value.match(/^\d\d\d\d$/g) === null) {
-        error.innerText = "Начало периода введено некорректно"
-        startYearInput.focus()
-        startYearInput.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    if (endYearInput.value.match(/^\d\d\d\d$/g) === null) {
-        error.innerText = "Конец периода введён некорректно"
-        endYearInput.focus()
-        endYearInput.classList.add("error-input")
-        icon.classList.add("error-icon")
-        return null
-    }
-
-    let year1 = Math.max(+startYearInput.min, Math.min(+startYearInput.max, +startYearInput.value))
-    let year2 = Math.max(+endYearInput.min, Math.min(+endYearInput.max, +endYearInput.value))
-
-    let startYear = Math.min(year1, year2)
-    let endYear = Math.max(year1, year2)
-
-    startYearInput.value = startYear
-    endYearInput.value = endYear
-
-    startYearInput.classList.remove("error-input")
-    endYearInput.classList.remove("error-input")
-    icon.classList.remove("error-icon")
-
-    return {
-        start: Math.min(startYear, endYear),
-        end: Math.max(startYear, endYear)
-    }
-}
-
 function LoadProfileImage() {
     let input = document.getElementById("profile-input")
     input.click()
@@ -85,8 +43,8 @@ function SaveSettings() {
     if (fullname === null)
         return
 
-    let years = GetYears()
-    if (years === null)
+    let questionYears = GetMultiSelect("question-years", null, "Не выбран ни один год выхода")
+    if (questionYears === null)
         return
 
     let questions = GetMultiSelect("questions", ["artist_by_track", "artist_by_intro", "name_by_track", "line_by_text", "line_by_chorus"], "Не выбран ни один тип вопросов")
@@ -104,8 +62,7 @@ function SaveSettings() {
     let data = {
         fullname: fullname,
         theme: document.getElementById("theme").value,
-        start_year: years.start,
-        end_year: years.end,
+        question_years: questionYears.map((value) => value.split("-").map(v => +v)),
         questions: questions,
         question_artists: questionArtists,
         text_languages: textLanguages

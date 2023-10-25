@@ -42,6 +42,8 @@ CREATION_TO_RUS = {
     "foreign": "зарубежное"
 }
 
+QUESTION_YEARS = [1980, 1990, 2000, 2010, 2015]
+
 QUESTION_ARTIST_BY_TRACK = "artist_by_track"
 QUESTION_ARTIST_BY_INTRO = "artist_by_intro"
 QUESTION_NAME_BY_TRACK = "name_by_track"

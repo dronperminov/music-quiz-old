@@ -65,7 +65,7 @@
 
         <h3>Настройки вопросов</h3>
         <div class="form-row" title="Годы выхода">
-            <div class="form-row-icon" id="years-icon">
+            <div class="form-row-icon" id="question-years-icon">
                 <svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">
                     <path d="M408.204,54.922h-23.111V33.845C385.093,15.174,369.913,0,351.251,0c-18.658,0-33.838,15.174-33.838,33.845v21.078
                         h-48.297V33.845C269.116,15.174,253.938,0,235.278,0c-18.66,0-33.844,15.174-33.844,33.845v21.078h-53.001V33.845
@@ -84,14 +84,15 @@
                         C171.507,287.082,168.242,285.616,165.4,282.673z"/>
                 </svg>
             </div>
-            <div class="form-row-input">
-                <div class="table-block">
-                    <div class="table-cell">
-                        <input class="basic-input default-input right" type="number" min="1987" max="{{year}}" value="{{user.settings.start_year or 1987}}" id="years-start" oninput="ChangeField('years-start', 'years-icon')">
-                    </div>
-                    <div class="table-cell table-cell-no-width center">-</div>
-                    <div class="table-cell">
-                        <input class="basic-input default-input left" type="number" min="1987" max="{{year}}" value="{{user.settings.end_year or year}}" id="years-end" oninput="ChangeField('years-end', 'years-icon')">
+            <div class="form-row-input" id="question-years">
+                <div class="">
+                    <div class="basic-multi-select default-multi-select">
+                        <div class="multi-select-title">Годы выхода</div>
+                        {% for start_year, end_year in question_years %}
+                        <div class="multi-select-row">
+                            <label><input type="checkbox" id="question-years-{{start_year}}-{{end_year}}" {% if [start_year, end_year] in user.settings.question_years or not user.settings.question_years %}checked{% endif %} oninput="ChangeField('question-years')">{{start_year}} - {{end_year}}</label>
+                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

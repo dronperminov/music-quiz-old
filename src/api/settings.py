@@ -2,7 +2,6 @@ import hashlib
 import os
 import shutil
 import tempfile
-from datetime import datetime
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, UploadFile
@@ -14,6 +13,7 @@ from src.api import templates
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
+from src.utils.common import get_default_question_years
 
 router = APIRouter()
 
@@ -51,7 +51,7 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         user=user,
         page="settings",
         version=constants.VERSION,
-        year=datetime.now().year,
+        question_years=get_default_question_years(),
         questions=constants.QUESTIONS,
         question2rus=constants.QUESTION_TO_RUS,
         question_artists=constants.QUESTION_ARTISTS,

@@ -209,11 +209,24 @@ function GetNumberField(inputId, regex, errorMessage = "") {
     return +value
 }
 
+function GetMultiSelectNames(multiSelectId) {
+    let input = document.getElementById(multiSelectId)
+    let names = []
+
+    for (let checkbox of input.getElementsByTagName("input"))
+        names.push(checkbox.getAttribute("id").substr(multiSelectId.length + 1))
+
+    return names
+}
+
 function GetMultiSelect(multiSelectId, names, errorMessage = "") {
     let values = []
     let input = document.getElementById(multiSelectId)
     let icon = document.getElementById(`${multiSelectId}-icon`)
     let error = document.getElementById("error")
+
+    if (names === null)
+        names = GetMultiSelectNames(multiSelectId)
 
     for (let name of names)
         if (document.getElementById(`${multiSelectId}-${name}`).checked)
