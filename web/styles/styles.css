@@ -103,6 +103,13 @@
     --menu-icon-hover-color: var(--border-color);
     --menu-icon-active-color: #ffd500;
 
+    /* statistic */
+    --statistic-background-color: #ffffff;
+    --statistic-border-color: #666666;
+    --statistic-vertical-border-color: #cccccc;
+    --statistic-name-color: #666666;
+    --statistic-value-color: #2d3039;
+
     /* details */
     --details-font-family: Roboto;
     --details-background-color: #ffffff;
@@ -203,6 +210,13 @@
     --menu-icon-hover-color: #caccce;
     --menu-icon-active-color: var(--main-color);
 
+    /* statistic */
+    --statistic-background-color: #3b3f4a;
+    --statistic-border-color: #aaaaaa;
+    --statistic-vertical-border-color: #6e6f7d;
+    --statistic-name-color: #aaaaaa;
+    --statistic-value-color: #ffffff;
+
     /* details */
     --details-font-family: Roboto;
     --details-background-color: #3b3f4a;
@@ -296,6 +310,13 @@
         --menu-icon-hover-color: #caccce;
         --menu-icon-active-color: var(--main-color);
 
+        /* statistic */
+        --statistic-background-color: #3b3f4a;
+        --statistic-border-color: #aaaaaa;
+        --statistic-vertical-border-color: #6e6f7d;
+        --statistic-name-color: #aaaaaa;
+        --statistic-value-color: #ffffff;
+
         /* details */
         --details-font-family: Roboto;
         --details-background-color: #3b3f4a;
@@ -357,6 +378,10 @@ body {
 
 .right {
     text-align: right;
+}
+
+.no-bold {
+    font-weight: normal;
 }
 
 .content {
