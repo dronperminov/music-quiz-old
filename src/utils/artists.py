@@ -46,12 +46,12 @@ def is_parenthesis_line(line: str) -> bool:
     return re.fullmatch(r"\([^)]+\)", line) is not None
 
 
-def get_creation(lyrics: str) -> Set[str]:
+def get_lyrics_creation(lyrics: List[dict]) -> Set[str]:
+    text = "\n".join(line["text"] for line in lyrics if not is_parenthesis_line(line["text"]))
+    eng_matches = len(re.findall(r"[a-zA-Z]", text))
+    rus_matches = len(re.findall(r"[а-яА-ЯёЁ]", text))
+
     creation = set()
-
-    eng_matches = len(re.findall(r"[a-zA-Z]", lyrics))
-    rus_matches = len(re.findall(r"[а-яА-ЯёЁ]", lyrics))
-
     if eng_matches > rus_matches:
         creation.add("foreign")
 
@@ -66,8 +66,7 @@ def get_artists_creation(artist_ids: List[int]) -> dict:
     artist2creation = defaultdict(set)
 
     for audio in audios:
-        text = "\n".join(line["text"] for line in audio["lyrics"] if not is_parenthesis_line(line["text"]))
-        creation = get_creation(text)
+        creation = get_lyrics_creation(audio["lyrics"])
 
         for artist in audio["artists"]:
             artist2creation[artist["id"]].update(creation)
