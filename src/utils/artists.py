@@ -27,7 +27,9 @@ def search_to_query(params: ArtistsQuery) -> Optional[dict]:
     if params.creation is not None:
         and_conditions.append({"$or": [{"creation": creation if creation != "no" else []} for creation in params.creation]})
 
-    query["$and"] = and_conditions
+    if and_conditions:
+        query["$and"] = and_conditions
+
     return query
 
 
