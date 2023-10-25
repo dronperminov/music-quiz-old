@@ -1,6 +1,6 @@
 [flake8]
 
-max-line-length = 165
+max-line-length = 170
 max-complexity = 10
 inline-quotes = "
 

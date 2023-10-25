@@ -126,19 +126,21 @@ function RemoveAllAudios(withConfirm = true) {
     HideParsedAudios()
 }
 
-function ParseAudio(trackId) {
+function ParseAudio(trackIds) {
     let currentCount = document.getElementById("current-count")
     let error = document.getElementById("error")
     let makeLink = document.getElementById("show-player").checked
 
-    return SendRequest("/parse-audio", {track_id: trackId, make_link: makeLink}).then(response => {
+    return SendRequest("/parse-audio", {track_ids: trackIds, make_link: makeLink}).then(response => {
         if (response.status != "success") {
             error.innerText = "Некоторые треки не удалось скачать"
             return
         }
 
-        AddParsedAudio(response.track)
-        currentCount.innerText = 1 + +currentCount.innerText
+        for (let track of response.tracks)
+            AddParsedAudio(track)
+
+        currentCount.innerText = trackIds.length + +currentCount.innerText
     })
 }
 
@@ -186,7 +188,7 @@ function AddParsedAudio(audio) {
     MakeElement("error", div, {})
 }
 
-function AddParsedAudios(trackIds) {
+function AddParsedAudios(trackIds, bucketSize = 5) {
     let parentBlock = document.getElementById("audios-block")
     let currentCount = document.getElementById("current-count")
     let totalCount = document.getElementById("total-count")
@@ -195,7 +197,12 @@ function AddParsedAudios(trackIds) {
     currentCount.innerText = "0"
     totalCount.innerText = trackIds.length
 
-    return Promise.all(trackIds.map(trackId => ParseAudio(trackId)))
+    let buckets = []
+
+    for (let i = 0; i < trackIds.length; i += bucketSize)
+        buckets.push(trackIds.slice(i, i + bucketSize))
+
+    return Promise.all(buckets.map(bucketTrackIds => ParseAudio(bucketTrackIds)))
 }
 
 function ParseAudios() {

@@ -7,7 +7,7 @@ def main():
     audios = database.audios.find({"lyrics": {"$exists": True, "$ne": []}}, {"link": 1, "lyrics": 1})
 
     for audio in audios:
-        creation = list(get_lyrics_creation(audio["lyrics"]))
+        creation = get_lyrics_creation(audio["lyrics"])
         database.audios.update_one({"link": audio["link"]}, {"$set": {"creation": creation}}, upsert=True)
 
 

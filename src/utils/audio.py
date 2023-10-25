@@ -81,37 +81,41 @@ def parse_artists(artists: List[Artist]) -> List[dict]:
     return parsed_artists
 
 
-def parse_track(track_id: str, token: str, make_link: bool) -> dict:
+def parse_tracks(track_ids: List[str], token: str, make_link: bool) -> List[dict]:
     client = Client(token).init()
-    track = client.tracks([track_id])[0]
-    track_id, album_id = track.track_id.split(":")
+    audios = []
 
-    audio = {
-        "album_id": album_id,
-        "track_id": track_id,
-        "title": track.title,
-        "artists": parse_artists(track.artists),
-        "year": 0,
-        "lyrics": None,
-        "creation": []
-    }
+    for track in client.tracks(track_ids):
+        track_id, album_id = track.track_id.split(":")
 
-    album = client.albums([album_id])[0]
-    if album.year:
-        audio["year"] = album.year
+        audio = {
+            "album_id": album_id,
+            "track_id": track_id,
+            "title": track.title,
+            "artists": parse_artists(track.artists),
+            "year": 0,
+            "lyrics": None,
+            "creation": []
+        }
 
-    if make_link:
-        info = track.get_specific_download_info("mp3", 192)
-        audio["direct_link"] = info.get_direct_link()
+        album = client.albums([album_id])[0]
+        if album.year:
+            audio["year"] = album.year
 
-    try:
-        lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
-        audio["lyrics"] = parse_lyrics(lyrics_str)
-        audio["creation"] = get_lyrics_creation(audio["lyrics"])
-    except NotFoundError:
-        pass
+        if make_link:
+            info = track.get_specific_download_info("mp3", 192)
+            audio["direct_link"] = info.get_direct_link()
 
-    return audio
+        try:
+            lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
+            audio["lyrics"] = parse_lyrics(lyrics_str)
+            audio["creation"] = get_lyrics_creation(audio["lyrics"])
+        except NotFoundError:
+            pass
+
+        audios.append(audio)
+
+    return audios
 
 
 def parse_direct_link(track_id: str, token: str) -> str:

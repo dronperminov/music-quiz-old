@@ -10,7 +10,7 @@ from src.api import make_error, templates, tokens
 from src.database import database
 from src.dataclasses.audio_form import AudioForm
 from src.utils.artists import get_artists_creation
-from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_track
+from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_tracks
 from src.utils.auth import get_current_user
 
 router = APIRouter()
@@ -84,15 +84,15 @@ def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = B
 
 
 @router.post("/parse-audio")
-def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True), make_link: bool = Body(..., embed=True)) -> JSONResponse:
+def parse_audio(user: Optional[dict] = Depends(get_current_user), track_ids: List[str] = Body(..., embed=True), make_link: bool = Body(..., embed=True)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    track = parse_track(track_id, random.choice(tokens), make_link)
-    return JSONResponse({"status": "success", "track": track})
+    tracks = parse_tracks(track_ids, random.choice(tokens), make_link)
+    return JSONResponse({"status": "success", "tracks": tracks})
 
 
 def add_artists(new_artists: dict, token: str) -> None:
