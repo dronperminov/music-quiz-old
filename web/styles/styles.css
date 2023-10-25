@@ -41,6 +41,32 @@
     --button-active-border-color: #f6db55;
     --button-active-text-color: #110f04;
 
+    /* green button */
+    --button-green-background-color: #57c75a;
+    --button-green-border-color: #4caf50;
+    --button-green-text-color: #ffffff;
+
+    --button-green-hover-background-color: #57c75a;
+    --button-green-hover-border-color: #222222;
+    --button-green-hover-text-color: #ffffff;
+
+    --button-green-active-background-color: #6dcb70;
+    --button-green-active-border-color: #101010;
+    --button-green-active-text-color: #f0f0f0;
+
+    /* red button */
+    --button-red-background-color: #f65c51;
+    --button-red-border-color: #f44336;
+    --button-red-text-color: #ffffff;
+
+    --button-red-hover-background-color: #f65c51;
+    --button-red-hover-border-color: #222222;
+    --button-red-hover-text-color: #ffffff;
+
+    --button-red-active-background-color: #ff655a;
+    --button-red-active-border-color: #101010;
+    --button-red-active-text-color: #f0f0f0;
+
     /* switch button */
     --switch-button-font-family: Roboto;
 
@@ -137,6 +163,14 @@
     --button-active-background-color: var(--border-color);
     --button-active-border-color: var(--border-color);
     --button-active-text-color: #3a3941;
+
+    /* green button */
+    --button-green-hover-border-color: #ffffff;
+    --button-green-active-border-color: #f0f0f0;
+
+    /* red button */
+    --button-red-hover-border-color: #ffffff;
+    --button-red-active-border-color: #f0f0f0;
 
     /* switch button */
     --switch-button-font-family: Roboto;

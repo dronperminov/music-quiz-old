@@ -36,6 +36,16 @@
                 <div class="form-row-input">{{question.get("answer_string", question.answer)}}</div>
             </div>
 
+            <div class="table-block table-equal-block">
+                <div class="table-cell">
+                    <button class="basic-button green-button">Я был прав</button>
+                </div>
+
+                <div class="table-cell">
+                    <button class="basic-button red-button">Я ошибся</button>
+                </div>
+            </div>
+
             <h3>Дополнительно:</h3>
             {% if question_type not in ["artist_by_track", "artist_by_intro"] %}
             <div class="form-row" title="Исполнитель">

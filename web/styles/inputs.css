@@ -88,6 +88,42 @@
     color: var(--button-active-text-color);
 }
 
+.red-button {
+    background: var(--button-red-background-color);
+    border-color: var(--button-red-border-color);
+    color: var(--button-red-text-color);
+}
+
+.red-button:hover {
+    background: var(--button-red-hover-background-color);
+    border-color: var(--button-red-hover-border-color);
+    color: var(--button-red-hover-text-color);
+}
+
+.red-button:active {
+    background: var(--button-red-active-background-color);
+    border-color: var(--button-red-active-border-color);
+    color: var(--button-red-active-text-color);
+}
+
+.green-button {
+    background: var(--button-green-background-color);
+    border-color: var(--button-green-border-color);
+    color: var(--button-green-text-color);
+}
+
+.green-button:hover {
+    background: var(--button-green-hover-background-color);
+    border-color: var(--button-green-hover-border-color);
+    color: var(--button-green-hover-text-color);
+}
+
+.green-button:active {
+    background: var(--button-green-active-background-color);
+    border-color: var(--button-green-active-border-color);
+    color: var(--button-green-active-text-color);
+}
+
 .switch-buttons {
     display: table;
     table-layout: fixed;
