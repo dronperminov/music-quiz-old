@@ -1,26 +1,6 @@
 import random
-from typing import List, Set
 
 from src import constants
-
-
-def audio_to_question_types(audio: dict) -> Set[str]:
-    question_types = {constants.QUESTION_ARTIST_BY_TRACK, constants.QUESTION_NAME_BY_TRACK}
-
-    if "lyrics" in audio:
-        question_types.add(constants.QUESTION_LINE_BY_TEXT)
-        question_types.add(constants.QUESTION_LINE_BY_CHORUS)
-
-        if audio["lyrics"][0]["time"] >= constants.INTRODUCTION_TIME:
-            question_types.add(constants.QUESTION_ARTIST_BY_INTRO)
-
-    return question_types
-
-
-def get_question_type(questions: List[str], audio: dict) -> str:
-    available_question_types = audio_to_question_types(audio)
-    question_types = list(set(questions).intersection(available_question_types))
-    return random.choice(question_types)
 
 
 def make_question(audio: dict, question_type: str) -> dict:

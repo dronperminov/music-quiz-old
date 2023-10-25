@@ -9,7 +9,7 @@ from src.api import templates
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
-from src.utils.question import get_question_type, make_question
+from src.utils.question import make_question
 
 router = APIRouter()
 
@@ -23,7 +23,7 @@ def get_question(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
     audios = list(database.audios.find(settings.to_query(), {"link": 1}))
     audio = database.audios.find_one({"link": random.choice(audios)["link"]})
-    question_type = get_question_type(settings.questions, audio)
+    question_type = settings.get_question_type(audio)
     question = make_question(audio, question_type)
 
     template = templates.get_template("question.html")

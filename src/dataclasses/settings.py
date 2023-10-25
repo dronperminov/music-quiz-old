@@ -1,6 +1,7 @@
+import random
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Set
 
 from src import constants
 
@@ -43,6 +44,11 @@ class Settings:
 
         return query
 
+    def get_question_type(self, audio: dict) -> str:
+        available_question_types = self.__audio_to_question_types(audio)
+        question_types = list(set(self.questions).intersection(available_question_types))
+        return random.choice(question_types)
+
     def __question_to_query(self, question_type: str) -> dict:
         if question_type == constants.QUESTION_ARTIST_BY_TRACK:
             return {}
@@ -72,3 +78,24 @@ class Settings:
             return {"artists.1": {"$exists": True}}
 
         raise ValueError(f'Invalid question_artists "{self.question_artists}"')
+
+    def __audio_to_question_types(self, audio: dict) -> Set[str]:
+        question_types = set()
+
+        if len(audio["artists"]) == 1 and constants.QUESTION_ARTISTS_SOLE in self.question_artists:
+            question_types.add(constants.QUESTION_ARTIST_BY_TRACK)
+            question_types.add(constants.QUESTION_NAME_BY_TRACK)
+
+        if len(audio["artists"]) > 1 and constants.QUESTION_ARTISTS_FEATS in self.question_artists:
+            question_types.add(constants.QUESTION_ARTIST_BY_TRACK)
+            question_types.add(constants.QUESTION_NAME_BY_TRACK)
+
+        if "lyrics" in audio:
+            if set(audio.get("creation", [])).intersection(set(self.text_languages)):
+                question_types.add(constants.QUESTION_LINE_BY_TEXT)
+                question_types.add(constants.QUESTION_LINE_BY_CHORUS)
+
+            if audio["lyrics"][0]["time"] >= constants.INTRODUCTION_TIME:
+                question_types.add(constants.QUESTION_ARTIST_BY_INTRO)
+
+        return question_types
