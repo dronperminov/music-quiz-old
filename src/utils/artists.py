@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from src.database import database
 from src.dataclasses.artists_query import ArtistsQuery
+from src.utils.audio import get_lyrics_creation
 
 
 def escape_query(query: str) -> str:
@@ -42,25 +43,6 @@ def get_artists_info(artists: List[dict]) -> dict:
         }
 
     return artist2count
-
-
-def is_parenthesis_line(line: str) -> bool:
-    return re.fullmatch(r"\([^)]+\)", line) is not None
-
-
-def get_lyrics_creation(lyrics: List[dict]) -> List[str]:
-    text = "\n".join(line["text"] for line in lyrics if not is_parenthesis_line(line["text"]))
-    eng_matches = len(re.findall(r"[a-zA-Z]", text))
-    rus_matches = len(re.findall(r"[а-яА-ЯёЁ]", text))
-
-    creation = []
-    if eng_matches > rus_matches:
-        creation.append("foreign")
-
-    if rus_matches > 0:
-        creation.append("russian")
-
-    return creation
 
 
 def get_artists_creation(artist_ids: List[int]) -> dict:

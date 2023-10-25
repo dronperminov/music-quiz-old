@@ -23,7 +23,18 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["answer"] = audio["track"]
         question["question_timecode"] = track_start
         question["answer_timecode"] = ""
-    elif question_type == constants.QUESTION_LINE_BY_TEXT or question_type == constants.QUESTION_LINE_BY_CHORUS:
+    elif question_type == constants.QUESTION_LINE_BY_TEXT:
+        # TODO: make correct for chorus
+        index = random.randint(3, len(lyrics) - 2)
+        start_time = round(lyrics[index - 3]["time"] - 0.8, 2)
+        end_time = round(lyrics[index]["time"] - 0.3, 2)
+        end_answer_time = round(lyrics[index + 1]["time"] - 0.1, 2)
+
+        question["text"] = [line["text"] for line in lyrics[index - 3:index]]
+        question["answer"] = lyrics[index]["text"]
+        question["question_timecode"] = f"{start_time},{end_time}"
+        question["answer_timecode"] = f"{start_time},{end_answer_time}"
+    elif question_type == constants.QUESTION_LINE_BY_CHORUS:
         # TODO: make correct for chorus
         index = random.randint(3, len(lyrics) - 2)
         start_time = round(lyrics[index - 3]["time"] - 0.8, 2)

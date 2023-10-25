@@ -1,12 +1,12 @@
 import re
-from typing import Dict, List
+from typing import Dict, List, Optional
 
+from Levenshtein import ratio
 from bs4 import BeautifulSoup
 from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
 
 from src import constants
-from src.utils.artists import get_lyrics_creation
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
 PLAYLIST_REGEX = re.compile(r"^.*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)(\?.*)?$")
@@ -95,7 +95,8 @@ def parse_tracks(track_ids: List[str], token: str, make_link: bool) -> List[dict
             "artists": parse_artists(track.artists),
             "year": 0,
             "lyrics": None,
-            "creation": []
+            "creation": [],
+            "chorus": False
         }
 
         album = client.albums([album_id])[0]
@@ -110,6 +111,7 @@ def parse_tracks(track_ids: List[str], token: str, make_link: bool) -> List[dict
             lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
             audio["lyrics"] = parse_lyrics(lyrics_str)
             audio["creation"] = get_lyrics_creation(audio["lyrics"])
+            audio["chorus"] = detect_chorus(audio["lyrics"]) is not None
         except NotFoundError:
             pass
 
@@ -147,3 +149,46 @@ def parse_artist_genres(artist_ids: List[int], token: str) -> Dict[int, List[str
         genres[artist_id] = list(artist_genres)
 
     return genres
+
+
+def is_parenthesis_line(line: str) -> bool:
+    return re.fullmatch(r"\([^)]+\)", line) is not None
+
+
+def get_lyrics_creation(lyrics: List[dict]) -> List[str]:
+    text = "\n".join(line["text"] for line in lyrics if not is_parenthesis_line(line["text"]))
+    eng_matches = len(re.findall(r"[a-zA-Z]", text))
+    rus_matches = len(re.findall(r"[а-яА-ЯёЁ]", text))
+
+    creation = []
+    if eng_matches > rus_matches:
+        creation.append("foreign")
+
+    if rus_matches > 0:
+        creation.append("russian")
+
+    return creation
+
+
+def is_equal_lines(line1: str, line2: str) -> bool:
+    words1 = re.findall(r"\w+", line1.lower())
+    words2 = re.findall(r"\w+", line2.lower())
+    return ratio(words1, words2) > constants.CHORUS_THRESHOLD
+
+
+def detect_chorus(lyrics: List[dict]) -> Optional[List[int]]:
+    indices = [i for i, line in enumerate(lyrics) if not is_parenthesis_line(line["text"])]
+    chorus_start, chorus_length = 0, 0
+
+    for i in range(1, len(indices)):
+        diagonal = "".join("1" if is_equal_lines(lyrics[indices[j]]["text"], lyrics[indices[j + i]]["text"]) else " " for j in range(len(indices) - i))
+
+        for match in re.finditer(r"1+", diagonal):
+            start, end = match.span()
+            if end - start > chorus_length:
+                chorus_start, chorus_length = start + i, end - start
+
+    if chorus_length < constants.CHORUS_MIN_LENGTH:
+        return None
+
+    return [indices[chorus_start + i] for i in range(chorus_length)]

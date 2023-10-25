@@ -63,7 +63,7 @@ class Settings:
             return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}}
 
         if question_type == constants.QUESTION_LINE_BY_CHORUS:
-            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}}
+            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}, "chorus": True}
 
         raise ValueError(f'Invalid question_type "{question_type}"')
 
@@ -93,7 +93,9 @@ class Settings:
         if "lyrics" in audio:
             if set(audio.get("creation", [])).intersection(set(self.text_languages)):
                 question_types.add(constants.QUESTION_LINE_BY_TEXT)
-                question_types.add(constants.QUESTION_LINE_BY_CHORUS)
+
+                if audio["chorus"]:
+                    question_types.add(constants.QUESTION_LINE_BY_CHORUS)
 
             if audio["lyrics"][0]["time"] >= constants.INTRODUCTION_TIME:
                 question_types.add(constants.QUESTION_ARTIST_BY_INTRO)
