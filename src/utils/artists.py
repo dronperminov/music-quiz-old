@@ -42,6 +42,10 @@ def get_artists_info(artists: List[dict]) -> dict:
     return artist2count
 
 
+def is_parenthesis_line(line: str) -> bool:
+    return re.fullmatch(r"\([^)]+\)", line) is not None
+
+
 def get_creation(lyrics: str) -> Set[str]:
     creation = set()
 
@@ -58,11 +62,12 @@ def get_creation(lyrics: str) -> Set[str]:
 
 
 def get_artists_creation(artist_ids: List[int]) -> dict:
-    audios = database.audios.find({"artists.id": {"$in": artist_ids}, "lyrics": {"$exists": True, "$ne": []}}, {"artists": 1, "lyrics": 1})
+    audios = database.audios.find({"artists": {"$size": 1}, "artists.id": {"$in": artist_ids}, "lyrics": {"$exists": True, "$ne": []}}, {"artists": 1, "lyrics": 1})
     artist2creation = defaultdict(set)
 
     for audio in audios:
-        creation = get_creation("\n".join(line["text"] for line in audio["lyrics"]))
+        text = "\n".join(line["text"] for line in audio["lyrics"] if not is_parenthesis_line(line["text"]))
+        creation = get_creation(text)
 
         for artist in audio["artists"]:
             artist2creation[artist["id"]].update(creation)
