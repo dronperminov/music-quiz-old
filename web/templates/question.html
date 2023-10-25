@@ -7,8 +7,8 @@
 <body>
     {% include "menu.html" %}
 
-    <div class="question">
-        <audio id="audio" src data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-answer-timecode="{{question.answer_timecode}}" preload="metadata"></audio>
+    <div class="question" id="question" data-question-type="{{question_type}}">
+        <audio id="audio" data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-answer-timecode="{{question.answer_timecode}}" preload="metadata"></audio>
 
         <div class="question-header">{{title | capitalize}}:</div>
         <div class="audio-player" id="player">
@@ -36,15 +36,16 @@
                 <div class="form-row-input">{{question.get("answer_string", question.answer)}}</div>
             </div>
 
-            <div class="table-block table-equal-block">
+            <div class="table-block table-equal-block answer-buttons" id="check-answer">
                 <div class="table-cell">
-                    <button class="basic-button green-button">Я был прав</button>
+                    <button class="basic-button green-button" onclick="CheckAnswer(true)">Я был прав</button>
                 </div>
 
                 <div class="table-cell">
-                    <button class="basic-button red-button">Я ошибся</button>
+                    <button class="basic-button red-button" onclick="CheckAnswer(false)">Я ошибся</button>
                 </div>
             </div>
+            <div class="error" id="check-answer-error"></div>
 
             <h3>Дополнительно:</h3>
             {% if question_type not in ["artist_by_track", "artist_by_intro"] %}

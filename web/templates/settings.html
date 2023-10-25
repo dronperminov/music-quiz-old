@@ -172,10 +172,23 @@
 
         <button id="save-btn" class="basic-button default-button hidden" onclick="SaveSettings({% if user.role == 'admin' %}true{% endif %})">Сохранить настройки</button>
         <div class="error" id="error"></div>
+
+        <div id="actions">
+            <h3>Действия</h3>
+
+            {% if have_statistic %}
+            <button class="basic-button default-button" id="reset-statistic-btn" onclick="ResetStatistic()">Сбросить статистику</button>
+            {% endif %}
+
+            <div class="error" id="actions-error"></div>
+        </div>
     </div>
 
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/settings.js?v={{version}}"></script>
+    <script>
+        UpdateActionsVisibility()
+    </script>
     {% include "footer.html" %}
 </body>
 </html>

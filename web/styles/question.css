@@ -31,3 +31,7 @@
 .question .form-row:last-child {
     margin-bottom: 0;
 }
+
+.answer-buttons {
+    margin-bottom: 10px;
+}

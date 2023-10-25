@@ -51,6 +51,7 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         user=user,
         page="settings",
         version=constants.VERSION,
+        have_statistic=database.statistic.find_one({"username": user["username"]}) is not None,
         question_years=get_default_question_years(),
         questions=constants.QUESTIONS,
         question2rus=constants.QUESTION_TO_RUS,

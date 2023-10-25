@@ -14,6 +14,7 @@ from src.api.audios import router as audios_router
 from src.api.auth import router as auth_router
 from src.api.question import router as question_router
 from src.api.settings import router as settings_router
+from src.api.statistis import router as statistic_router
 from src.database import database
 
 
@@ -34,6 +35,7 @@ def main() -> None:
     app.include_router(audios_router)
     app.include_router(artists_router)
     app.include_router(question_router)
+    app.include_router(statistic_router)
 
     app.add_middleware(GZipMiddleware, minimum_size=500)
 

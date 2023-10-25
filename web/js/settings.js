@@ -81,3 +81,31 @@ function SaveSettings() {
         button.classList.add("hidden")
     })
 }
+
+function UpdateActionsVisibility() {
+    let block = document.getElementById("actions")
+
+    if (block.children.length < 3)
+        block.classList.add("hidden")
+    else
+        block.classList.remove("hidden")
+}
+
+function ResetStatistic() {
+    if (!confirm("Вы уверены, что хотите сбросить всю статистику? Отменить данное действие будет невозможно!"))
+        return
+
+    let button = document.getElementById("reset-statistic-btn")
+    let error = document.getElementById("actions-error")
+    error.innerText = ""
+
+    SendRequest("/clear-statistic", {}).then(response => {
+        if (response.status != "success") {
+            error.innerText = response.message
+            return
+        }
+
+        button.remove()
+        UpdateActionsVisibility()
+    })
+}
