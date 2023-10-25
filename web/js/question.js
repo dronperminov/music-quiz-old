@@ -31,5 +31,6 @@ function CheckAnswer(isCorrect) {
 
         let block = document.getElementById("check-answer")
         block.remove()
+        window.location = "/question"
     })
 }
