@@ -1,5 +1,4 @@
 import random
-from dataclasses import dataclass
 from typing import List, Optional
 
 import yandex_music.exceptions
@@ -9,19 +8,10 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from src import constants
 from src.api import make_error, templates, tokens
 from src.database import database
+from src.dataclasses.audio_form import AudioForm
 from src.utils.artists import get_artists_creation
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_track
 from src.utils.auth import get_current_user
-
-
-@dataclass
-class AudioForm:
-    link: str = Body(..., embed=True)
-    artists: List[dict] = Body(..., embed=True)
-    track: str = Body(..., embed=True)
-    year: int = Body(..., embed=True)
-    lyrics: List[dict] = Body(..., embed=True)
-
 
 router = APIRouter()
 
