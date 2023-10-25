@@ -352,7 +352,6 @@ body {
 }
 
 .form-row-icon-interactive {
-    text-align: right;
     width: 25px;
 }
 
@@ -365,12 +364,22 @@ body {
     vertical-align: middle;
 }
 
-.form-svg-fill-icon {
-    fill: var(--form-row-icon-color);
+.form-row-icon-interactive .form-svg-fill-icon {
+    fill: var(--input-text-color);
 }
 
-.form-svg-stroke-icon {
+.form-row-icon-interactive .form-svg-stroke-icon {
+    stroke: var(--input-text-color);
+}
+
+.form-svg-fill-icon, .form-row-icon-interactive:hover .form-svg-fill-icon {
+    fill: var(--form-row-icon-color);
+    transition: fill 100ms linear;
+}
+
+.form-svg-stroke-icon, .form-row-icon-interactive:hover .form-svg-stroke-icon {
     stroke: var(--form-row-icon-color);
+    transition: stroke 100ms linear;
 }
 
 .error-icon .form-svg-fill-icon {
@@ -467,6 +476,14 @@ h1, h2, h3 {
 
 h1.top {
     margin-top: 25px;
+}
+
+label {
+    font-family: Roboto;
+}
+
+label:hover {
+    cursor: pointer;
 }
 
 summary {

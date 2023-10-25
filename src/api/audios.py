@@ -9,6 +9,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Resp
 from src import constants
 from src.api import make_error, templates, tokens
 from src.database import database
+from src.utils.artists import get_artists_creation
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_track
 from src.utils.auth import get_current_user
 
@@ -105,10 +106,13 @@ def parse_audio(user: Optional[dict] = Depends(get_current_user), track_id: str 
 
 
 def add_artists(new_artists: dict, token: str) -> None:
-    artist_genres = parse_artist_genres([artist_id for artist_id in new_artists], token)
+    artist_ids = [artist_id for artist_id in new_artists]
+    artist_genres = parse_artist_genres(artist_ids, token)
+    artist_creation = get_artists_creation(artist_ids)
 
     for artist_id, artist in new_artists.items():
         artist["genres"] = artist_genres[artist_id]
+        artist["creation"] = list(artist_creation[artist_id])
 
     database.artists.insert_many(new_artists.values())
 
