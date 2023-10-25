@@ -55,7 +55,9 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         questions=constants.QUESTIONS,
         question2rus=constants.QUESTION_TO_RUS,
         question_artists=constants.QUESTION_ARTISTS,
-        question_artists2rus=constants.QUESTION_ARTISTS_TO_RUS
+        question_artists2rus=constants.QUESTION_ARTISTS_TO_RUS,
+        text_languages=constants.TEXT_LANGUAGES,
+        text_language2rus=constants.TEXT_LANGUAGE_TO_RUS
     )
 
     return HTMLResponse(content=content)

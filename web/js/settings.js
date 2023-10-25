@@ -97,13 +97,18 @@ function SaveSettings() {
     if (questionArtists === null)
         return
 
+    let textLanguages = GetMultiSelect("text-languages", ["russian", "foreign"], "Не выбран ни один язык")
+    if (textLanguages === null)
+        return
+
     let data = {
         fullname: fullname,
         theme: document.getElementById("theme").value,
+        start_year: years.start,
+        end_year: years.end,
         questions: questions,
         question_artists: questionArtists,
-        start_year: years.start,
-        end_year: years.end
+        text_languages: textLanguages
     }
 
     let button = document.getElementById("save-btn")

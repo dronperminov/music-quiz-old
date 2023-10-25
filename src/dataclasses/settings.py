@@ -12,6 +12,7 @@ class Settings:
     end_year: int
     questions: List[str]
     question_artists: List[str]
+    text_languages: List[str]
 
     @classmethod
     def from_dict(cls: "Settings", data: dict) -> "Settings":
@@ -20,7 +21,8 @@ class Settings:
         end_year = data.get("end_year", datetime.today().year)
         questions = data.get("questions", constants.QUESTIONS)
         question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
-        return cls(theme, start_year, end_year, questions, question_artists)
+        text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
+        return cls(theme, start_year, end_year, questions, question_artists, text_languages)
 
     def to_dict(self) -> dict:
         return {
@@ -29,6 +31,7 @@ class Settings:
             "end_year": self.end_year,
             "questions": self.questions,
             "question_artists": self.question_artists,
+            "text_languages": self.text_languages
         }
 
     def to_query(self) -> dict:
@@ -51,10 +54,10 @@ class Settings:
             return {}
 
         if question_type == constants.QUESTION_LINE_BY_TEXT:
-            return {"lyrics": {"$exists": True, "$ne": []}}
+            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}}
 
         if question_type == constants.QUESTION_LINE_BY_CHORUS:
-            return {"lyrics": {"$exists": True, "$ne": []}}
+            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}}
 
         raise ValueError(f'Invalid question_type "{question_type}"')
 

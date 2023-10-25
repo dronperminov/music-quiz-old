@@ -149,6 +149,26 @@
             </div>
         </div>
 
+        <div class="form-row" title="Язык текстов песен">
+            <div class="form-row-icon" id="text-languages-icon">
+                <svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"/>
+                    <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"/>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <div class="basic-multi-select default-multi-select" id="text-languages">
+                    <div class="multi-select-title">Язык текстов</div>
+                    {% for text_language in text_languages %}
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="text-languages-{{text_language}}" {% if text_language in user.settings.text_languages or not user.settings.text_languages %}checked{% endif %} oninput="ChangeField('text-languages')"> {{text_language2rus[text_language]|capitalize}}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
         <button id="save-btn" class="basic-button default-button hidden" onclick="SaveSettings({% if user.role == 'admin' %}true{% endif %})">Сохранить настройки</button>
         <div class="error" id="error"></div>
     </div>
