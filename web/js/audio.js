@@ -41,12 +41,17 @@ function SaveAudio() {
     if (track === null)
         return
 
+
+    let lyrics = GetJSONField("lyrics", "Некорректно задан текст")
+    if (lyrics === null)
+        return
+
     let year = GetNumberField("year", /^\d+$/g, "Год введён неверно")
     if (year === null)
         return
 
-    let lyrics = GetJSONField("lyrics", "Некорректно задан текст")
-    if (lyrics === null)
+    let creation = GetMultiSelect("creation", ["russian", "foreign"])
+    if (creation === null)
         return
 
     let audio = document.getElementById("audio")
@@ -56,7 +61,7 @@ function SaveAudio() {
     let error = document.getElementById("error")
     error.innerText = ""
 
-    SendRequest("/update-audio", {link, artists, track, year, lyrics}).then(response => {
+    SendRequest("/update-audio", {link, artists, track, lyrics, year, creation}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return

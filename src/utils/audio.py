@@ -6,6 +6,7 @@ from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
 
 from src import constants
+from src.utils.artists import get_lyrics_creation
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
 PLAYLIST_REGEX = re.compile(r"^.*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)(\?.*)?$")
@@ -91,7 +92,8 @@ def parse_track(track_id: str, token: str, make_link: bool) -> dict:
         "title": track.title,
         "artists": parse_artists(track.artists),
         "year": 0,
-        "lyrics": None
+        "lyrics": None,
+        "creation": []
     }
 
     album = client.albums([album_id])[0]
@@ -105,6 +107,7 @@ def parse_track(track_id: str, token: str, make_link: bool) -> dict:
     try:
         lyrics_str = track.get_lyrics("LRC").fetch_lyrics()
         audio["lyrics"] = parse_lyrics(lyrics_str)
+        audio["creation"] = get_lyrics_creation(audio["lyrics"])
     except NotFoundError:
         pass
 

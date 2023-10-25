@@ -62,6 +62,12 @@ const LYRICS_SVG = `<svg class="form-svg-fill-icon" width="24px" height="24px" v
     <rect x="4" y="7" width="16" height="2"/>
 </svg>`
 
+const CREATION_SVG = `<svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2" fill="none">
+    <circle cx="12" cy="12" r="10"/>
+    <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"/>
+    <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"/>
+</svg>`
+
 const REMOVE_SVG = `<svg class="form-svg-fill-icon" width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
     <path d="M12 4h3c.6 0 1 .4 1 1v1H3V5c0-.6.5-1 1-1h3c.2-1.1 1.3-2 2.5-2s2.3.9 2.5 2zM8 4h3c-.2-.6-.9-1-1.5-1S8.2 3.4 8 4zM4 7h11l-.9 10.1c0 .5-.5.9-1 .9H5.9c-.5 0-.9-.4-1-.9L4 7z"/>
 </svg>`
@@ -160,14 +166,22 @@ function AddParsedAudio(audio) {
     let trackInput = MakeIconInputRow(div, TRACK_SVG, audio.title, "Трек", "track", "text")
     trackInput.addEventListener("input", () => ClearSaveError(trackInput))
 
-    let yearInput = MakeIconInputRow(div, YEAR_SVG, audio.year, "Год", "year", "number")
-    yearInput.addEventListener("input", () => ClearSaveError(yearInput))
-
     if (audio.lyrics) {
         let lyricsInput = MakeIconInputRow(div, LYRICS_SVG, audio.lyrics.map(line => JSON.stringify(line)), "Текст", "lyrics", "textarea")
         lyricsInput.addEventListener("input", () => ClearSaveError(lyricsInput))
         lyricsInput.classList.add("one-line-textarea")
     }
+
+    let creation = [
+        {name: "russian", title: "русский", value: audio.creation.indexOf("russian") > -1},
+        {name: "foreign", title: "зарубежный", value: audio.creation.indexOf("foreign") > -1}
+    ]
+    let creationInput = MakeIconInputRow(div, CREATION_SVG, creation, "Язык", "creation", "multi-select")
+    for (let checkbox of creationInput)
+        checkbox.addEventListener("change", () => ClearSaveError(checkbox.parentNode.parentNode.parentNode))
+
+    let yearInput = MakeIconInputRow(div, YEAR_SVG, audio.year, "Год", "year", "number")
+    yearInput.addEventListener("input", () => ClearSaveError(yearInput))
 
     MakeElement("error", div, {})
 }
@@ -299,6 +313,13 @@ function GetAudios() {
                 }
 
                 audio[name] = +input.value
+            }
+            else if (name == "creation") {
+                audio[name] = []
+
+                for (let checkbox of input.getElementsByTagName("input"))
+                    if (checkbox.checked)
+                        audio[name].push(checkbox.getAttribute("name"))
             }
         }
 

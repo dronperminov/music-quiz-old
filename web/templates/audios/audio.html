@@ -56,6 +56,27 @@
             </div>
         </div>
 
+        <div class="form-row" title="Текст">
+            <div class="form-row-icon form-row-top-icon" id="lyrics-icon">
+                <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="23" width="22" height="2"/>
+                    <rect x="4" y="19" width="12" height="2"/>
+                    <rect x="4" y="15" width="20" height="2"/>
+                    <rect x="4" y="11" width="24" height="2"/>
+                    <rect x="4" y="7" width="16" height="2"/>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <div class="audio-text basic-textarea default-textarea" contenteditable id="lyrics" oninput="ChangeField('lyrics')">
+                    {% if audio.lyrics %}
+                    {% for line in audio.lyrics %}
+                    <div class="audio-text-line" id="text-line-{{loop.index - 1}}">{"time": {{line.time}}, "text": "{{line.text}}"}</div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
         <div class="form-row" title="Год выхода">
             <div class="form-row-icon" id="year-icon">
                 <svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">
@@ -81,23 +102,23 @@
             </div>
         </div>
 
-        <div class="form-row" title="Текст">
-            <div class="form-row-icon form-row-top-icon" id="lyrics-icon">
-                <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="4" y="23" width="22" height="2"/>
-                    <rect x="4" y="19" width="12" height="2"/>
-                    <rect x="4" y="15" width="20" height="2"/>
-                    <rect x="4" y="11" width="24" height="2"/>
-                    <rect x="4" y="7" width="16" height="2"/>
+        <div class="form-row">
+            <div class="form-row-icon form-row-top-icon" id="creation-icon">
+                <svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2" fill="none">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path stroke-linecap="round" d="M12,22 C14.6666667,19.5757576 16,16.2424242 16,12 C16,7.75757576 14.6666667,4.42424242 12,2 C9.33333333,4.42424242 8,7.75757576 8,12 C8,16.2424242 9.33333333,19.5757576 12,22 Z"/>
+                    <path stroke-linecap="round" d="M2.5 9L21.5 9M2.5 15L21.5 15"/>
                 </svg>
             </div>
             <div class="form-row-input">
-                <div class="audio-text basic-textarea default-textarea" contenteditable id="lyrics" oninput="ChangeField('lyrics')">
-                    {% if audio.lyrics %}
-                    {% for line in audio.lyrics %}
-                    <div class="audio-text-line" id="text-line-{{loop.index - 1}}">{"time": {{line.time}}, "text": "{{line.text}}"}</div>
-                    {% endfor %}
-                    {% endif %}
+                <div class="basic-multi-select default-multi-select" id="creation">
+                    <div class="multi-select-title">Язык</div>
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="creation-russian" {% if "russian" in audio.creation %}checked{% endif %} onchange="ChangeField('creation')"> русский</label>
+                    </div>
+                    <div class="multi-select-row">
+                        <label><input type="checkbox" id="creation-foreign" {% if "foreign" in audio.creation %}checked{% endif %} onchange="ChangeField('creation')"> зарубежный</label>
+                    </div>
                 </div>
             </div>
         </div>

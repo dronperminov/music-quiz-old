@@ -105,7 +105,7 @@ function MakeIconInputRow(parent, iconHTML, inputValue, placeholder, label, inpu
         return MakeElement("basic-textarea default-textarea", inputBlock, {tag: "textarea", "rows": Math.min(10, Math.max(inputValue.length, 2)), innerHTML: inputValue.join("\n"), placeholder: placeholder, name: label})
 
     if (inputType == "multi-select")
-        return MakeMultiSelect("basic-multi-select default-multi-select", inputBlock, placeholder, label,inputValue)
+        return MakeMultiSelect("basic-multi-select default-multi-select", inputBlock, placeholder, label, inputValue)
 
     if (inputType == "audio")
         return MakeElement("", inputBlock, {tag: "audio", controls: "", src: inputValue, name: label, preload: "metadata"})

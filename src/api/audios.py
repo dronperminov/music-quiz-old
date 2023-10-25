@@ -153,15 +153,7 @@ def update_audio(user: Optional[dict] = Depends(get_current_user), params: Audio
     if not audio:
         return JSONResponse({"status": "error", "message": "Указанная аудиозапись не найдена. Возможно, она была удалена"})
 
-    database.audios.update_one({"link": params.link}, {
-        "$set": {
-            "artists": params.artists,
-            "track": params.track,
-            "lyrics": params.lyrics,
-            "year": params.year
-        }
-    }, upsert=True)
-
+    database.audios.update_one({"link": params.link}, {"$set": params.to_dict()}, upsert=True)
     return JSONResponse({"status": "success"})
 
 
