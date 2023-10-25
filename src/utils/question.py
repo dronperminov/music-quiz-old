@@ -1,12 +1,27 @@
 import random
+from typing import List, Tuple
 
 from src import constants
+from src.utils.audio import contain_line, detect_chorus
+
+
+def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
+    chorus_indices = detect_chorus(lyrics)
+    start_index = 0
+    available_indices = []
+
+    for index in range(3, len(chorus_indices)):
+        if not contain_line(lyrics, chorus_indices[start_index:index], lyrics[chorus_indices[index]]["text"]):
+            available_indices.append(index)
+
+    index = random.choice(available_indices)
+    return chorus_indices[start_index], chorus_indices[index]
 
 
 def make_question(audio: dict, question_type: str) -> dict:
     question = dict()
     artists = [artist["name"] for artist in audio["artists"]]
-    lyrics = audio.get("lyrics", [])
+    lyrics: List[dict] = audio.get("lyrics", [])
     track_start = lyrics[0]["time"] if lyrics else ""
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
@@ -24,26 +39,25 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["question_timecode"] = track_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_LINE_BY_TEXT:
-        # TODO: make correct for chorus
         index = random.randint(3, len(lyrics) - 2)
         start_time = round(lyrics[index - 3]["time"] - 0.8, 2)
         end_time = round(lyrics[index]["time"] - 0.3, 2)
-        end_answer_time = round(lyrics[index + 1]["time"] - 0.1, 2)
+        end_answer_time = f',{round(lyrics[index + 1]["time"] - 0.1, 2)}' if index + 1 < len(lyrics) else ""
 
         question["text"] = [line["text"] for line in lyrics[index - 3:index]]
         question["answer"] = lyrics[index]["text"]
         question["question_timecode"] = f"{start_time},{end_time}"
-        question["answer_timecode"] = f"{start_time},{end_answer_time}"
+        question["answer_timecode"] = f"{start_time}{end_answer_time}"
     elif question_type == constants.QUESTION_LINE_BY_CHORUS:
-        # TODO: make correct for chorus
-        index = random.randint(3, len(lyrics) - 2)
-        start_time = round(lyrics[index - 3]["time"] - 0.8, 2)
-        end_time = round(lyrics[index]["time"] - 0.3, 2)
-        end_answer_time = round(lyrics[index + 1]["time"] - 0.1, 2)
+        start_index, index = get_chorus_question(lyrics)
 
-        question["text"] = [line["text"] for line in lyrics[index - 3:index]]
+        start_time = round(lyrics[start_index]["time"] - 0.8, 2)
+        end_time = round(lyrics[index]["time"] - 0.3, 2)
+        end_answer_time = f',{round(lyrics[index + 1]["time"] - 0.1, 2)}' if index + 1 < len(lyrics) else ""
+
+        question["text"] = [line["text"] for line in lyrics[start_index:index]]
         question["answer"] = lyrics[index]["text"]
         question["question_timecode"] = f"{start_time},{end_time}"
-        question["answer_timecode"] = f"{start_time},{end_answer_time}"
+        question["answer_timecode"] = f"{start_time}{end_answer_time}"
 
     return question

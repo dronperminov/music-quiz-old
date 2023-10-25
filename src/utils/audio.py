@@ -176,6 +176,14 @@ def is_equal_lines(line1: str, line2: str) -> bool:
     return ratio(words1, words2) > constants.CHORUS_THRESHOLD
 
 
+def contain_line(lyrics: List[dict], indices: List[int], text: str) -> bool:
+    for index in indices:
+        if is_equal_lines(lyrics[index]["text"], text):
+            return True
+
+    return False
+
+
 def detect_chorus(lyrics: List[dict]) -> Optional[List[int]]:
     indices = [i for i, line in enumerate(lyrics) if not is_parenthesis_line(line["text"])]
     chorus_start, chorus_length = 0, 0
@@ -191,4 +199,8 @@ def detect_chorus(lyrics: List[dict]) -> Optional[List[int]]:
     if chorus_length < constants.CHORUS_MIN_LENGTH:
         return None
 
-    return [indices[chorus_start + i] for i in range(chorus_length)]
+    chorus_indices = [indices[chorus_start + i] for i in range(chorus_length)]
+    if contain_line(lyrics, chorus_indices[:-1], lyrics[chorus_indices[-1]]["text"]):
+        return None
+
+    return chorus_indices
