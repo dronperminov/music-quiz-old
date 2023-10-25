@@ -10,6 +10,7 @@ from src import constants
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
 PLAYLIST_REGEX = re.compile(r"^.*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)(\?.*)?$")
+ARTIST_REGEX = re.compile(r"^.*/artist/(?P<artist>\d+)(/tracks)?(\?.*)?$")
 
 
 def parse_link(link: str) -> str:
@@ -38,6 +39,10 @@ def get_track_ids(code: str, token: str) -> List[str]:
             playlist = client.users_playlists(match.group("playlist_id"), match.group("username"))
             tracks.extend(track.track.track_id for track in playlist.tracks)
             continue
+
+        if match := ARTIST_REGEX.search(line):
+            artist_tracks = client.artists_tracks(match.group("artist"), page_size=500)
+            tracks.extend(track.track_id for track in artist_tracks.tracks)
 
     if tracks:
         return tracks
