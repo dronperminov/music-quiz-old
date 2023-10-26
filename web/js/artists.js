@@ -38,3 +38,21 @@ function QueryInput(e) {
     else
         clearIcon.classList.add("clear-hide")
 }
+
+function SwitchArtistQuestion(artistId) {
+    let error = document.getElementById(`error-${artistId}`)
+    let icon = document.getElementById(`artist-question-${artistId}`)
+    error.innerText = ""
+
+    SendRequest("/artist-to-questions", {artist_id: artistId}).then(response => {
+        if (response.status != "success") {
+            error.innerText = response.message
+            return
+        }
+
+        if (response.include)
+            icon.classList.add("artist-question-selected-icon")
+        else
+            icon.classList.remove("artist-question-selected-icon")
+    })
+}

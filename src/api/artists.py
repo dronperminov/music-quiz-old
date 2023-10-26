@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
@@ -79,3 +79,18 @@ def edit_artist(user: Optional[dict] = Depends(get_current_user), artist_params:
 
     database.artists.update_one({"id": artist_params.artist_id}, {"$set": {"creation": artist_params.creation, "genres": artist_params.genres}})
     return JSONResponse({"status": "success"})
+
+
+@router.post("/artist-to-questions")
+def artist_to_questions(user: Optional[dict] = Depends(get_current_user), artist_id: int = Body(..., embed=True)) -> JSONResponse:
+    if not user:
+        return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
+
+    artists = user["settings"].get("artists", [])
+    if artist_id in artists:
+        artists = [artist for artist in artists if artist != artist_id]
+    else:
+        artists.append(artist_id)
+
+    database.users.update_one({"username": user["username"]}, {"$set": {"settings.artists": artists}})
+    return JSONResponse({"status": "success", "include": artist_id in artists})

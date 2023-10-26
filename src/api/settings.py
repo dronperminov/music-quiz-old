@@ -13,7 +13,7 @@ from src.api import templates
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
-from src.utils.common import get_default_question_years
+from src.utils.common import get_default_question_years, get_word_form
 
 router = APIRouter()
 
@@ -47,12 +47,18 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return RedirectResponse(url="/login")
 
     template = templates.get_template("settings.html")
+    settings = Settings.from_dict(user["settings"])
+    audios_count = database.audios.count_documents(settings.to_query())
+
+    artists = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": user["settings"].get("artists", [])}}, {"id": 1, "name": 1})}
     content = template.render(
         user=user,
         page="settings",
         version=constants.VERSION,
         have_statistic=database.statistic.find_one({"username": user["username"]}) is not None,
         question_years=get_default_question_years(),
+        artists=artists,
+        audios_count=f'{audios_count} {get_word_form(audios_count, ["аудиозаписей", "аудиозаписи", "аудиозапись"])}',
         questions=constants.QUESTIONS,
         question2rus=constants.QUESTION_TO_RUS,
         question_artists=constants.QUESTION_ARTISTS,
@@ -86,12 +92,13 @@ async def update_settings(request: Request, user: Optional[dict] = Depends(get_c
 
     data = await request.json()
     settings = Settings.from_dict(data)
+    audios_count = database.audios.count_documents(settings.to_query())
 
-    if database.audios.count_documents(settings.to_query()) == 0:
+    if audios_count == 0:
         return JSONResponse({"status": "error", "message": "Для выбранных настроек нет ни одного трека"})
 
     user["fullname"] = data["fullname"]
     user["settings"] = settings.to_dict()
 
     database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)
-    return JSONResponse({"status": "success"})
+    return JSONResponse({"status": "success", "audios_count": audios_count})

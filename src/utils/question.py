@@ -18,8 +18,33 @@ def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
     return chorus_indices[start_index], chorus_indices[index]
 
 
+def get_question_title(question_type: str, audio: dict) -> str:
+    artist = "исполнителя" if len(audio["artists"]) == 1 else "исполнителей"
+
+    if question_type == constants.QUESTION_ARTIST_BY_TRACK:
+        return f"назовите {artist} песни"
+
+    if question_type == constants.QUESTION_ARTIST_BY_INTRO:
+        return f"назовите {artist} песни по её вступлению"
+
+    if question_type == constants.QUESTION_NAME_BY_TRACK:
+        return "назовите название песни"
+
+    if question_type == constants.QUESTION_LINE_BY_TEXT:
+        return "продолжите строку"
+
+    if question_type == constants.QUESTION_LINE_BY_CHORUS:
+        return "продолжите строку припева"
+
+    raise ValueError(f'Invalid question type "{question_type}"')
+
+
 def make_question(audio: dict, question_type: str) -> dict:
-    question = dict()
+    question = {
+        "type": question_type,
+        "title": get_question_title(question_type, audio)
+    }
+
     artists = [artist["name"] for artist in audio["artists"]]
     lyrics: List[dict] = audio.get("lyrics", [])
     track_start = lyrics[0]["time"] if lyrics else ""

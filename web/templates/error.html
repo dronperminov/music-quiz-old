@@ -1,10 +1,10 @@
 {% include "header.html" %}
-<title>Ошибка | music-quiz</title>
+<title>{{title}} | music-quiz</title>
 </head>
 <body>
     {% include "menu.html" %}
 
-    <h1>Произошла ошибка</h1>
+    <h1>{{title}}</h1>
     <div class="text">{{message}}</div>
     <div class="text">Вы можете <a href="javascript:history.back()">вернуться назад</a> или <a href="/">перейти на главную страницу</a>.</div>
 

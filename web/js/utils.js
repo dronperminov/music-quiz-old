@@ -258,5 +258,19 @@ function ChangeField(inputId, iconId = null) {
     icon.classList.remove("error-icon")
     error.innerText = ""
 
+    let info = document.getElementById("info")
+    if (info)
+        info.innerText = ""
+
     ShowSaveButton()
+}
+
+function GetWordForm(audiosCount, words) {
+    if ([0, 5, 6, 7, 8, 9].indexOf(audiosCount % 10) > -1 || [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].indexOf(audiosCount) > -1)
+        return words[0]
+
+    if ([2, 3, 4].indexOf(audiosCount % 10) > -1)
+        return words[1]
+
+    return words[2]
 }

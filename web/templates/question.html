@@ -1,5 +1,5 @@
 {% include "header.html" %}
-<title>{{title | capitalize}} | music-quiz</title>
+<title>{{question.title | capitalize}} | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/question.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
@@ -7,10 +7,10 @@
 <body>
     {% include "menu.html" %}
 
-    <div class="question" id="question" data-question-type="{{question_type}}">
+    <div class="question" id="question" data-question-type="{{question.type}}">
         <audio id="audio" data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-answer-timecode="{{question.answer_timecode}}" preload="metadata"></audio>
 
-        <div class="question-header">{{title | capitalize}}:</div>
+        <div class="question-header">{{question.title | capitalize}}:</div>
         <div class="audio-player" id="player">
             {% include "components/player.html" %}
         </div>
@@ -48,7 +48,7 @@
             <div class="error" id="check-answer-error"></div>
 
             <h3>Дополнительно:</h3>
-            {% if question_type not in ["artist_by_track", "artist_by_intro"] %}
+            {% if question.type not in ["artist_by_track", "artist_by_intro"] %}
             <div class="form-row" title="Исполнитель">
                 <div class="form-row-icon">
                     <svg class="form-svg-fill-icon" height="24px" width="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
@@ -63,7 +63,7 @@
             </div>
             {% endif %}
 
-            {% if question_type != "name_by_track" %}
+            {% if question.type != "name_by_track" %}
             <div class="form-row" title="Название">
                 <div class="form-row-icon">
                     <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="14 14 46 46" xmlns="http://www.w3.org/2000/svg">
@@ -143,7 +143,7 @@
                 </div>
                 {% endif %}
 
-                {% if question_type not in ["artist_by_track", "name_by_track"] %}
+                {% if question.type not in ["artist_by_track", "name_by_track"] %}
                 <div class="table-cell" id="full-track">
                     <button class="basic-button default-button" onclick="MakeFullTrack(player)">Трек целиком</button>
                 </div>

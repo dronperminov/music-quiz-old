@@ -59,18 +59,25 @@ function SaveSettings() {
     if (textLanguages === null)
         return
 
+    let artists = GetMultiSelect("artists", null)
+    if (artists === null)
+        return
+
     let data = {
         fullname: fullname,
         theme: document.getElementById("theme").value,
         question_years: questionYears.map((value) => value.split("-").map(v => +v)),
         questions: questions,
         question_artists: questionArtists,
-        text_languages: textLanguages
+        text_languages: textLanguages,
+        artists: artists.map(artist => +artist)
     }
 
     let button = document.getElementById("save-btn")
     let error = document.getElementById("error")
+    let info = document.getElementById("info")
     error.innerText = ""
+    info.innerText = ""
 
     SendRequest("/update-settings", data).then(response => {
         if (response.status != "success") {
@@ -79,6 +86,7 @@ function SaveSettings() {
         }
 
         button.classList.add("hidden")
+        info.innerText = `Настройкам соответствует ${response.audios_count} ${GetWordForm(response.audios_count, ["аудиозаписей", "аудиозаписи", "аудиозапись"])}`
     })
 }
 

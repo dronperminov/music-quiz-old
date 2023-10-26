@@ -13,6 +13,7 @@ class Settings:
     questions: List[str]
     question_artists: List[str]
     text_languages: List[str]
+    artists: List[int]
 
     @classmethod
     def from_dict(cls: "Settings", data: dict) -> "Settings":
@@ -21,7 +22,8 @@ class Settings:
         questions = data.get("questions", constants.QUESTIONS)
         question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
-        return cls(theme, question_years, questions, question_artists, text_languages)
+        artists = data.get("artists", [])
+        return cls(theme, question_years, questions, question_artists, text_languages, artists)
 
     def to_dict(self) -> dict:
         return {
@@ -29,7 +31,8 @@ class Settings:
             "question_years": self.question_years,
             "questions": self.questions,
             "question_artists": self.question_artists,
-            "text_languages": self.text_languages
+            "text_languages": self.text_languages,
+            "artists": self.artists
         }
 
     def to_query(self) -> dict:
@@ -40,6 +43,9 @@ class Settings:
             ],
             **self.__question_artists_to_query()
         }
+
+        if self.artists:
+            query["$and"].append({"artists.id": {"$in": self.artists}})
 
         return query
 

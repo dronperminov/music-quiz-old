@@ -498,6 +498,15 @@ body {
     font-family: Roboto;
 }
 
+.info:not(:empty) {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+    color: var(--placeholder-color);
+    font-family: Roboto;
+    font-size: 0.9em;
+}
+
 .success:not(:empty) {
     margin-top: 10px;
     text-align: center;

@@ -53,3 +53,7 @@
     margin-top: 0;
     transition: margin-top 100ms linear;
 }
+
+.save-button {
+    margin-bottom: 10px;
+}

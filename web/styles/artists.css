@@ -19,3 +19,15 @@
     padding: 0 10px 10px 10px;
     border-radius: 0 0 10px 10px;
 }
+
+.artist-question-icon {
+    fill: var(--placeholder-color);
+}
+
+.artist-question-icon:hover {
+    fill: var(--text-color);
+}
+
+.artist-question-selected-icon {
+    fill: var(--main-color) !important;
+}

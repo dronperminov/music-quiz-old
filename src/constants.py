@@ -10,7 +10,7 @@ CHORUS_THRESHOLD = 0.9
 CHORUS_MIN_LENGTH = 4
 TOP_COUNT = 10
 
-VERSION = "2023-10-27-00-00"
+VERSION = "2023-10-27-02-00"
 
 ROCK_GENRE = "rock"
 POP_GENRE = "pop"
@@ -81,14 +81,6 @@ QUESTION_TO_RUS = {
     QUESTION_NAME_BY_TRACK: "название по треку",
     QUESTION_LINE_BY_TEXT: "строка по тексту",
     QUESTION_LINE_BY_CHORUS: "строка по припеву"
-}
-
-QUESTION_TO_TITLE = {
-    QUESTION_ARTIST_BY_TRACK: "назовите исполнителя песни",
-    QUESTION_ARTIST_BY_INTRO: "назовите исполнителя песни по её вступлению",
-    QUESTION_NAME_BY_TRACK: "назовите название песни",
-    QUESTION_LINE_BY_TEXT: "продолжите строку",
-    QUESTION_LINE_BY_CHORUS: "продолжите строку припева"
 }
 
 QUESTION_ARTISTS_SOLE = "sole"
