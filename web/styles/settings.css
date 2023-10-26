@@ -20,10 +20,10 @@
 }
 
 .profile-image img {
-    max-width: 100%;
+    width: 96px;
+    height: 96px;
     border-radius: 100%;
     object-fit: cover;
-    aspect-ratio: 1/1;
 }
 
 .profile-image:hover {
