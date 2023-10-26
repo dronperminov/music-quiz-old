@@ -2,6 +2,7 @@ import datetime
 from typing import Optional
 
 from src.database import database
+from src.utils.common import get_question_form
 
 
 def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, day_end: Optional[datetime.datetime] = None) -> dict:
@@ -22,6 +23,7 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     return {
         "question_types": len(question_types),
         "questions": len(statistic),
+        "questions_form": get_question_form(len(statistic)),
         "correct_tracks": database.statistic.count_documents({**query, "correct": True}),
         "incorrect_tracks": database.statistic.count_documents({**query, "correct": False}),
         "artists": len(artists)

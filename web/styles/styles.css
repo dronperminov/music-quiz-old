@@ -110,6 +110,20 @@
     --statistic-name-color: #666666;
     --statistic-value-color: #2d3039;
 
+    /* leaderboard  */
+    --leaderboard-profile-border-color: #2d3039;
+    --leaderboard-place-user-name-text-color: #2d3039;
+    --leaderboard-place-user-score-text-color: #666666;
+    --leaderboard-place-user-score-background-color: #ffffff;
+    --leaderboard-tribune-top-background-color: #999999;
+    --leaderboard-tribune-background-color: #f0f0f0;
+    --leaderboard-tribune-text-color: #2d3039;
+    --leaderboard-statistics-background-color: #f0f0f0;
+    --leaderboard-statistic-background-color: #ffffff;
+    --leaderboard-statistic-text-color: #2d3039;
+    --leaderboard-statistic-border-color: var(--border-color);
+    --leaderboard-statistic-score-text-color: #666666;
+
     /* details */
     --details-font-family: Roboto;
     --details-background-color: #ffffff;
@@ -217,6 +231,20 @@
     --statistic-name-color: #aaaaaa;
     --statistic-value-color: #ffffff;
 
+    /* leaderboard  */
+    --leaderboard-profile-border-color: #ffffff;
+    --leaderboard-place-user-name-text-color: #ffffff;
+    --leaderboard-place-user-score-text-color: #aaaaaa;
+    --leaderboard-place-user-score-background-color: #3b3f4a;
+    --leaderboard-tribune-top-background-color: #aaaaaa;
+    --leaderboard-tribune-background-color: #3b3f4a;
+    --leaderboard-tribune-text-color: #ffffff;
+    --leaderboard-statistics-background-color: #2d3039;
+    --leaderboard-statistic-background-color: #3b3f4a;
+    --leaderboard-statistic-text-color: #eeeeee;
+    --leaderboard-statistic-border-color: #aaaaaa;
+    --leaderboard-statistic-score-text-color: #aaaaaa;
+
     /* details */
     --details-font-family: Roboto;
     --details-background-color: #3b3f4a;
@@ -316,6 +344,20 @@
         --statistic-vertical-border-color: #6e6f7d;
         --statistic-name-color: #aaaaaa;
         --statistic-value-color: #ffffff;
+
+        /* leaderboard  */
+        --leaderboard-profile-border-color: #ffffff;
+        --leaderboard-place-user-name-text-color: #ffffff;
+        --leaderboard-place-user-score-text-color: #aaaaaa;
+        --leaderboard-place-user-score-background-color: #3b3f4a;
+        --leaderboard-tribune-top-background-color: #aaaaaa;
+        --leaderboard-tribune-background-color: #3b3f4a;
+        --leaderboard-tribune-text-color: #ffffff;
+        --leaderboard-statistics-background-color: #2d3039;
+        --leaderboard-statistic-background-color: #3b3f4a;
+        --leaderboard-statistic-text-color: #eeeeee;
+        --leaderboard-statistic-border-color: #aaaaaa;
+        --leaderboard-statistic-score-text-color: #aaaaaa;
 
         /* details */
         --details-font-family: Roboto;
