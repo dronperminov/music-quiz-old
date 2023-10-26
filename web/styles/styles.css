@@ -479,6 +479,7 @@ body {
 .table-block {
     display: table;
     width: 100%;
+    border-spacing: 4px 0;
 }
 
 .table-equal-block {
@@ -487,15 +488,6 @@ body {
 
 .table-cell {
     display: table-cell;
-    padding: 0 4px;
-}
-
-.table-cell:first-child {
-    padding-left: 0
-}
-
-.table-cell:last-child {
-    padding-right: 0
 }
 
 .table-cell-no-width {

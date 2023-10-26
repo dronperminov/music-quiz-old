@@ -70,3 +70,22 @@ function SaveAudio() {
         button.classList.add("hidden")
     })
 }
+
+function RemoveAudio() {
+    if (!confirm("Вы уверены, что хотите удалить эту аудиозапись?"))
+        return
+
+    let audio = document.getElementById("audio")
+    let link = audio.getAttribute("data-link")
+    let error = document.getElementById("error")
+    error.innerText = ""
+
+    SendRequest("/remove-audio", {link: link}).then(response => {
+        if (response.status != "success") {
+            error.innerText = response.message
+            return
+        }
+
+        window.close()
+    })
+}

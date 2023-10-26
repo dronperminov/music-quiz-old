@@ -123,7 +123,14 @@
             </div>
         </div>
 
-        <button class="basic-button default-button hidden" id="save-btn" onclick="SaveAudio()">Сохранить</button>
+        <div class="table-block table-equal-block">
+            <div class="table-cell">
+                <button class="basic-button default-button" id="remove-btn" onclick="RemoveAudio()">Удалить</button>
+            </div>
+            <div class="table-cell hidden" id="save-btn">
+                <button class="basic-button default-button" onclick="SaveAudio()">Сохранить</button>
+            </div>
+        </div>
         <div class="error" id="error"></div>
     </div>
 
