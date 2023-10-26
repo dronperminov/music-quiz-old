@@ -41,15 +41,11 @@
             <div class="form-row-input">
                 <div class="basic-multi-select default-multi-select" id="genres">
                     <div class="multi-select-title">Жанры</div>
+                    {% for genre in genres %}
                     <div class="multi-select-row">
-                        <label><input type="checkbox" id="genres-rock" {% if "rock" in artist.genres %}checked{% endif %} onchange="ChangeField('genres')"> рок</label>
+                        <label><input type="checkbox" id="genres-{{genre}}" {% if genre in artist.genres %}checked{% endif %} onchange="ChangeField('genres')"> {{genre2rus[genre]}}</label>
                     </div>
-                    <div class="multi-select-row">
-                        <label><input type="checkbox" id="genres-pop" {% if "pop" in artist.genres %}checked{% endif %} onchange="ChangeField('genres')"> поп</label>
-                    </div>
-                    <div class="multi-select-row">
-                        <label><input type="checkbox" id="genres-hip-hop" {% if "hip-hop" in artist.genres %}checked{% endif %} onchange="ChangeField('genres')"> хип-хоп</label>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>

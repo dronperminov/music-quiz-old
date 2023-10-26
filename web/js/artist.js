@@ -41,7 +41,7 @@ function SaveArtist(artistId) {
     if (creation === null)
         return
 
-    let genres = GetMultiSelect("genres", ["rock", "pop", "hip-hop"])
+    let genres = GetMultiSelect("genres", null)
 
     if (genres === null)
         return

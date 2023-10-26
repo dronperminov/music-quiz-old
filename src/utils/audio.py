@@ -144,12 +144,9 @@ def parse_artist_genres(artist_ids: List[int], token: str) -> Dict[int, List[str
         artist_genres = set()
 
         for genre in artist.genres:
-            if genre in constants.ROCK_GENRES:
-                artist_genres.add(constants.ROCK_GENRE)
-            elif genre in constants.POP_GENRES:
-                artist_genres.add(constants.POP_GENRE)
-            elif genre in constants.HIP_HOP_GENRES:
-                artist_genres.add(constants.HIP_HOP_GENRE)
+            for target_genre, yandex_genres in constants.GENRE_TO_YANDEX.items():
+                if genre in yandex_genres:
+                    artist_genres.add(target_genre)
 
         genres[artist_id] = list(artist_genres)
 

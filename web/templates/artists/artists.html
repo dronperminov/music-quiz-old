@@ -26,40 +26,37 @@
 
     <div class="table-block table-equal-block search-params">
         <div class="table-cell">
-            <div class="basic-multi-select default-multi-select">
+            <div class="basic-multi-select default-multi-select" id="genres">
                 <div class="multi-select-title">Жанр</div>
+                {% for genre in genres %}
                 <div class="multi-select-row">
-                    <label><input type="checkbox" id="genres-rock" {% if "rock" in genres %}checked{% endif %}> рок</label>
+                    <label><input type="checkbox" id="genres-{{genre}}" {% if genre in search_genres %}checked{% endif %}> {{genre2rus[genre]}}</label>
                 </div>
+                {% endfor %}
+
                 <div class="multi-select-row">
-                    <label><input type="checkbox" id="genres-pop" {% if "pop" in genres %}checked{% endif %}> поп</label>
-                </div>
-                <div class="multi-select-row">
-                    <label><input type="checkbox" id="genres-hip-hop" {% if "hip-hop" in genres %}checked{% endif %}> хип-хоп</label>
-                </div>
-                <div class="multi-select-row">
-                    <label><input type="checkbox" id="genres-no" {% if "no" in genres %}checked{% endif %}> не указан</label>
+                    <label><input type="checkbox" id="genres-no" {% if "no" in search_genres %}checked{% endif %}> не указан</label>
                 </div>
             </div>
         </div>
 
         <div class="table-cell">
-            <div class="basic-multi-select default-multi-select">
+            <div class="basic-multi-select default-multi-select" id="creation">
                 <div class="multi-select-title">Творчество</div>
                 <div class="multi-select-row">
-                    <label><input type="checkbox" id="creation-russian" {% if "russian" in creation %}checked{% endif %}> русское</label>
+                    <label><input type="checkbox" id="creation-russian" {% if "russian" in search_creation %}checked{% endif %}> русское</label>
                 </div>
                 <div class="multi-select-row">
-                    <label><input type="checkbox" id="creation-foreign" {% if "foreign" in creation %}checked{% endif %}> зарубежное</label>
+                    <label><input type="checkbox" id="creation-foreign" {% if "foreign" in search_creation %}checked{% endif %}> зарубежное</label>
                 </div>
                 <div class="multi-select-row">
-                    <label><input type="checkbox" id="creation-no" {% if "no" in creation %}checked{% endif %}> не указано</label>
+                    <label><input type="checkbox" id="creation-no" {% if "no" in search_creation %}checked{% endif %}> не указано</label>
                 </div>
             </div>
         </div>
     </div>
 
-    {% if query or genres or creation %}
+    {% if query or search_genres or search_creation %}
     {% if artists %}
     <div class="content">
     {% for artist in artists %}
@@ -88,6 +85,7 @@
     {% endif %}
     {% endif %}
 
+    <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/artists.js?v={{version}}"></script>
     {% include "footer.html" %}
 </body>

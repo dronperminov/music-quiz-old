@@ -5,11 +5,11 @@ function SearchArtists() {
 
     let params = [`query=${query}`]
 
-    for (let genre of ["rock", "pop", "hip-hop", "no"])
+    for (let genre of GetMultiSelectNames("genres"))
         if (document.getElementById(`genres-${genre}`).checked)
             params.push(`genres=${genre}`)
 
-    for (let creation of ["russian", "foreign","no"])
+    for (let creation of GetMultiSelectNames("creation"))
         if (document.getElementById(`creation-${creation}`).checked)
             params.push(`creation=${creation}`)
 

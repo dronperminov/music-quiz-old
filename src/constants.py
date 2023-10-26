@@ -9,33 +9,54 @@ INTRODUCTION_TIME = 15
 CHORUS_THRESHOLD = 0.9
 CHORUS_MIN_LENGTH = 4
 
-VERSION = "2023-10-26-10-00"
+VERSION = "2023-10-26-21-00"
 
 ROCK_GENRE = "rock"
 POP_GENRE = "pop"
 HIP_HOP_GENRE = "hip-hop"
+ELECTRONICS_GENRE = "electronic"
+DISCO_GENRE = "disco"
+JAZZ_SOUL_GENRE = "jazz-soul"
+GENRES = [ROCK_GENRE, POP_GENRE, HIP_HOP_GENRE, ELECTRONICS_GENRE, DISCO_GENRE, JAZZ_SOUL_GENRE]
 
-ROCK_GENRES = {
-    "allrock", "alternative", "alternativemetal", "amerfolk", "bard", "blackmetal", "deathmetal", "doommetal", "epicmetal", "eurofolk", "extrememetal", "postmetal",
-    "progmetal", "sludgemetal", "thrashmetal", "classicmetal", "folkmetal", "gothicmetal", "israelirock", "folkrock", "hardrock", "postrock", "rock", "rusrock",
-    "stonerrock", "turkishrock", "ukrrock", "folk", "folkgenre", "latinfolk", "rusfolk", "turkishfolk", "postpunk", "punk", "hardcore", "metalcoregenre", "numetal",
-    "posthardcore", "romances", "rusbards", "foreignbard", "metal", "ska", "turkishalternative", "rnr", "shanson", "industrial", "prog"
-}
+GENRE_TO_YANDEX = {
+    ROCK_GENRE: {
+        "allrock", "alternative", "alternativemetal", "amerfolk", "bard", "blackmetal", "classicmetal", "deathmetal", "doommetal", "epicmetal", "eurofolk",
+        "extrememetal", "folk", "folkgenre", "folkmetal", "folkrock", "foreignbard", "gothicmetal", "hardcore", "hardrock", "indie", "industrial", "israelirock",
+        "latinfolk", "local-indie", "metal", "metalcoregenre", "newage", "newwave", "numetal", "posthardcore", "postmetal", "postpunk", "postrock", "prog",
+        "progmetal", "punk", "rnr", "rock", "romances", "rusbards", "rusfolk", "rusrock", "ska", "sludgemetal", "stonerrock", "thrashmetal",
+        "turkishalternative", "turkishfolk", "turkishrock", "ukrrock"
+    },
 
-HIP_HOP_GENRES = {
-    "bassgenre", "dnb", "electronics", "foreignrap", "israelirap", "rap", "rusrap", "turkishrap", "funk", "house", "dub", "dubstep", "rnb", "techno", "triphopgenre",
-    "trance", "edmgenre", "idmgenre", "modern", "phonkgenre", "reggaeton", "ukgaragegenre", "breakbeatgenre", "bollywood"
-}
+    HIP_HOP_GENRE: {
+        "foreignrap", "israelirap", "modern", "phonkgenre", "rap", "reggaeton", "rusrap", "triphopgenre", "turkishrap"
+    },
 
-POP_GENRES = {
-    "arabicpop", "azerbaijanpop", "dance", "disco", "estrada", "israelipop", "japanesepop", "kpop", "pop", "ruspop", "turkishpop", "uzbekpop", "bollywood", "newage",
-    "newwave", "hyperpopgenre", "lounge", "rusestrada"
+    POP_GENRE: {
+        "arabicpop", "azerbaijanpop", "dance", "estrada", "hyperpopgenre", "israelipop", "japanesepop", "kpop", "newwave", "pop", "rusestrada", "ruspop", "shanson",
+        "turkishpop", "uzbekpop", "edmgenre"
+    },
+
+    ELECTRONICS_GENRE: {
+        "ambientgenre", "bassgenre", "breakbeatgenre", "dnb", "dub", "dubstep", "electronics", "house", "idmgenre", "techno", "trance", "ukgaragegenre"
+    },
+
+    DISCO_GENRE: {
+        "disco"
+    },
+
+    JAZZ_SOUL_GENRE: {
+        "bebopgenre", "bigbands", "blues", "conjazz", "country", "experimental", "funk", "jazz", "rnb", "smoothjazz", "soul", "tradjazz", "vocaljazz"
+    }
 }
 
 GENRE_TO_RUS = {
     ROCK_GENRE: "рок",
     POP_GENRE: "поп",
     HIP_HOP_GENRE: "хип-хоп",
+    ELECTRONICS_GENRE: "электронная",
+    DISCO_GENRE: "диско",
+    JAZZ_SOUL_GENRE: "джаз / соул"
 }
 
 CREATION_TO_RUS = {
