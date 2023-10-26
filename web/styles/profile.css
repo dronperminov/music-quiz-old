@@ -77,11 +77,11 @@
 }
 
 .correct {
-    color: var(--button-red-background-color);
+    color: var(--button-green-background-color);
 }
 
 .incorrect {
-    color: var(--button-green-background-color);
+    color: var(--button-red-background-color);
 }
 
 @media (max-width: 767px) {

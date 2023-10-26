@@ -19,9 +19,6 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     if not user:
         return RedirectResponse(url="/login")
 
-    if user["role"] != "admin":
-        return make_error(message="Эта страница доступна только администраторам.", user=user)
-
     if search_params.query == "" and search_params.genres is None and search_params.creation is None:
         return RedirectResponse(url="/artists")
 
