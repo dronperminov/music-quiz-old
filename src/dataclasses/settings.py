@@ -73,10 +73,10 @@ class Settings:
             return {}
 
         if question_type == constants.QUESTION_LINE_BY_TEXT:
-            return {"lyrics": {"$exists": True, "$ne": []}}
+            return {"lyrics": {"$exists": True, "$ne": []}, "creation": ["russian"]}
 
         if question_type == constants.QUESTION_LINE_BY_CHORUS:
-            return {"lyrics": {"$exists": True, "$ne": []}, "chorus": True}
+            return {"lyrics": {"$exists": True, "$ne": []}, "chorus": True, "creation": ["russian"]}
 
         raise ValueError(f'Invalid question_type "{question_type}"')
 
