@@ -1,4 +1,3 @@
-import hashlib
 import os
 import shutil
 import tempfile
@@ -13,32 +12,9 @@ from src.api import templates
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
-from src.utils.common import get_default_question_years, get_word_form
+from src.utils.common import get_default_question_years, get_hash, get_word_form, save_image
 
 router = APIRouter()
-
-
-def save_image(image: UploadFile, output_dir: str) -> str:
-    file_name = image.filename.split("/")[-1]
-    file_path = os.path.join(output_dir, file_name)
-
-    try:
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-    finally:
-        image.file.close()
-
-    return file_path
-
-
-def get_hash(filename: str) -> str:
-    hash_md5 = hashlib.md5()
-
-    with open(filename, "rb") as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-
-    return hash_md5.hexdigest()
 
 
 @router.get("/settings")

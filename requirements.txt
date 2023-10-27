@@ -7,6 +7,7 @@ passlib[bcrypt]
 pymongo
 pyjwt
 python-multipart
+opencv-python
 requests
 uvicorn[standard]
 wget
