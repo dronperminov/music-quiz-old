@@ -41,6 +41,18 @@
     max-height: 150px;
 }
 
+.lyrics-icon {
+    fill: var(--placeholder-color);
+}
+
+.lyrics-icon:hover {
+    fill: var(--text-color);
+}
+
+.lyrics-selected-icon {
+    fill: var(--main-color) !important;
+}
+
 audio {
     display: block;
     width: 100%;

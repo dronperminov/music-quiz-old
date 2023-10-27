@@ -143,3 +143,10 @@ function SeekPlayer(link, time) {
 
     players[link].Seek(time)
 }
+
+function ToggleText(link) {
+    let block = document.getElementById(`lyrics-${link}`)
+    let icon = document.getElementById(`lyrics-icon-${link}`)
+    block.classList.toggle("hidden")
+    icon.classList.toggle("lyrics-selected-icon")
+}

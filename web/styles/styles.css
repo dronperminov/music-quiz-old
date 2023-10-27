@@ -533,6 +533,10 @@ body {
     border-spacing: 4px 0;
 }
 
+.table-block-no-spacing {
+    border-spacing: 0;
+}
+
 .table-equal-block {
     table-layout: fixed;
 }
