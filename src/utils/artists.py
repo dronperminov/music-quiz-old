@@ -19,7 +19,7 @@ def search_to_query(params: ArtistsQuery) -> Optional[dict]:
     query = dict()
 
     if params.query:
-        query["name"] = {"$regex": escape_query(params.query), "$options": "i"}
+        query["name"] = {"$regex": params.query[1:-1] if re.fullmatch(r"/[^/]+/", params.query) else escape_query(params.query), "$options": "i"}
 
     and_conditions = []
     if params.genres is not None:
