@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from typing import List, Set
 
 from src import constants
+from src.database import database
 from src.utils.common import get_default_question_years
 
 
@@ -12,6 +13,7 @@ class Settings:
     question_years: List[List[int]]
     questions: List[str]
     question_artists: List[str]
+    genres: List[str]
     text_languages: List[str]
     artists: List[int]
 
@@ -21,9 +23,10 @@ class Settings:
         question_years = data.get("question_years", get_default_question_years())
         questions = data.get("questions", constants.QUESTIONS)
         question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
+        genres = data.get("genres", constants.GENRES)
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
         artists = data.get("artists", [])
-        return cls(theme, question_years, questions, question_artists, text_languages, artists)
+        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists)
 
     def to_dict(self) -> dict:
         return {
@@ -31,17 +34,22 @@ class Settings:
             "question_years": self.question_years,
             "questions": self.questions,
             "question_artists": self.question_artists,
+            "genres": self.genres,
             "text_languages": self.text_languages,
             "artists": self.artists
         }
 
     def to_query(self) -> dict:
+        artist_ids = [artist["id"] for artist in database.artists.find({"genres": {"$in": self.genres}}, {"id": 1})]
+
         query = {
             "$and": [
                 {"$or": [{"year": {"$gte": start_year, "$lte": end_year}} for start_year, end_year in self.question_years]},
-                {"$or": [self.__question_to_query(question_type) for question_type in self.questions]}
-            ],
-            **self.__question_artists_to_query()
+                {"$or": [self.__question_to_query(question_type) for question_type in self.questions]},
+                {"artists.id": {"$in": artist_ids}},
+                {"creation": {"$in": self.text_languages}},
+                self.__question_artists_to_query()
+            ]
         }
 
         if self.artists:
@@ -65,10 +73,10 @@ class Settings:
             return {}
 
         if question_type == constants.QUESTION_LINE_BY_TEXT:
-            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}}
+            return {"lyrics": {"$exists": True, "$ne": []}}
 
         if question_type == constants.QUESTION_LINE_BY_CHORUS:
-            return {"lyrics": {"$exists": True, "$ne": []}, "creation": {"$in": self.text_languages}, "chorus": True}
+            return {"lyrics": {"$exists": True, "$ne": []}, "chorus": True}
 
         raise ValueError(f'Invalid question_type "{question_type}"')
 

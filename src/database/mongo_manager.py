@@ -21,7 +21,10 @@ class MongoManager:
 
         self.audios.create_index([("artists.id", ASCENDING)])
         self.audios.create_index([("link", ASCENDING)], unique=True)
+
         self.artists.create_index([("id", ASCENDING)], unique=True)
+        self.artists.create_index([("genres", ASCENDING)])
+
         self.statistic.create_index([("username", ASCENDING)])
         self.statistic.create_index(["datetime"])
         self.statistic.create_index(["question_type"])

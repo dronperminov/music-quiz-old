@@ -55,6 +55,10 @@ function SaveSettings() {
     if (questionArtists === null)
         return
 
+    let genres = GetMultiSelect("genres", null, "Не выбран ни один жанр")
+    if (genres === null)
+        return
+
     let textLanguages = GetMultiSelect("text-languages", ["russian", "foreign"], "Не выбран ни один язык")
     if (textLanguages === null)
         return
@@ -69,6 +73,7 @@ function SaveSettings() {
         question_years: questionYears.map((value) => value.split("-").map(v => +v)),
         questions: questions,
         question_artists: questionArtists,
+        genres: genres,
         text_languages: textLanguages,
         artists: artists.map(artist => +artist)
     }
