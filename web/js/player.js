@@ -1,14 +1,15 @@
-function Player(audio, onUpdate) {
+function Player(playerId, audio, onUpdate) {
     this.audio = audio
     this.onUpdate = onUpdate
 
-    this.controls = document.getElementById("player-controls")
-    this.playIcon = document.getElementById("player-play-icon")
-    this.pauseIcon = document.getElementById("player-pause-icon")
+    let block = document.getElementById(playerId)
+    this.controls = block.getElementsByClassName("player-controls")[0]
+    this.playIcon = block.getElementsByClassName("player-play-icon")[0]
+    this.pauseIcon = block.getElementsByClassName("player-pause-icon")[0]
 
-    this.progressBar = document.getElementById("player-progress-bar")
-    this.currentProgress = document.getElementById("player-current-progress")
-    this.time = document.getElementById("player-time")
+    this.progressBar = block.getElementsByClassName("player-progress-bar")[0]
+    this.currentProgress = block.getElementsByClassName("player-current-progress")[0]
+    this.time = block.getElementsByClassName("player-time")[0]
 
     this.InitEvents()
     this.ResetTimecode()

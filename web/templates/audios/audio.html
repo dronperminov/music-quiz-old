@@ -8,7 +8,7 @@
     <h1>Редактирование аудиозаписи</h1>
 
     <audio id="audio" data-link="{{audio.link}}" preload="metadata"></audio>
-    <div class="audio-player">
+    <div class="audio-player" id="player">
         {% include "components/player.html" %}
     </div>
 
@@ -143,7 +143,7 @@
         let player = null
 
         audio.addEventListener("loadedmetadata", () => {
-            player = new Player(audio, UpdateLyrics)
+            player = new Player("player", audio, UpdateLyrics)
             player.Init()
         })
 

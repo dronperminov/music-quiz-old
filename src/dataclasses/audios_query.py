@@ -24,9 +24,13 @@ class AudiosQuery:
         query = dict()
 
         if self.query:
-            query["track"] = {"$regex": escape_query(self.query), "$options": "i"}
+            query["$or"] = [
+                {"track": {"$regex": escape_query(self.query), "$options": "i"}},
+                {"artists.name": {"$regex": escape_query(self.query), "$options": "i"}}
+            ]
 
         and_conditions = []
+
         if self.start_year is not None:
             and_conditions.append({"year": {"$gte": self.start_year}})
 

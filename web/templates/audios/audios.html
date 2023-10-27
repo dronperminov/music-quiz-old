@@ -1,6 +1,8 @@
 {% include "header.html" %}
 <title>Управление аудиозаписями | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/search.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/audios.css?v={{version}}">
 </head>
 <body>
@@ -31,11 +33,11 @@
                     <div class="multi-select-title">Годы выхода</div>
                     <div class="table-block">
                         <div class="table-cell">
-                            <input class="basic-input default-input right" type="text" inputmode="numeric" min="0" id="years-start" value="{{search_start_year}}" oninput="ChangeYear('years-start')" onkeydown="QueryKeyDown(event, SearchAudios)">
+                            <input class="basic-input default-input number-input right" type="text" inputmode="numeric" min="0" id="years-start" value="{{search_start_year}}" oninput="ChangeYear('years-start')" onkeydown="QueryKeyDown(event, SearchAudios)">
                         </div>
                         <div class="table-cell table-cell-no-width">-</div>
                         <div class="table-cell">
-                            <input class="basic-input default-input left" type="text" inputmode="numeric" min="0" id="years-end" value="{{search_end_year}}" oninput="ChangeYear('years-end')" onkeydown="QueryKeyDown(event, SearchAudios)">
+                            <input class="basic-input default-input number-input left" type="text" inputmode="numeric" min="0" id="years-end" value="{{search_end_year}}" oninput="ChangeYear('years-end')" onkeydown="QueryKeyDown(event, SearchAudios)">
                         </div>
                     </div>
                 </div>
@@ -91,7 +93,33 @@
                 {% for creation_type in audio.creation %}{% if loop.index > 1 %}, {% endif %}{{creation2rus[creation_type]}}{% endfor %}
             </div>
             {% endif %}
+            <div class="table-block" id="play-audio-{{audio.link}}">
+                <div class="table-cell table-cell-no-width table-cell-middle">
+                    <div class="form-row-icon-interactive" onclick="PlayAudio('{{audio.link}}')">
+                        <svg class="form-svg-fill-icon" width="20px" height="20px" viewBox="-0.3 -0.05 7.1 7.1" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.495,2.573 L1.501,0.142 C0.832,-0.265 0,0.25 0,1.069 L0,5.931 C0,6.751 0.832,7.264 1.501,6.858 L5.495,4.428 C6.168,4.018 6.168,2.983 5.495,2.573" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="table-cell table-cell-middle">
+                    <div class="audio-player" id="player-{{audio.link}}">
+                        <audio id="audio-{{audio.link}}" data-link="{{audio.link}}" preload="metadata"></audio>
+                        {% include "components/player.html" %}
+                    </div>
+                </div>
+            </div>
+
             <div class="error" id="error-{{audio.link}}"></div>
+
+            {% if audio.lyrics %}
+            <div class="form-row audio-lyrics">
+                <div class="audio-text" id="lyrics-{{audio.link}}">
+                    {% for line in audio.lyrics %}
+                    <div class="audio-text-line" data-time="{{line.time}}" onclick="SeekPlayer('{{audio.link}}', {{line.time}})">{{line.text}}</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -102,7 +130,31 @@
 
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/search.js?v={{version}}"></script>
+    <script src="/js/audio.js?v={{version}}"></script>
+    <script src="/js/player.js?v={{version}}"></script>
     <script src="/js/audios.js?v={{version}}"></script>
+
+    {% if audios %}
+    <script>
+        let players = {}
+
+        for (let audio of document.getElementsByTagName("audio")) {
+            let link = audio.getAttribute("data-link")
+
+            audio.addEventListener("loadedmetadata", () => {
+                let lyrics = GetLyrics(link)
+                let player = new Player(`player-${link}`, audio, (currentTime) => ShowLyrics(link, lyrics, currentTime))
+                player.ResetTimecode()
+                player.Init()
+                player.Play()
+                players[link] = player
+            })
+
+            audio.addEventListener("play", () => PausePlayers(link))
+        }
+    </script>
+    {% endif %}
+
     {% include "footer.html" %}
 </body>
 </html>

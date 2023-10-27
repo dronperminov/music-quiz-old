@@ -155,6 +155,7 @@
 .user-profile {
     display: table-cell;
     vertical-align: middle;
+    width: 50px
 }
 
 .user-profile img {

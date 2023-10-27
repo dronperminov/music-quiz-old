@@ -165,7 +165,7 @@
             let button = document.getElementById("show-btn")
             button.removeAttribute("disabled")
 
-            player = new Player(audio, UpdateLyrics)
+            player = new Player("player", audio, UpdateLyrics)
             player.ParseTimecode(audio.getAttribute("data-question-timecode"))
             player.Init()
         })

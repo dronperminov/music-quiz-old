@@ -1,15 +1,16 @@
-function LoadAudio(audio) {
+function LoadAudio(audio, errorId = "error") {
     let link = audio.getAttribute("data-link")
-    let error = document.getElementById("error")
+    let error = document.getElementById(errorId)
 
     return SendRequest("/get-direct-link", {track_id: link}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
-            return
+            return false
         }
 
         audio.src = response.direct_link
         error.innerText = ""
+        return true
     })
 }
 

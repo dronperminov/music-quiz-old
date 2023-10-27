@@ -33,6 +33,14 @@
     cursor: pointer;
 }
 
+.player {
+    border: none;
+}
+
+.audio-lyrics {
+    max-height: 150px;
+}
+
 audio {
     display: block;
     width: 100%;

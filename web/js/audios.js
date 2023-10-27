@@ -77,3 +77,69 @@ function SearchAudios() {
 
     window.location = `/audios?${params.join("&")}`   
 }
+
+function PausePlayers(targetLink) {
+    for (let link of Object.keys(players))
+        if (link != targetLink)
+            players[link].Pause()
+}
+
+function PlayAudio(link) {
+    let audio = document.getElementById(`audio-${link}`)
+    let block = document.getElementById(`play-audio-${link}`)
+
+    LoadAudio(audio).then(success => {
+        if (!success)
+            return
+
+        PausePlayers(link)
+
+        block.classList.remove("table-block")
+        block.children[1].classList.remove("table-cell")
+        block.children[0].remove()
+    })
+}
+
+function GetLyrics(link) {
+    let block = document.getElementById(`lyrics-${link}`)
+
+    if (block === null)
+        return null
+
+    let lyrics = []
+
+    for (let line of block.getElementsByClassName("audio-text-line")) {
+        let time = +line.getAttribute("data-time")
+        let text = line.innerText
+        lyrics.push({time, text})
+    }
+
+    return lyrics
+}
+
+function ShowLyrics(link, lyrics, currentTime) {
+    if (lyrics === null)
+        return
+
+    let block = document.getElementById(`lyrics-${link}`)
+    for (let line of block.getElementsByClassName("audio-text-line"))
+        line.classList.remove("audio-text-line-curr")
+
+    if (currentTime < lyrics[0]["time"])
+        return
+
+    let index = 0
+    while (index < lyrics.length - 1 && currentTime >= lyrics[index + 1]["time"])
+        index++
+
+    let line = block.getElementsByClassName("audio-text-line")[index]
+    line.classList.add("audio-text-line-curr")
+    line.parentNode.scrollTop = line.offsetTop - line.parentNode.offsetTop
+}
+
+function SeekPlayer(link, time) {
+    if (!players[link])
+        return
+
+    players[link].Seek(time)
+}

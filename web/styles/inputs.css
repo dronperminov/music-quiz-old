@@ -27,7 +27,7 @@
     -webkit-appearance: none;
 }
 
-.basic-input[type=number] {
+.number-input {
     -moz-appearance: textfield;
     border-bottom-color: var(--input-text-color);
 }
