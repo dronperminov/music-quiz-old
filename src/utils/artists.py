@@ -56,3 +56,9 @@ def get_artists_creation(artist_ids: List[int]) -> dict:
             artist2creation[artist["id"]].update(creation)
 
     return artist2creation
+
+
+def get_artists_by_audio_links(links: List[str]) -> List[int]:
+    audios = database.audios.find({"link": {"$in": links}}, {"artists": 1})
+    artists = {artist["id"] for audio in audios for artist in audio["artists"]}
+    return list(artists)
