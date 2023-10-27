@@ -10,6 +10,7 @@ from src.dataclasses.artist_form import ArtistForm
 from src.dataclasses.artists_query import ArtistsQuery
 from src.utils.artists import get_artists_info, search_to_query
 from src.utils.auth import get_current_user
+from src.utils.common import get_word_form
 
 router = APIRouter()
 
@@ -27,12 +28,20 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     artist2count = get_artists_info(artists)
     artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
 
+    total_artists = database.artists.count_documents({})
+    query_correspond_form = get_word_form(len(artists), ["запросу соответствуют", "запросу соответствуют", "запросу соответствует"])
+    query_artists_form = get_word_form(len(artists), ["исполнителей", "исполнителя", "исполнитель"])
+    total_correspond_form = get_word_form(len(total_artists), ["находятся", "находятся", "находится"])
+    total_artists_form = get_word_form(total_artists, ["исполнителей", "исполнителя", "исполнитель"])
+
     template = templates.get_template("artists/artists.html")
     content = template.render(
         user=user,
         page="artists",
         version=constants.VERSION,
         artists=artists,
+        total_artists=f"{total_correspond_form} {total_artists} {total_artists_form}",
+        query_artists=f"{query_correspond_form} {len(artists)} {query_artists_form}",
         genres=constants.GENRES,
         query=search_params.query if search_params.query else "",
         search_genres=search_params.genres if search_params.genres else [],

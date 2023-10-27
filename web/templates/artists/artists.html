@@ -5,7 +5,7 @@
 </head>
 <body>
     {% include "menu.html" %}
-    <h1 class="top">Исполнители {% if query %}({{artists|length}}){% endif %}</h1>
+    <h1 class="top">Исполнители</h1>
 
     <div class="form-row search-field">
         <div class="form-row-icon form-row-icon-interactive clear {% if not query %}clear-hide{% endif %}" id="clear-icon" onclick="ClearQuery()" title="Очистить">
@@ -54,6 +54,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="info">
+        Всего в базе {{total_artists}}{% if artists %}, {{query_artists}}{% endif %}
     </div>
 
     {% if query or search_genres or search_creation %}
