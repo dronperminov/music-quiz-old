@@ -51,12 +51,12 @@ def make_question(audio: dict, question_type: str) -> dict:
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
         question["answer"] = artists
-        question["answer_string"] = ", ".join(artists)
+        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}" target="_blank">{artist["name"]}</a>' for artist in audio["artists"]])
         question["question_timecode"] = track_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_ARTIST_BY_INTRO:
         question["answer"] = artists
-        question["answer_string"] = ", ".join(artists)
+        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}" target="_blank">{artist["name"]}</a>' for artist in audio["artists"]])
         question["question_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
         question["answer_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
     elif question_type == constants.QUESTION_NAME_BY_TRACK:

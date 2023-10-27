@@ -33,7 +33,7 @@
                         <path d="M4 12.6111L8.92308 17.5L20 6.5" stroke-width="2" />
                     </svg>
                 </div>
-                <div class="form-row-input">{{question.get("answer_string", question.answer)}}</div>
+                <div class="form-row-input text">{{question.get("answer_string", question.answer)}}</div>
             </div>
 
             <div class="table-block table-equal-block answer-buttons" id="check-answer">
@@ -59,7 +59,9 @@
                             l0.8-7.5L84.7,40.1z"/>
                     </svg>
                 </div>
-                <div class="form-row-input">{{audio.artists|map(attribute='name')|join(", ")}}</div>
+                <div class="form-row-input text">
+                    {% for artist in audio.artists %}{% if loop.index > 1 %}, {% endif %}<a href="/artists/{{artist.id}}" target="_blank">{{artist.name}}</a>{% endfor %}
+                </div>
             </div>
             {% endif %}
 
