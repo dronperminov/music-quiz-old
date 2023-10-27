@@ -1,6 +1,7 @@
 {% include "header.html" %}
 <title>Исполнители | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/audios.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/search.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/artists.css?v={{version}}">
 </head>
 <body>
@@ -15,7 +16,7 @@
         </div>
 
         <div class="form-row-input">
-            <input type="text" class="basic-input default-input" id="query" placeholder="Введите название исполнителя" value="{{query}}" oninput="QueryInput(event)" onkeydown="QueryKeyDown(event)">
+            <input type="text" class="basic-input default-input" id="query" placeholder="Введите название исполнителя" value="{{query}}" oninput="QueryInput(event)" onkeydown="QueryKeyDown(event, SearchArtists)">
         </div>
         <div class="form-row-icon form-row-icon-interactive" onclick="SearchArtists()">
             <svg class="form-svg-stroke-icon" width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,6 +113,7 @@
     {% endif %}
 
     <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/search.js?v={{version}}"></script>
     <script src="/js/artists.js?v={{version}}"></script>
     {% include "footer.html" %}
 </body>

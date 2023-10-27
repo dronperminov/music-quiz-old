@@ -9,26 +9,47 @@ from src import constants
 from src.api import make_error, templates, tokens
 from src.database import database
 from src.dataclasses.audio_form import AudioForm
+from src.dataclasses.audios_query import AudiosQuery
 from src.utils.artists import get_artists_creation
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_tracks
 from src.utils.auth import get_current_user
+from src.utils.common import get_word_form
 
 router = APIRouter()
 
 
 @router.get("/audios")
-def get_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
+def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: AudiosQuery = Depends()) -> Response:
     if not user:
         return RedirectResponse(url="/login")
 
-    if user["role"] != "admin":
-        return make_error(message="Эта страница доступна только администраторам.", user=user)
+    if search_params.is_empty():
+        return RedirectResponse(url="/audios")
 
-    audios_count = database.audios.count_documents({})
-    lyrics_count = database.audios.count_documents({"lyrics": {"$exists": True, "$ne": []}})
+    query = search_params.to_query()
+    audios = list(database.audios.find(query)) if query else []
+
+    total_audios = database.audios.count_documents({})
+    query_correspond_form = get_word_form(len(audios), ["запросу соответствуют", "запросу соответствуют", "запросу соответствует"])
+    query_audios_form = get_word_form(len(audios), ["аудиозаписей", "аудиозаписи", "аудиозапись"])
+    total_correspond_form = get_word_form(total_audios, ["находятся", "находятся", "находится"])
+    total_audios_form = get_word_form(total_audios, ["аудиозаписей", "аудиозаписи", "аудиозапись"])
 
     template = templates.get_template("audios/audios.html")
-    content = template.render(user=user, page="audios", version=constants.VERSION, audios_count=audios_count, lyrics_count=lyrics_count)
+    content = template.render(
+        user=user,
+        page="audios",
+        version=constants.VERSION,
+        audios=audios,
+        total_audios=f"{total_correspond_form} {total_audios} {total_audios_form}",
+        query_audios=f"{query_correspond_form} {len(audios)} {query_audios_form}",
+        query=search_params.query if search_params.query else "",
+        search_start_year=search_params.start_year if search_params.start_year else "",
+        search_end_year=search_params.end_year if search_params.end_year else "",
+        search_creation=search_params.creation if search_params.creation else [],
+        search_lyrics=search_params.lyrics,
+        creation2rus=constants.TEXT_LANGUAGE_TO_RUS
+    )
     return HTMLResponse(content=content)
 
 

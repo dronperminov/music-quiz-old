@@ -16,29 +16,6 @@ function SearchArtists() {
     window.location = `/artists?${params.join("&")}`
 }
 
-function ClearQuery() {
-    let queryInput = document.getElementById("query")
-    let clearIcon = document.getElementById("clear-icon")
-
-    queryInput.value = ""
-    clearIcon.classList.add("clear-hide")
-}
-
-function QueryKeyDown(e) {
-    if (e.key == "Enter")
-        SearchArtists()
-}
-
-function QueryInput(e) {
-    let queryInput = document.getElementById("query")
-    let clearIcon = document.getElementById("clear-icon")
-
-    if (queryInput.value != "")
-        clearIcon.classList.remove("clear-hide")
-    else
-        clearIcon.classList.add("clear-hide")
-}
-
 function SwitchArtistQuestion(artistId) {
     let error = document.getElementById(`error-${artistId}`)
     let icon = document.getElementById(`artist-question-${artistId}`)

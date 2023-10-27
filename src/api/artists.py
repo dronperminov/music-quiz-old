@@ -8,7 +8,7 @@ from src.api import make_error, templates
 from src.database import database
 from src.dataclasses.artist_form import ArtistForm
 from src.dataclasses.artists_query import ArtistsQuery
-from src.utils.artists import get_artists_info, search_to_query
+from src.utils.artists import get_artists_info
 from src.utils.auth import get_current_user
 from src.utils.common import get_word_form
 
@@ -23,7 +23,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     if search_params.query == "" and search_params.genres is None and search_params.creation is None:
         return RedirectResponse(url="/artists")
 
-    query = search_to_query(search_params)
+    query = search_params.to_query()
     artists = list(database.artists.find(query)) if query else []
     artist2count = get_artists_info(artists)
     artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
@@ -31,7 +31,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     total_artists = database.artists.count_documents({})
     query_correspond_form = get_word_form(len(artists), ["запросу соответствуют", "запросу соответствуют", "запросу соответствует"])
     query_artists_form = get_word_form(len(artists), ["исполнителей", "исполнителя", "исполнитель"])
-    total_correspond_form = get_word_form(len(total_artists), ["находятся", "находятся", "находится"])
+    total_correspond_form = get_word_form(total_artists, ["находятся", "находятся", "находится"])
     total_artists_form = get_word_form(total_artists, ["исполнителей", "исполнителя", "исполнитель"])
 
     template = templates.get_template("artists/artists.html")
