@@ -4,8 +4,9 @@
 
 .artist-question-icon:hover {
     fill: var(--text-color);
+    cursor: pointer;
 }
 
 .artist-question-selected-icon {
-    fill: var(--main-color) !important;
+    fill: var(--border-color) !important;
 }
