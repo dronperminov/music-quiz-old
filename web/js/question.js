@@ -6,7 +6,11 @@ function ShowAnswer(player) {
 
     let audio = document.getElementById("audio")
     let timecode = audio.getAttribute("data-answer-timecode")
+    let seek = audio.getAttribute("data-answer-seek")
     player.ParseTimecode(timecode)
+
+    if (seek !== "")
+        player.Seek(+seek)
 }
 
 function MakeFullTrack(player) {

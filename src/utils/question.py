@@ -65,24 +65,28 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_LINE_BY_TEXT:
         index = random.randint(3, len(lyrics) - 2)
-        start_time = round(lyrics[index - 3]["time"] - 0.8, 2)
+        start_time = round(max(0, lyrics[index - 3]["time"] - 0.8), 2)
         end_time = round(lyrics[index]["time"] - 0.3, 2)
         end_answer_time = f',{round(lyrics[index + 1]["time"] - 0.1, 2)}' if index + 1 < len(lyrics) else ""
+        seek_answer_time = round(lyrics[index - 1]["time"], 2)
 
         question["text"] = [line["text"] for line in lyrics[index - 3:index]]
         question["answer"] = lyrics[index]["text"]
         question["question_timecode"] = f"{start_time},{end_time}"
         question["answer_timecode"] = f"{start_time}{end_answer_time}"
+        question["answer_seek"] = seek_answer_time
     elif question_type == constants.QUESTION_LINE_BY_CHORUS:
         start_index, index = get_chorus_question(lyrics)
 
-        start_time = round(lyrics[start_index]["time"] - 0.8, 2)
+        start_time = round(max(lyrics[start_index]["time"] - 0.8, 0), 2)
         end_time = round(lyrics[index]["time"] - 0.3, 2)
         end_answer_time = f',{round(lyrics[index + 1]["time"] - 0.1, 2)}' if index + 1 < len(lyrics) else ""
+        seek_answer_time = round(lyrics[index - 1]["time"], 2)
 
         question["text"] = [line["text"] for line in lyrics[start_index:index]]
         question["answer"] = lyrics[index]["text"]
         question["question_timecode"] = f"{start_time},{end_time}"
         question["answer_timecode"] = f"{start_time}{end_answer_time}"
+        question["answer_seek"] = seek_answer_time
 
     return question
