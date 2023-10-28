@@ -103,8 +103,8 @@ class Settings:
             question_types.add(constants.QUESTION_ARTIST_BY_TRACK)
             question_types.add(constants.QUESTION_NAME_BY_TRACK)
 
-        if "lyrics" in audio:
-            if set(audio.get("creation", [])).intersection(set(self.text_languages)):
+        if audio.get("lyrics", []):
+            if "russian" in audio.get("creation", []):
                 question_types.add(constants.QUESTION_LINE_BY_TEXT)
 
                 if audio["chorus"]:
