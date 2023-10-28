@@ -30,7 +30,7 @@ function RemoveAudio(link) {
     if (!confirm("Вы уверены, что хотите удалить эту аудиозапись?"))
         return
 
-    let block = document.getElementById(`audio-${link}`)
+    let block = document.getElementById(`audio-block-${link}`)
     let error = document.getElementById(`error-${link}`)
     error.innerText = ""
 

@@ -116,11 +116,9 @@
         <h3>Треки</h3>
 
         {% for audio in audios %}
-        <div class="form-row">
+        <div class="form-row" id="audio-block-{{audio.link}}">
             <div class="table-block table-block-no-spacing">
-                <div class="table-cell">
-
-                </div>
+                <div class="table-cell"></div>
 
                 {% if audio.lyrics %}
                 <div class="table-cell table-cell-no-width">

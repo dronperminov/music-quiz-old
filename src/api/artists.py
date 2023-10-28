@@ -26,6 +26,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     query = search_params.to_query()
     artists = list(database.artists.find(query)) if query else []
     artist2count = get_artists_info(artists)
+    artists = [artist for artist in artists if artist2count[artist["id"]]["total"] > 0]
     artists = sorted(artists, key=lambda artist: (-artist2count[artist["id"]]["total"], artist["name"]))
 
     total_artists = database.artists.count_documents({})
