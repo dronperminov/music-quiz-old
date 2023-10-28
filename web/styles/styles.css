@@ -6,6 +6,7 @@
     --text-bg-color: #111111;
     --error-color: #f44336;
     --success-color: #3ca640;
+    --info-color: #666666;
 
     --placeholder-color: #999999;
 
@@ -156,6 +157,7 @@
     --text-bg-color: #eeeeee;
     --error-color: #f44336;
     --success-color: #36c93a;
+    --info-color: #999999;
 
     --placeholder-color: #999999;
 
@@ -278,6 +280,7 @@
         --text-bg-color: #eeeeee;
         --error-color: #f44336;
         --success-color: #36c93a;
+        --info-color: #999999;
 
         --placeholder-color: #999999;
 
@@ -502,7 +505,7 @@ body {
     margin-top: 10px;
     margin-bottom: 10px;
     text-align: center;
-    color: var(--placeholder-color);
+    color: var(--info-color);
     font-family: Roboto;
     font-size: 0.9em;
 }
