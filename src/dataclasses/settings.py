@@ -1,7 +1,5 @@
-import random
-from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Set
+from typing import List
 
 from src import constants
 from src.database import database
@@ -40,13 +38,14 @@ class Settings:
             "artists": self.artists
         }
 
-    def to_query(self) -> dict:
+    def to_query(self, question_type: str = "") -> dict:
         artist_ids = [artist["id"] for artist in database.artists.find({"genres": {"$in": self.genres}}, {"id": 1})]
+        question_types = [question_type] if question_type else self.questions
 
         query = {
             "$and": [
                 {"$or": [{"year": {"$gte": start_year, "$lte": end_year}} for start_year, end_year in self.question_years]},
-                {"$or": [self.__question_to_query(question_type) for question_type in self.questions]},
+                {"$or": [self.__question_to_query(question_type) for question_type in question_types]},
                 {"artists.id": {"$in": artist_ids}},
                 {"creation": {"$in": self.text_languages}},
                 self.__question_artists_to_query()
@@ -57,24 +56,6 @@ class Settings:
             query["$and"].append({"artists.id": {"$in": self.artists}})
 
         return query
-
-    def get_question_type(self, username: str, audio: dict) -> str:
-        available_question_types = self.__audio_to_question_types(audio)
-        question_types = list(set(self.questions).intersection(available_question_types))
-
-        if len(question_types) == 1:
-            return question_types[0]
-
-        if statistics := database.statistic.find({"username": username, "question_type": {"$in": question_types}}, {"question_type": 1}).sort("datetime", -1).limit(100):
-            question2count = defaultdict(int)
-
-            for record in statistics:
-                question2count[record["question_type"]] += 1
-
-            weights = [1 / (question2count[question_type] + 1) for question_type in question_types]
-            return random.choices(question_types, k=1, weights=weights)[0]
-
-        return random.choice(question_types)
 
     def __question_to_query(self, question_type: str) -> dict:
         if question_type == constants.QUESTION_ARTIST_BY_TRACK:
@@ -105,26 +86,3 @@ class Settings:
             return {"artists.1": {"$exists": True}}
 
         raise ValueError(f'Invalid question_artists "{self.question_artists}"')
-
-    def __audio_to_question_types(self, audio: dict) -> Set[str]:
-        question_types = set()
-
-        if len(audio["artists"]) == 1 and constants.QUESTION_ARTISTS_SOLE in self.question_artists:
-            question_types.add(constants.QUESTION_ARTIST_BY_TRACK)
-            question_types.add(constants.QUESTION_NAME_BY_TRACK)
-
-        if len(audio["artists"]) > 1 and constants.QUESTION_ARTISTS_FEATS in self.question_artists:
-            question_types.add(constants.QUESTION_ARTIST_BY_TRACK)
-            question_types.add(constants.QUESTION_NAME_BY_TRACK)
-
-        if audio.get("lyrics", []):
-            if "russian" in audio.get("creation", []):
-                question_types.add(constants.QUESTION_LINE_BY_TEXT)
-
-                if audio["chorus"]:
-                    question_types.add(constants.QUESTION_LINE_BY_CHORUS)
-
-            if audio["lyrics"][0]["time"] >= constants.INTRODUCTION_TIME:
-                question_types.add(constants.QUESTION_ARTIST_BY_INTRO)
-
-        return question_types

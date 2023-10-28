@@ -1,8 +1,43 @@
 import random
+from collections import defaultdict
 from typing import List, Tuple
 
 from src import constants
+from src.database import database
+from src.dataclasses.settings import Settings
 from src.utils.audio import contain_line, detect_chorus
+
+
+def get_question_weights(settings: Settings, statistics: List[dict]) -> List[float]:
+    if not statistics:
+        return [1 for _ in settings.questions]
+
+    question2count = defaultdict(int)
+
+    for record in statistics:
+        question2count[record["question_type"]] += 1
+
+    return [1 / (question2count[question_type] + 1) for question_type in settings.questions]
+
+
+def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
+    statistics = list(database.statistic.find(
+        {"username": username, "question_type": {"$in": settings.questions}},
+        {"link": 1, "question_type": 1, "correct": 1}
+    ).sort("datetime", -1).limit(constants.QUESTION_STATISTICS_LIMIT))
+
+    question_weights = get_question_weights(settings, statistics)
+    question_type = random.choices(settings.questions, weights=question_weights, k=1)[0]
+
+    last_links = [record["link"] for record in statistics if record["correct"] and record["question_type"] == question_type]
+    incorrect_links = [record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type]
+    links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": last_links}
+
+    query = {**settings.to_query(question_type), "link": links_query}
+    audios = list(database.audios.find(query, {"link": 1, "_id": 0}))
+    audio = database.audios.find_one({"link": random.choice(audios)["link"]})
+
+    return question_type, audio
 
 
 def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
