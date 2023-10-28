@@ -53,11 +53,9 @@
     fill: var(--main-color) !important;
 }
 
-audio {
-    display: block;
-    width: 100%;
-    height: 35px;
-    margin-bottom: 10px;
+.icons-controls {
+    width: 30px !important;
+    text-align: right;
 }
 
 details button {

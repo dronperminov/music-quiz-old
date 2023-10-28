@@ -69,7 +69,7 @@
         <div class="table-block">
             <div class="table-cell">
                 <div class="text">
-                    <b>{% if user.role == "admin" %}<a href="/artists/{{artist.id}}">{{artist.name}}</a>{% else %}{{artist.name}}{% endif %}</b>:
+                    <b><a href="/artists/{{artist.id}}">{{artist.name}}</a></b>:
                     {{artist2count[artist.id]["total"]}} {% if artist2count[artist.id]["with_lyrics"] %}({{artist2count[artist.id]["with_lyrics"]}} с текстом){% endif %}
                 </div>
 

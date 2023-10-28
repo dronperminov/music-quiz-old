@@ -88,7 +88,7 @@ function PlayAudio(link) {
     let audio = document.getElementById(`audio-${link}`)
     let block = document.getElementById(`play-audio-${link}`)
 
-    LoadAudio(audio).then(success => {
+    LoadAudio(audio, `error-${link}`).then(success => {
         if (!success)
             return
 

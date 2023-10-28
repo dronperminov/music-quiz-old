@@ -14,6 +14,27 @@ function LoadAudio(audio, errorId = "error") {
     })
 }
 
+function InitPlayers() {
+    let players = {}
+
+    for (let audio of document.getElementsByTagName("audio")) {
+        let link = audio.getAttribute("data-link")
+
+        audio.addEventListener("loadedmetadata", () => {
+            let lyrics = GetLyrics(link)
+            let player = new Player(`player-${link}`, audio, (currentTime) => ShowLyrics(link, lyrics, currentTime))
+            player.ResetTimecode()
+            player.Init()
+            player.Play()
+            players[link] = player
+        })
+
+        audio.addEventListener("play", () => PausePlayers(link))
+    }
+
+    return players
+}
+
 function UpdateLyrics(currentTime) {
     if (lyrics === null)
         return

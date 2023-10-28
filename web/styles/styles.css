@@ -507,6 +507,10 @@ body {
     font-size: 0.9em;
 }
 
+.bottom-margin {
+    margin-bottom: 10px;
+}
+
 .success:not(:empty) {
     margin-top: 10px;
     text-align: center;

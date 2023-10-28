@@ -96,8 +96,8 @@
                     </div>
                     {% endif %}
                 </div>
+                {% if audio.lyrics %}
                 <div class="table-cell table-cell-no-width">
-                    {% if audio.lyrics %}
                     <svg class="lyrics-icon" id="lyrics-icon-{{audio.link}}" width="24px" height="24px" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" onclick="ToggleText('{{audio.link}}')">
                         <rect x="4" y="23" width="22" height="2"/>
                         <rect x="4" y="19" width="12" height="2"/>
@@ -105,8 +105,8 @@
                         <rect x="4" y="11" width="24" height="2"/>
                         <rect x="4" y="7" width="16" height="2"/>
                     </svg>
-                    {% endif %}
                 </div>
+                {% endif %}
             </div>
 
             <div class="table-block table-block-no-spacing" id="play-audio-{{audio.link}}">
@@ -149,27 +149,9 @@
     <script src="/js/audio.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
     <script src="/js/audios.js?v={{version}}"></script>
-
-    {% if audios %}
     <script>
-        let players = {}
-
-        for (let audio of document.getElementsByTagName("audio")) {
-            let link = audio.getAttribute("data-link")
-
-            audio.addEventListener("loadedmetadata", () => {
-                let lyrics = GetLyrics(link)
-                let player = new Player(`player-${link}`, audio, (currentTime) => ShowLyrics(link, lyrics, currentTime))
-                player.ResetTimecode()
-                player.Init()
-                player.Play()
-                players[link] = player
-            })
-
-            audio.addEventListener("play", () => PausePlayers(link))
-        }
+        let players = InitPlayers()
     </script>
-    {% endif %}
 
     {% include "footer.html" %}
 </body>

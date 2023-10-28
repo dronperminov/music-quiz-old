@@ -58,9 +58,6 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
     if not user:
         return RedirectResponse(url="/login")
 
-    if user["role"] != "admin":
-        return make_error(message="Эта страница доступна только администраторам.", user=user)
-
     artist = database.artists.find_one({"id": artist_id})
     audios = list(database.audios.find({"artists.id": artist_id}))
 
