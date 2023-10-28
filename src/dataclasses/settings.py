@@ -1,4 +1,5 @@
 import random
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import List, Set
 
@@ -57,9 +58,22 @@ class Settings:
 
         return query
 
-    def get_question_type(self, audio: dict) -> str:
+    def get_question_type(self, username: str, audio: dict) -> str:
         available_question_types = self.__audio_to_question_types(audio)
         question_types = list(set(self.questions).intersection(available_question_types))
+
+        if len(question_types) == 1:
+            return question_types[0]
+
+        if statistics := database.statistic.find({"username": username, "question_type": {"$in": question_types}}, {"question_type": 1}).sort("datetime", -1).limit(100):
+            question2count = defaultdict(int)
+
+            for record in statistics:
+                question2count[record["question_type"]] += 1
+
+            weights = [1 / (question2count[question_type] + 1) for question_type in question_types]
+            return random.choices(question_types, k=1, weights=weights)[0]
+
         return random.choice(question_types)
 
     def __question_to_query(self, question_type: str) -> dict:

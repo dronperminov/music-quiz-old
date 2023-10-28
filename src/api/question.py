@@ -28,7 +28,7 @@ def get_question(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return make_error(error, user, title="Не удалось сгенерировать вопрос")
 
     audio = database.audios.find_one({"link": random.choice(audios)["link"]})
-    question_type = settings.get_question_type(audio)
+    question_type = settings.get_question_type(user["username"], audio)
     question = make_question(audio, question_type)
 
     template = templates.get_template("question.html")
