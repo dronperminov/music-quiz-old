@@ -48,11 +48,13 @@ def make_question(audio: dict, question_type: str) -> dict:
     artists = [artist["name"] for artist in audio["artists"]]
     lyrics: List[dict] = audio.get("lyrics", [])
     track_start = lyrics[0]["time"] if lyrics else ""
+    seek_start = random.choice(lyrics[:len(lyrics) * 3 // 4])["time"] if lyrics else 0
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
         question["answer"] = artists
         question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}" target="_blank">{artist["name"]}</a>' for artist in audio["artists"]])
         question["question_timecode"] = track_start
+        question["question_seek"] = seek_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_ARTIST_BY_INTRO:
         question["answer"] = artists
@@ -62,6 +64,7 @@ def make_question(audio: dict, question_type: str) -> dict:
     elif question_type == constants.QUESTION_NAME_BY_TRACK:
         question["answer"] = audio["track"]
         question["question_timecode"] = track_start
+        question["question_seek"] = seek_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_LINE_BY_TEXT:
         index = random.randint(3, len(lyrics) - 2)
