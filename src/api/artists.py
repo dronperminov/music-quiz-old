@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
-from src.api import make_error, templates
+from src.api import templates
 from src.database import database
 from src.dataclasses.artist_form import ArtistForm
 from src.dataclasses.artists_query import ArtistsQuery
