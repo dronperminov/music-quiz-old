@@ -38,14 +38,12 @@ class Settings:
             "artists": self.artists
         }
 
-    def to_query(self, question_type: str = "") -> dict:
+    def to_audio_query(self) -> dict:
         artist_ids = [artist["id"] for artist in database.artists.find({"genres": {"$in": self.genres}}, {"id": 1})]
-        question_types = [question_type] if question_type else self.questions
 
         query = {
             "$and": [
                 {"$or": [{"year": {"$gte": start_year, "$lte": end_year}} for start_year, end_year in self.question_years]},
-                {"$or": [self.__question_to_query(question_type) for question_type in question_types]},
                 {"artists.id": {"$in": artist_ids}},
                 {"creation": {"$in": self.text_languages}},
                 self.__question_artists_to_query()
@@ -55,6 +53,13 @@ class Settings:
         if self.artists:
             query["$and"].append({"artists.id": {"$in": self.artists}})
 
+        return query
+
+    def to_query(self, question_type: str = "") -> dict:
+        question_types = [question_type] if question_type else self.questions
+
+        query = self.to_audio_query()
+        query["$and"].append({"$or": [self.__question_to_query(question_type) for question_type in question_types]})
         return query
 
     def __question_to_query(self, question_type: str) -> dict:

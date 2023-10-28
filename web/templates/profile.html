@@ -1,5 +1,7 @@
 {% include "header.html" %}
 <title>{{user.username}} | music-quiz</title>
+<link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/profile.css?v={{version}}">
 </head>
 <body>
@@ -69,8 +71,63 @@
                 </div>
             </div>
         </div>
+
+        <div class="form-row radio">
+            <div class="radio-header">Бесконечное радио</div>
+            <div class="text" id="caption"></div>
+
+            <div class="table-block table-block-no-spacing" id="play-audio">
+                <div class="table-cell table-cell-no-width table-cell-middle center">
+                    <div class="form-row-icon-interactive" onclick="PlayNext()">
+                        <svg class="form-svg-fill-icon" width="20px" height="20px" viewBox="-0.3 -0.05 7.1 7.1" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M5.495,2.573 L1.501,0.142 C0.832,-0.265 0,0.25 0,1.069 L0,5.931 C0,6.751 0.832,7.264 1.501,6.858 L5.495,4.428 C6.168,4.018 6.168,2.983 5.495,2.573" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="table-cell table-cell-middle">
+                    <audio id="audio" preload="metadata"></audio>
+                    <audio id="audio-artist" autoplay></audio>
+                    <div id="player">
+                        {% include "components/player.html" %}
+                        <div class="error" id="error"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="audio-lyrics hidden" id="lyrics">
+                <div class="text audio-text"></div>
+            </div>
+        </div>
     </div>
 
+    <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/audio.js?v={{version}}"></script>
+    <script src="/js/player.js?v={{version}}"></script>
+    <script src="/js/profile.js?v={{version}}"></script>
+    <script src="/js/lyrics.js?v={{version}}"></script>
+    <script>
+        let audio = document.getElementById("audio")
+        let audioArtist = document.getElementById("audio-artist")
+        let player = null
+        let updater = null
+
+        audio.addEventListener("loadedmetadata", () => {
+            let link = audio.getAttribute("data-link")
+
+            if (updater === null)
+                updater = new LyricsUpdater("lyrics")
+
+            if (player === null)
+                player = new Player("player", audio, (currentTime) => updater.Update(currentTime), () => PlayNext())
+
+            player.ResetTimecode()
+            player.Init()
+            player.Play()
+        })
+
+        audio.addEventListener("ended", () => PlayNext())
+        audioArtist.addEventListener("ended", () => audio.volume = 1.0)
+    </script>
     {% include "footer.html" %}
 </body>
 </html>

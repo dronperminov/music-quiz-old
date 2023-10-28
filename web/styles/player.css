@@ -11,7 +11,8 @@
 
 .player-controls {
     display: table-cell;
-    width: 30px;
+    padding-right: 10px;
+    width: 0;
     vertical-align: bottom;
     text-align: left;
 }

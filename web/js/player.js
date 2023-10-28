@@ -1,11 +1,13 @@
-function Player(playerId, audio, onUpdate) {
+function Player(playerId, audio, onUpdate, onNext = null) {
     this.audio = audio
     this.onUpdate = onUpdate
+    this.onNext = onNext
 
     let block = document.getElementById(playerId)
     this.controls = block.getElementsByClassName("player-controls")[0]
     this.playIcon = block.getElementsByClassName("player-play-icon")[0]
     this.pauseIcon = block.getElementsByClassName("player-pause-icon")[0]
+    this.nextIcon = block.getElementsByClassName("player-next-icon")[0]
 
     this.progressBar = block.getElementsByClassName("player-progress-bar")[0]
     this.currentProgress = block.getElementsByClassName("player-current-progress")[0]
@@ -21,6 +23,9 @@ Player.prototype.InitEvents = function() {
 
     this.playIcon.addEventListener("click", () => this.Play())
     this.pauseIcon.addEventListener("click", () => this.Pause())
+
+    if (this.onNext !== null)
+        this.nextIcon.addEventListener("click", () => this.onNext())
 
     this.progressBar.parentNode.addEventListener("touchstart", (e) => this.ProgressMouseDown(e.touches[0].clientX - this.progressBar.parentNode.offsetLeft))
     this.progressBar.parentNode.addEventListener("touchmove", (e) => this.ProgressMouseMove(e.touches[0].clientX - this.progressBar.parentNode.offsetLeft))
@@ -48,7 +53,18 @@ Player.prototype.Init = function() {
     this.pauseIcon.classList.add("player-hidden")
     this.time.classList.remove("player-hidden")
 
+    if (this.onNext !== null)
+        this.nextIcon.classList.remove("player-hidden")
+
     this.UpdateProgressBar()
+}
+
+Player.prototype.Hide = function() {
+    this.controls.classList.add("player-hidden")
+    this.playIcon.classList.add("player-hidden")
+    this.pauseIcon.classList.add("player-hidden")
+    this.nextIcon.classList.add("player-hidden")
+    this.time.classList.add("player-hidden")
 }
 
 Player.prototype.ParseTimecode = function(timecode) {
@@ -80,7 +96,7 @@ Player.prototype.TimeToString = function(time) {
 }
 
 Player.prototype.UpdateProgressBar = function() {
-    if (this.audio.currentTime >= this.endTime)
+    if ((this.audio.currentTime >= this.endTime || this.audio.ended) && this.onNext === null)
         this.audio.currentTime = this.startTime
 
     if (this.onUpdate !== null)

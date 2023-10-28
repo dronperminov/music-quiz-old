@@ -5,8 +5,7 @@ function LyricsUpdater(blockId, deltaTime = 4000) {
     if (this.block === null)
         return
 
-    this.lines = this.block.getElementsByClassName("audio-text-line")
-    this.lyrics = this.GetLyrics()
+    this.Init()
 
     this.block.addEventListener("wheel", (e) => this.Wheel())
     this.block.addEventListener("resize", (e) => this.Wheel())
@@ -15,11 +14,19 @@ function LyricsUpdater(blockId, deltaTime = 4000) {
     this.wheelTime = null
 }
 
+LyricsUpdater.prototype.Init = function() {
+    this.lines = this.block.getElementsByClassName("audio-text-line")
+    this.lyrics = this.GetLyrics()
+}
+
 LyricsUpdater.prototype.GetLyrics = function() {
     let lyrics = []
 
     for (let line of this.lines)
         lyrics.push(+line.getAttribute("data-time"))
+
+    if (lyrics.length == 0)
+        return null
 
     return lyrics
 }

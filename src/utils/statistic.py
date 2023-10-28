@@ -30,7 +30,7 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     total_texts = correct_texts + incorrect_texts
 
     return {
-        "questions_form": get_word_form(total_questions, ["вопросов", "вопроса", "вопрос"]),
+        "questions_form": get_word_form(correct_questions, ["вопросов", "вопроса", "вопрос"]),
         "questions": {
             "correct": correct_questions,
             "incorrect": incorrect_questions,

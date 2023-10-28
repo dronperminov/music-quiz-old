@@ -78,28 +78,6 @@ function SearchAudios() {
     window.location = `/audios?${params.join("&")}`   
 }
 
-function PausePlayers(targetLink) {
-    for (let link of Object.keys(players))
-        if (link != targetLink)
-            players[link].Pause()
-}
-
-function PlayAudio(link) {
-    let audio = document.getElementById(`audio-${link}`)
-    let block = document.getElementById(`play-audio-${link}`)
-
-    LoadAudio(audio, `error-${link}`).then(success => {
-        if (!success)
-            return
-
-        PausePlayers(link)
-
-        block.classList.remove("table-block")
-        block.children[1].classList.remove("table-cell")
-        block.children[0].remove()
-    })
-}
-
 function SeekPlayer(link, time) {
     if (!players[link])
         return

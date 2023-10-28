@@ -10,7 +10,7 @@
 }
 
 .audio-text {
-    height: 120px;
+    height: 140px;
     overflow-y: auto;
     resize: vertical;
 }
