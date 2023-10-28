@@ -171,7 +171,11 @@
             player = new Player("player", audio, currentTime => updater.Update(currentTime))
             player.ParseTimecode(audio.getAttribute("data-question-timecode"))
             player.Init()
-            player.Seek(audio.getAttribute("data-question-seek"))
+
+            let seek = audio.getAttribute("data-question-seek")
+
+            if (seek !== "")
+                player.Seek(seek)
         })
 
         LoadAudio(audio)
