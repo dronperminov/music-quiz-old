@@ -136,6 +136,8 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
+    audio2link = {audio["link"]: audio for audio in audios}
+    audios = [audio for audio_link, audio in audio2link.items()]
     database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
     database.audios.insert_many(audios)
 
