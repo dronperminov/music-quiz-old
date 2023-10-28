@@ -70,7 +70,7 @@
                 <div class="audio-text basic-textarea default-textarea" contenteditable id="lyrics" oninput="ChangeField('lyrics')">
                     {% if audio.lyrics %}
                     {% for line in audio.lyrics %}
-                    <div class="audio-text-line" id="text-line-{{loop.index - 1}}">{"time": {{line.time}}, "text": "{{line.text}}"}</div>
+                    <div class="audio-text-line" data-time="{{line.time}}" ondblclick="player.Seek({{line.time}}); return false;">{"time": {{line.time}}, "text": "{{line.text}}"}</div>
                     {% endfor %}
                     {% endif %}
                 </div>
@@ -136,14 +136,15 @@
 
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
+    <script src="/js/lyrics.js?v={{version}}"></script>
     <script src="/js/audio.js?v={{version}}"></script>
     <script>
         let audio = document.getElementById("audio")
-        let lyrics = {% if audio.lyrics %}{{audio.lyrics}}{% else %}null{% endif %}
         let player = null
 
         audio.addEventListener("loadedmetadata", () => {
-            player = new Player("player", audio, UpdateLyrics)
+            let updater = new LyricsUpdater("lyrics")
+            player = new Player("player", audio, currentTime => updater.Update(currentTime))
             player.Init()
         })
 

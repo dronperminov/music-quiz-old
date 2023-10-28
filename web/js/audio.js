@@ -21,8 +21,8 @@ function InitPlayers() {
         let link = audio.getAttribute("data-link")
 
         audio.addEventListener("loadedmetadata", () => {
-            let lyrics = GetLyrics(link)
-            let player = new Player(`player-${link}`, audio, (currentTime) => ShowLyrics(link, lyrics, currentTime))
+            let updater = new LyricsUpdater(`lyrics-${link}`)
+            let player = new Player(`player-${link}`, audio, (currentTime) => updater.Update(currentTime))
             player.ResetTimecode()
             player.Init()
             player.Play()
@@ -33,25 +33,6 @@ function InitPlayers() {
     }
 
     return players
-}
-
-function UpdateLyrics(currentTime) {
-    if (lyrics === null)
-        return
-
-    for (let line of document.getElementsByClassName("audio-text-line"))
-        line.classList.remove("audio-text-line-curr")
-
-    if (currentTime < lyrics[0]["time"])
-        return
-
-    let index = 0
-    while (index < lyrics.length - 1 && currentTime >= lyrics[index + 1]["time"])
-        index++
-
-    let line = document.getElementById(`text-line-${index}`)
-    line.classList.add("audio-text-line-curr")
-    line.parentNode.scrollTop = line.offsetTop - line.parentNode.offsetTop
 }
 
 function SaveAudio() {
