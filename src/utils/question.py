@@ -40,6 +40,18 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     return question_type, audio
 
 
+def get_line_question(lyrics: List[dict]) -> Tuple[int, int]:
+    available_indices = []
+    indices = [i for i, _ in enumerate(lyrics)]
+
+    for index in range(3, len(lyrics)):
+        if not contain_line(lyrics, indices[index - 3:index], lyrics[indices[index]]["text"]):
+            available_indices.append(index)
+
+    index = random.choice(available_indices)
+    return index - 3, index
+
+
 def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
     chorus_indices = detect_chorus(lyrics)
     start_index = 0
@@ -50,6 +62,7 @@ def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
             available_indices.append(index)
 
     index = random.choice(available_indices)
+    start_index = max(0, index - random.randint(4, 6))
     return chorus_indices[start_index], chorus_indices[index]
 
 
@@ -102,13 +115,14 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["question_seek"] = seek_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_LINE_BY_TEXT:
-        index = random.randint(3, len(lyrics) - 2)
-        start_time = round(max(0, lyrics[index - 3]["time"] - 0.8), 2)
+        start_index, index = get_line_question(lyrics)
+
+        start_time = round(max(0, lyrics[start_index]["time"] - 0.8), 2)
         end_time = round(lyrics[index]["time"] - 0.3, 2)
         end_answer_time = f',{round(lyrics[index + 1]["time"] - 0.1, 2)}' if index + 1 < len(lyrics) else ""
         seek_answer_time = round(lyrics[index - 1]["time"], 2)
 
-        question["text"] = [line["text"] for line in lyrics[index - 3:index]]
+        question["text"] = [line["text"] for line in lyrics[start_index:index]]
         question["answer"] = lyrics[index]["text"]
         question["question_timecode"] = f"{start_time},{end_time}"
         question["answer_timecode"] = f"{start_time}{end_answer_time}"

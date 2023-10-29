@@ -172,9 +172,15 @@ def get_lyrics_creation(lyrics: List[dict]) -> List[str]:
     return creation
 
 
+def preprocess_line(line: str) -> str:
+    line = line.lower()
+    line = re.sub(r"-", "", line)
+    return re.sub(r"\s+", " ", line)
+
+
 def is_equal_lines(line1: str, line2: str) -> bool:
-    words1 = re.findall(r"\w+", line1.lower())
-    words2 = re.findall(r"\w+", line2.lower())
+    words1 = re.findall(r"\w+", preprocess_line(line1))
+    words2 = re.findall(r"\w+", preprocess_line(line2))
     return ratio(words1, words2) > constants.CHORUS_THRESHOLD
 
 
