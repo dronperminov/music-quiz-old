@@ -15,7 +15,8 @@ function Player(playerId, audio, onUpdate, onNext = null) {
 
     this.InitEvents()
     this.ResetTimecode()
-    this.UpdateLoop()
+
+    setInterval(() => this.UpdateLoop(), 10)
 }
 
 Player.prototype.InitEvents = function() {
@@ -40,8 +41,6 @@ Player.prototype.InitEvents = function() {
 Player.prototype.UpdateLoop = function() {
     if (!this.audio.paused)
         this.UpdateProgressBar()
-
-    window.requestAnimationFrame(() => this.UpdateLoop())
 }
 
 Player.prototype.Init = function() {
