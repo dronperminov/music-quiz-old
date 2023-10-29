@@ -3,16 +3,15 @@ from typing import Optional
 
 from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
-from jinja2 import Environment, FileSystemLoader
 
 from src import constants
+from src.api import templates
 from src.database import database
 from src.dataclasses.settings import Settings
 from src.dataclasses.user import User
 from src.utils import auth
 
 router = APIRouter()
-templates = Environment(loader=FileSystemLoader("web/templates"), cache_size=0)
 
 
 @router.get("/login")
