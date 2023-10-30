@@ -6,15 +6,19 @@ from src import constants
 class MongoManager:
     client: MongoClient = None
     users = None
+    settings = None
     audios = None
     artists = None
     statistic = None
 
     def connect(self) -> None:
         self.client = MongoClient(constants.MONGO_URL)
-        database = self.client[constants.MONGO_DATABASE]
 
-        self.users = database[constants.MONGO_USERS_COLLECTION]
+        users_database = self.client[constants.MONGO_USERS_DATABASE]
+        self.users = users_database[constants.MONGO_USERS_COLLECTION]
+
+        database = self.client[constants.MONGO_DATABASE]
+        self.settings = database[constants.MONGO_SETTINGS_COLLECTION]
         self.audios = database[constants.MONGO_AUDIOS_COLLECTION]
         self.artists = database[constants.MONGO_ARTISTS_COLLECTION]
         self.statistic = database[constants.MONGO_STATISTIC_COLLECTION]

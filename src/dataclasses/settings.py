@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List
+from typing import List, Optional
 
 from src import constants
 from src.database import database
@@ -17,7 +17,10 @@ class Settings:
     artists: List[int]
 
     @classmethod
-    def from_dict(cls: "Settings", data: dict) -> "Settings":
+    def from_dict(cls: "Settings", data: Optional[dict]) -> "Settings":
+        if data is None:
+            data = {}
+
         theme = data.get("theme", "light")
         question_years = data.get("question_years", get_default_question_years())
         questions = data.get("questions", constants.QUESTIONS)

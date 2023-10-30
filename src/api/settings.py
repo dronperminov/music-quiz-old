@@ -23,12 +23,13 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         return RedirectResponse(url="/login")
 
     template = templates.get_template("settings.html")
-    settings = Settings.from_dict(user["settings"])
+    settings = Settings.from_dict(database.settings.find_one({"username": user["username"]}))
     audios_count = database.audios.count_documents(settings.to_query())
 
-    artists = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": user["settings"].get("artists", [])}}, {"id": 1, "name": 1})}
+    artists = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": settings.artists}}, {"id": 1, "name": 1})}
     content = template.render(
         user=user,
+        settings=settings,
         page="settings",
         version=constants.VERSION,
         have_statistic=database.statistic.find_one({"username": user["username"]}) is not None,
@@ -72,11 +73,6 @@ async def update_settings(request: Request, user: Optional[dict] = Depends(get_c
     settings = Settings.from_dict(data)
     audios_count = database.audios.count_documents(settings.to_query())
 
-    if audios_count == 0:
-        return JSONResponse({"status": "error", "message": "Для выбранных настроек нет ни одного трека"})
-
-    user["fullname"] = data["fullname"]
-    user["settings"] = settings.to_dict()
-
-    database.users.update_one({"username": user["username"]}, {"$set": user}, upsert=True)
+    database.users.update_one({"username": user["username"]}, {"$set": {"fullname": data["fullname"]}})
+    database.settings.update_one({"username": user["username"]}, {"$set": settings.to_dict()}, upsert=True)
     return JSONResponse({"status": "success", "audios_count": audios_count})

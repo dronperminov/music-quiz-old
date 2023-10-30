@@ -26,6 +26,7 @@ def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: 
     if search_params.is_empty():
         return RedirectResponse(url="/audios")
 
+    settings = database.settings.find_one({"username": user["username"]})
     query = search_params.to_query()
     audios = list(database.audios.find(query)) if query else []
 
@@ -38,6 +39,7 @@ def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: 
     template = templates.get_template("audios/audios.html")
     content = template.render(
         user=user,
+        settings=settings,
         page="audios",
         version=constants.VERSION,
         audios=audios,
@@ -66,8 +68,9 @@ def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Re
     if not audio:
         return make_error(message="Запрашиваемого аудио не существует", user=user)
 
+    settings = database.settings.find_one({"username": user["username"]})
     template = templates.get_template("audios/audio.html")
-    content = template.render(user=user, page="audio", version=constants.VERSION, audio=audio)
+    content = template.render(user=user, settings=settings, page="audio", version=constants.VERSION, audio=audio)
     return HTMLResponse(content=content)
 
 
@@ -79,8 +82,9 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
+    settings = database.settings.find_one({"username": user["username"]})
     template = templates.get_template("audios/add_audios.html")
-    content = template.render(user=user, page="add-audios", version=constants.VERSION)
+    content = template.render(user=user, settings=settings, page="add-audios", version=constants.VERSION)
     return HTMLResponse(content=content)
 
 

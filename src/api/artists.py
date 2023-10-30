@@ -23,6 +23,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     if search_params.query == "" and search_params.genres is None and search_params.creation is None:
         return RedirectResponse(url="/artists")
 
+    settings = database.settings.find_one({"username": user["username"]})
     query = search_params.to_query()
     artists = list(database.artists.find(query)) if query else []
     artist2count = get_artists_info(artists)
@@ -38,6 +39,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
     template = templates.get_template("artists/artists.html")
     content = template.render(
         user=user,
+        settings=settings,
         page="artists",
         version=constants.VERSION,
         artists=artists,
@@ -59,12 +61,14 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
     if not user:
         return RedirectResponse(url="/login")
 
+    settings = database.settings.find_one({"username": user["username"]})
     artist = database.artists.find_one({"id": artist_id})
     audios = list(database.audios.find({"artists.id": artist_id}))
 
     template = templates.get_template("artists/artist.html")
     content = template.render(
         user=user,
+        settings=settings,
         page="artist",
         version=constants.VERSION,
         artist=artist,
