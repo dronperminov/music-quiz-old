@@ -9,15 +9,18 @@ from src.utils.audio import contain_line, detect_chorus
 
 
 def get_question_weights(settings: Settings, statistics: List[dict]) -> List[float]:
+    query = settings.to_audio_query()
+    question2count = {question_type: database.audios.find_one({**query, **settings.question_to_query(question_type)}) is not None for question_type in settings.questions}
+
     if not statistics:
-        return [1 for _ in settings.questions]
+        return [int(question2count[question_type]) for question_type in settings.questions]
 
     question2count = defaultdict(int)
 
     for record in statistics:
         question2count[record["question_type"]] += 1
 
-    return [1 / (question2count[question_type] + 1) for question_type in settings.questions]
+    return [int(question2count[question_type]) / (question2count[question_type] + 1) for question_type in settings.questions]
 
 
 def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:

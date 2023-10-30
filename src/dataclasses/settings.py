@@ -59,10 +59,10 @@ class Settings:
         question_types = [question_type] if question_type else self.questions
 
         query = self.to_audio_query()
-        query["$and"].append({"$or": [self.__question_to_query(question_type) for question_type in question_types]})
+        query["$and"].append({"$or": [self.question_to_query(question_type) for question_type in question_types]})
         return query
 
-    def __question_to_query(self, question_type: str) -> dict:
+    def question_to_query(self, question_type: str) -> dict:
         if question_type == constants.QUESTION_ARTIST_BY_TRACK:
             return {}
 

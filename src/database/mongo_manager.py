@@ -21,6 +21,9 @@ class MongoManager:
 
         self.audios.create_index([("artists.id", ASCENDING)])
         self.audios.create_index([("link", ASCENDING)], unique=True)
+        self.audios.create_index(["year"])
+        self.audios.create_index(["creation"])
+        self.audios.create_index(["lyrics"])
 
         self.artists.create_index([("id", ASCENDING)], unique=True)
         self.artists.create_index([("genres", ASCENDING)])
