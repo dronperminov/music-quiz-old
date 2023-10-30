@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import List, Optional
 
 from src import constants
@@ -15,6 +16,7 @@ class Settings:
     genres: List[str]
     text_languages: List[str]
     artists: List[int]
+    last_update: datetime
 
     @classmethod
     def from_dict(cls: "Settings", data: Optional[dict]) -> "Settings":
@@ -28,7 +30,8 @@ class Settings:
         genres = data.get("genres", constants.GENRES)
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
         artists = data.get("artists", [])
-        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists)
+        last_update = data.get("last_update", datetime(1900, 1, 1))
+        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists, last_update)
 
     def to_dict(self) -> dict:
         return {
@@ -38,7 +41,8 @@ class Settings:
             "question_artists": self.question_artists,
             "genres": self.genres,
             "text_languages": self.text_languages,
-            "artists": self.artists
+            "artists": self.artists,
+            "last_update": self.last_update
         }
 
     def to_audio_query(self) -> dict:
