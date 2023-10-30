@@ -22,6 +22,9 @@ function Player(playerId, audio, onUpdate, onNext = null) {
 Player.prototype.InitEvents = function() {
     this.pressed = false
 
+    this.audio.addEventListener("pause", () => this.Pause())
+    this.audio.addEventListener("play", () => this.Play())
+
     this.playIcon.addEventListener("click", () => this.Play())
     this.pauseIcon.addEventListener("click", () => this.Pause())
 
@@ -126,10 +129,12 @@ Player.prototype.Seek = function(time) {
 }
 
 Player.prototype.ProgressMouseDown = function(x) {
+    this.paused = this.audio.paused
+    this.pressed = true
+
     let part = x / this.progressBar.clientWidth
     this.audio.currentTime = this.startTime + part * (this.endTime - this.startTime)
     this.audio.pause()
-    this.pressed = true
 
     this.UpdateProgressBar()
 }
@@ -149,6 +154,6 @@ Player.prototype.ProgressMouseUp = function() {
 
     this.pressed = false
 
-    if (this.playIcon.classList.contains("player-hidden"))
+    if (!this.paused)
         this.audio.play()
 }

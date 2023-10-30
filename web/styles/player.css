@@ -11,7 +11,6 @@
 
 .player-controls {
     display: table-cell;
-    padding-right: 10px;
     width: 0;
     vertical-align: bottom;
     text-align: left;
@@ -70,6 +69,7 @@
 
 .player-controls-icon {
     fill: var(--player-controls-icon-color);
+    margin-right: 10px;
 }
 
 .player-controls-icon:hover {

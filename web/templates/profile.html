@@ -127,6 +127,7 @@
 
         audio.addEventListener("ended", () => PlayNext())
         audioArtist.addEventListener("ended", () => audio.volume = 1.0)
+        audioArtist.addEventListener("error", () => audio.volume = 1.0)
     </script>
     {% include "footer.html" %}
 </body>
