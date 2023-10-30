@@ -8,6 +8,7 @@ from src.api import templates
 from src.database import database
 from src.dataclasses.artist_form import ArtistForm
 from src.dataclasses.artists_query import ArtistsQuery
+from src.dataclasses.settings import Settings
 from src.utils.artists import get_artists_info
 from src.utils.auth import get_current_user
 from src.utils.common import get_word_form
@@ -97,11 +98,13 @@ def artist_to_questions(user: Optional[dict] = Depends(get_current_user), artist
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    artists = user["settings"].get("artists", [])
+    settings = Settings.from_dict(database.settings.find_one({"username": user["username"]}))
+    artists = settings.artists
+
     if artist_id in artists:
         artists = [artist for artist in artists if artist != artist_id]
     else:
         artists.append(artist_id)
 
-    database.users.update_one({"username": user["username"]}, {"$set": {"settings.artists": artists}})
+    database.settings.update_one({"username": user["username"]}, {"$set": {"artists": artists}})
     return JSONResponse({"status": "success", "include": artist_id in artists})

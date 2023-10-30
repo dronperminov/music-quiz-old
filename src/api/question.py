@@ -28,5 +28,5 @@ def get_question(user: Optional[dict] = Depends(get_current_user)) -> Response:
     question = make_question(audio, question_type)
 
     template = templates.get_template("question.html")
-    content = template.render(user=user, page="question", version=constants.VERSION, audio=audio, question=question)
+    content = template.render(user=user, settings=settings, page="question", version=constants.VERSION, audio=audio, question=question)
     return HTMLResponse(content=content)
