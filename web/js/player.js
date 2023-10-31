@@ -22,8 +22,15 @@ function Player(playerId, audio, onUpdate, onNext = null) {
 Player.prototype.InitEvents = function() {
     this.pressed = false
 
-    this.audio.addEventListener("pause", () => this.Pause())
-    this.audio.addEventListener("play", () => this.Play())
+    this.audio.addEventListener("pause", () => {
+        this.playIcon.classList.remove("player-hidden")
+        this.pauseIcon.classList.add("player-hidden")
+    })
+
+    this.audio.addEventListener("play", () => {
+        this.playIcon.classList.add("player-hidden")
+        this.pauseIcon.classList.remove("player-hidden")
+    })
 
     this.playIcon.addEventListener("click", () => this.Play())
     this.pauseIcon.addEventListener("click", () => this.Pause())
@@ -112,14 +119,10 @@ Player.prototype.UpdateProgressBar = function() {
 }
 
 Player.prototype.Play = function() {
-    this.playIcon.classList.add("player-hidden")
-    this.pauseIcon.classList.remove("player-hidden")
     this.audio.play()
 }
 
 Player.prototype.Pause = function() {
-    this.playIcon.classList.remove("player-hidden")
-    this.pauseIcon.classList.add("player-hidden")
     this.audio.pause()
 }
 
