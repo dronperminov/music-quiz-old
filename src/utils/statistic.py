@@ -6,7 +6,6 @@ from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.artists import get_artists_by_audio_links
 from src.utils.common import get_word_form
-from src import constants
 
 
 def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, day_end: Optional[datetime.datetime] = None) -> dict:
@@ -16,23 +15,24 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     if day_start is not None and day_end is not None:
         query["datetime"] = {"$gte": day_start, "$lte": day_end}
 
-    correct_questions2count = dict()
-    incorrect_questions2count = dict()
+    correct2count = dict()
+    incorrect2count = dict()
     percents = dict()
 
     for question_type in constants.QUESTIONS:
         correct = database.statistic.count_documents({**query, "correct": True, "question_type": question_type})
         incorrect = database.statistic.count_documents({**query, "correct": False, "question_type": question_type})
-        percent = correct / max(correct + incorrect, 1)
 
-        correct_questions2count[question_type] = correct
-        incorrect_questions2count[question_type] = incorrect
-        percents[question_type] = percent * constants.QUESTION_TO_WEIGHT[question_type]
+        correct2count[question_type] = correct
+        incorrect2count[question_type] = incorrect
+        percents[question_type] = correct / max(correct + incorrect, 1)
 
-    # общие вопросы
-    score = sum(percents.values()) / sum(constants.QUESTION_TO_WEIGHT.values())
-    correct_questions = sum(correct_questions2count.values())
-    incorrect_questions = sum(incorrect_questions2count.values())
+    correct_score = sum(correct2count[question_type] * constants.QUESTION_TO_WEIGHT[question_type] for question_type in constants.QUESTIONS)
+    incorrect_score = sum(incorrect2count[question_type] * constants.QUESTION_TO_WEIGHT[question_type] for question_type in constants.QUESTIONS)
+    score = correct_score / max(correct_score + incorrect_score, 1)
+
+    correct_questions = sum(correct2count.values())
+    incorrect_questions = sum(incorrect2count.values())
     total_questions = correct_questions + incorrect_questions
 
     # вопросы по исполнителям
@@ -49,8 +49,11 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     return {
         "questions_form": get_word_form(total_questions, ["вопросов", "вопроса", "вопрос"]),
         "show_questions_count": settings.show_questions_count,
-        "score": round(score * 100, 1),
-        "percents": percents,
+        "score": {
+            "value": round(score * 100, 1),
+            "correct": correct_score,
+            "incorrect": incorrect_score
+        },
         "questions": {
             "correct": correct_questions,
             "incorrect": incorrect_questions,
@@ -66,6 +69,7 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
             "incorrect": incorrect_texts,
             "total": total_texts
         },
-        "correct2count": correct_questions2count,
-        "incorrect2count": incorrect_questions2count
+        "correct2count": correct2count,
+        "incorrect2count": incorrect2count,
+        "percents": percents
     }

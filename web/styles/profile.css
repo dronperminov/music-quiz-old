@@ -91,6 +91,11 @@
     margin-top: 10px;
 }
 
+.scrollable {
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
 @media (max-width: 767px) {
     .statistic-name {
         font-size: 0.7em;
