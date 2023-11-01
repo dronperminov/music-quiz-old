@@ -3,12 +3,14 @@ from typing import Optional
 
 from src import constants
 from src.database import database
+from src.dataclasses.settings import Settings
 from src.utils.artists import get_artists_by_audio_links
 from src.utils.common import get_word_form
 
 
 def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, day_end: Optional[datetime.datetime] = None) -> dict:
     query = {"username": username}
+    settings = Settings.from_dict(database.settings.find_one(query))
 
     if day_start is not None and day_end is not None:
         query["datetime"] = {"$gte": day_start, "$lte": day_end}
@@ -30,11 +32,13 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     total_texts = correct_texts + incorrect_texts
 
     return {
-        "questions_form": get_word_form(correct_questions, ["вопросов", "вопроса", "вопрос"]),
+        "questions_form": get_word_form(total_questions, ["вопросов", "вопроса", "вопрос"]),
+        "show_questions_count": settings.show_questions_count,
         "questions": {
             "correct": correct_questions,
             "incorrect": incorrect_questions,
-            "total": total_questions
+            "total": total_questions,
+            "percent": round(correct_questions / max(total_questions, 1) * 100, 1)
         },
         "artists": {
             "correct": correct_artists,

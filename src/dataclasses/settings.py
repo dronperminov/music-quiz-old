@@ -17,6 +17,7 @@ class Settings:
     text_languages: List[str]
     artists: List[int]
     last_update: datetime
+    show_questions_count: bool
 
     @classmethod
     def from_dict(cls: "Settings", data: Optional[dict]) -> "Settings":
@@ -31,7 +32,8 @@ class Settings:
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
         artists = data.get("artists", [])
         last_update = data.get("last_update", datetime(1900, 1, 1))
-        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists, last_update)
+        show_questions_count = data.get("show_questions_count", True)
+        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists, last_update, show_questions_count)
 
     def to_dict(self) -> dict:
         return {
@@ -42,7 +44,8 @@ class Settings:
             "genres": self.genres,
             "text_languages": self.text_languages,
             "artists": self.artists,
-            "last_update": self.last_update
+            "last_update": self.last_update,
+            "show_questions_count": self.show_questions_count
         }
 
     def to_audio_query(self) -> dict:

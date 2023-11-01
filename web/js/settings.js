@@ -43,6 +43,10 @@ function SaveSettings() {
     if (fullname === null)
         return
 
+    let showQuestionsCount = GetMultiSelect("show-questions-count", null)
+    if (showQuestionsCount === null)
+        return
+
     let questionYears = GetMultiSelect("question-years", null, "Не выбран ни один год выхода")
     if (questionYears === null)
         return
@@ -75,7 +79,8 @@ function SaveSettings() {
         question_artists: questionArtists,
         genres: genres,
         text_languages: textLanguages,
-        artists: artists.map(artist => +artist)
+        artists: artists.map(artist => +artist),
+        show_questions_count: showQuestionsCount.length > 0
     }
 
     let button = document.getElementById("save-btn")
