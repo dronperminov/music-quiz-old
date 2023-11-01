@@ -1,6 +1,6 @@
 import random
 from collections import defaultdict
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from src import constants
 from src.database import database
@@ -92,6 +92,7 @@ def get_question_title(question_type: str, audio: dict) -> str:
 
 def make_question(audio: dict, question_type: str) -> dict:
     question = {
+        "link": audio["link"],
         "type": question_type,
         "title": get_question_title(question_type, audio)
     }
@@ -145,3 +146,20 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["answer_seek"] = seek_answer_time
 
     return question
+
+
+def get_question_and_audio(username: str, settings: Settings) -> Tuple[Optional[dict], Optional[dict]]:
+    question = database.questions.find_one({"username": username})
+
+    if not question:
+        return None, None
+
+    if not question["type"] in settings.questions:
+        return None, None
+
+    audio = database.audios.find_one({**settings.to_query(question["type"]), "link": question["link"]})
+
+    if not audio:
+        return None, None
+
+    return question, audio

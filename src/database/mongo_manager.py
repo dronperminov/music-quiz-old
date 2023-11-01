@@ -10,6 +10,7 @@ class MongoManager:
     audios = None
     artists = None
     statistic = None
+    questions = None
 
     def connect(self) -> None:
         self.client = MongoClient(constants.MONGO_URL)
@@ -22,6 +23,7 @@ class MongoManager:
         self.audios = database[constants.MONGO_AUDIOS_COLLECTION]
         self.artists = database[constants.MONGO_ARTISTS_COLLECTION]
         self.statistic = database[constants.MONGO_STATISTIC_COLLECTION]
+        self.questions = database[constants.MONGO_QUESTION_COLLECTION]
 
         self.audios.create_index([("artists.id", ASCENDING)])
         self.audios.create_index([("link", ASCENDING)], unique=True)
@@ -36,6 +38,8 @@ class MongoManager:
         self.statistic.create_index(["datetime"])
         self.statistic.create_index(["question_type"])
         self.statistic.create_index(["link"])
+
+        self.questions.create_index([("username", ASCENDING)])
 
     def close(self) -> None:
         self.client.close()
