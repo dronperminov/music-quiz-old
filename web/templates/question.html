@@ -7,7 +7,7 @@
 <body>
     {% include "menu.html" %}
 
-    <div class="question" id="question" data-question-type="{{question.type}}">
+    <div class="question question-bottom" id="question" data-question-type="{{question.type}}">
         <audio id="audio" data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-question-seek="{{question.question_seek}}" data-answer-timecode="{{question.answer_timecode}}" data-answer-seek="{{question.answer_seek}}" preload="metadata"></audio>
 
         <div class="question-header">{{question.title | capitalize}}:</div>
