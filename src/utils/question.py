@@ -2,10 +2,12 @@ import random
 from collections import defaultdict
 from typing import List, Optional, Tuple
 
+from thefuzz import fuzz
+
 from src import constants
 from src.database import database
 from src.dataclasses.settings import Settings
-from src.utils.audio import contain_line, detect_chorus
+from src.utils.audio import contain_line, detect_chorus, preprocess_line
 
 
 def get_question_weights(settings: Settings, statistics: List[dict]) -> List[float]:
@@ -32,8 +34,8 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     question_weights = get_question_weights(settings, statistics)
     question_type = random.choices(settings.questions, weights=question_weights, k=1)[0]
 
-    last_links = [record["link"] for record in statistics if record["correct"] and record["question_type"] == question_type]
-    incorrect_links = [record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type]
+    last_links = list({record["link"] for record in statistics if record["correct"] and record["question_type"] == question_type})
+    incorrect_links = list({record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type})
     links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": last_links}
 
     query = {**settings.to_query(question_type), "link": links_query}
@@ -41,6 +43,38 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     audio = database.audios.find_one({"link": random.choice(audios)["link"]})
 
     return question_type, audio
+
+
+def get_name_question(lyrics: List[dict], name: str) -> Tuple[str, float, float]:
+    if not lyrics:
+        return "", 0, -1
+
+    lines_with_name = []
+    start = 0
+    intervals = []
+
+    name = preprocess_line(name)
+
+    for i, line in enumerate(lyrics):
+        if fuzz.partial_ratio(name, preprocess_line(line["text"])) > 80:
+            lines_with_name.append(i)
+            if i - start > 5:
+                intervals.append((start, i))
+            start = i + 1
+
+    if intervals:
+        start, end = random.choice(intervals)
+    else:
+        start, end = 0, len(lyrics) - 1
+
+    timecode = f'{round(max(0, lyrics[start]["time"] - 0.8), 2)},{lyrics[end]["time"]}'
+    seek = lyrics[start]["time"]
+
+    if not lines_with_name:
+        return timecode, seek, -1
+
+    name_line = max(lines_with_name, key=lambda index: fuzz.partial_ratio(name, lyrics[index]["text"]))
+    return timecode, seek, lyrics[name_line]["time"] - 0.5
 
 
 def get_line_question(lyrics: List[dict]) -> Tuple[int, int]:
@@ -114,10 +148,14 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["question_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
         question["answer_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
     elif question_type == constants.QUESTION_NAME_BY_TRACK:
+        timecode, question_seek, answer_seek = get_name_question(lyrics, audio["track"])
         question["answer"] = audio["track"]
-        question["question_timecode"] = track_start
-        question["question_seek"] = seek_start
+        question["question_timecode"] = timecode
+        question["question_seek"] = question_seek
         question["answer_timecode"] = ""
+
+        if answer_seek > -1:
+            question["answer_seek"] = answer_seek
     elif question_type == constants.QUESTION_LINE_BY_TEXT:
         start_index, index = get_line_question(lyrics)
 

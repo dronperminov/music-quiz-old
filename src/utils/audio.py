@@ -3,6 +3,7 @@ from typing import Dict, List, Optional
 
 from Levenshtein import ratio
 from bs4 import BeautifulSoup
+from thefuzz import fuzz
 from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
 
@@ -186,7 +187,7 @@ def is_equal_lines(line1: str, line2: str) -> bool:
 
 def contain_line(lyrics: List[dict], indices: List[int], text: str) -> bool:
     for index in indices:
-        if is_equal_lines(lyrics[index]["text"], text):
+        if fuzz.partial_ratio(preprocess_line(text), preprocess_line(lyrics[index]["text"])) > constants.LINE_THRESHOLD:
             return True
 
     return False

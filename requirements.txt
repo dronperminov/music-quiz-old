@@ -7,8 +7,8 @@ passlib[bcrypt]
 pymongo
 pyjwt
 python-multipart
-opencv-python
 requests
+thefuzz
 uvicorn[standard]
 wget
 yandex-music==2.1.0
