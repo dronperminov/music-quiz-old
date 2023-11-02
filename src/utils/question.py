@@ -107,19 +107,19 @@ def get_question_title(question_type: str, audio: dict) -> str:
     artist = "исполнителя" if len(audio["artists"]) == 1 else "исполнителей"
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
-        return f"назовите {artist} песни"
+        return f"Назовите {artist} песни"
 
     if question_type == constants.QUESTION_ARTIST_BY_INTRO:
-        return f"назовите {artist} песни по её вступлению"
+        return f"Назовите {artist} песни по её вступлению"
 
     if question_type == constants.QUESTION_NAME_BY_TRACK:
-        return "назовите название песни"
+        return "Назовите название песни"
 
     if question_type == constants.QUESTION_LINE_BY_TEXT:
-        return "продолжите строку"
+        return "Продолжите строку"
 
     if question_type == constants.QUESTION_LINE_BY_CHORUS:
-        return "продолжите строку припева"
+        return "Продолжите строку припева"
 
     raise ValueError(f'Invalid question type "{question_type}"')
 
