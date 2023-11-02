@@ -11,7 +11,7 @@ from src.dataclasses.artists_query import ArtistsQuery
 from src.dataclasses.settings import Settings
 from src.utils.artists import get_artists_info
 from src.utils.auth import get_current_user
-from src.utils.common import get_word_form
+from src.utils.common import get_static_hash, get_word_form
 
 router = APIRouter()
 
@@ -42,7 +42,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
         user=user,
         settings=settings,
         page="artists",
-        version=constants.VERSION,
+        version=get_static_hash(),
         artists=artists,
         total_artists=f"{total_correspond_form} {total_artists} {total_artists_form}",
         query_artists=f"{query_correspond_form} {len(artists)} {query_artists_form}",
@@ -71,7 +71,7 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
         user=user,
         settings=settings,
         page="artist",
-        version=constants.VERSION,
+        version=get_static_hash(),
         artist=artist,
         audios=audios,
         genres=constants.GENRES,

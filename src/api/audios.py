@@ -13,7 +13,7 @@ from src.dataclasses.audios_query import AudiosQuery
 from src.utils.artists import get_artists_creation
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_tracks
 from src.utils.auth import get_current_user
-from src.utils.common import get_word_form
+from src.utils.common import get_static_hash, get_word_form
 
 router = APIRouter()
 
@@ -41,7 +41,7 @@ def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: 
         user=user,
         settings=settings,
         page="audios",
-        version=constants.VERSION,
+        version=get_static_hash(),
         audios=audios,
         total_audios=f"{total_correspond_form} {total_audios} {total_audios_form}",
         query_audios=f"{query_correspond_form} {len(audios)} {query_audios_form}",
@@ -70,7 +70,7 @@ def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Re
 
     settings = database.settings.find_one({"username": user["username"]})
     template = templates.get_template("audios/audio.html")
-    content = template.render(user=user, settings=settings, page="audio", version=constants.VERSION, audio=audio)
+    content = template.render(user=user, settings=settings, page="audio", version=get_static_hash(), audio=audio)
     return HTMLResponse(content=content)
 
 
@@ -84,7 +84,7 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
 
     settings = database.settings.find_one({"username": user["username"]})
     template = templates.get_template("audios/add_audios.html")
-    content = template.render(user=user, settings=settings, page="add-audios", version=constants.VERSION)
+    content = template.render(user=user, settings=settings, page="add-audios", version=get_static_hash())
     return HTMLResponse(content=content)
 
 
