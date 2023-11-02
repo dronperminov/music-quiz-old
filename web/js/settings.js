@@ -67,8 +67,12 @@ function SaveSettings() {
     if (textLanguages === null)
         return
 
-    let artists = GetMultiSelect("artists", null)
-    if (artists === null)
+    let preferList = GetMultiSelect("prefer-list", null)
+    if (preferList === null)
+        return
+
+    let ignoreList = GetMultiSelect("ignore-list", null)
+    if (ignoreList === null)
         return
 
     let data = {
@@ -79,7 +83,8 @@ function SaveSettings() {
         question_artists: questionArtists,
         genres: genres,
         text_languages: textLanguages,
-        artists: artists.map(artist => +artist),
+        prefer_list: preferList.map(artist => +artist),
+        ignore_list: ignoreList.map(artist => +artist),
         show_questions_count: showQuestionsCount.length > 0
     }
 

@@ -33,6 +33,10 @@ def sign_in(username: str = Body(..., embed=True), password: str = Body(..., emb
     if not auth.validate_password(password, user["password_hash"]):
         return JSONResponse({"status": "error", "message": "Имя пользователя или пароль введены неверно"})
 
+    if not database.settings.find_one({"username": user["username"]}):
+        default_settings = Settings.from_dict({})
+        database.settings.insert_one({"username": user["username"], **default_settings.to_dict()})
+
     access_token = auth.create_access_token(user["username"])
     response = JSONResponse(content={"status": "success", "token": access_token})
     response.set_cookie(key=auth.COOKIE_NAME, value=access_token, httponly=True)

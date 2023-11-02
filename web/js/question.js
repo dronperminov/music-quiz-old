@@ -38,3 +38,30 @@ function CheckAnswer(isCorrect) {
         window.location = "/question"
     })
 }
+
+function AddToIgnore(artistIds) {
+    let error = document.getElementById("ignore-error")
+    error.innerText = ""
+
+    let fetches = []
+
+    for (let artistId of artistIds) {
+        fetches.push(SendRequest("/artist-to-questions", {artist_id: artistId, list_name: "ignore"}).then(response => {
+            if (response.status != "success") {
+                error.innerText = response.message
+                return false
+            }
+
+            return true
+        }))
+    }
+
+    Promise.all(fetches).then(results => {
+        for (result of results)
+            if (!result)
+                return
+
+        let button = document.getElementById("ignore-btn")
+        button.remove()
+    })
+}

@@ -19,6 +19,9 @@ async function SendRequest(url, data = null) {
 
         const response = await fetch(url, params)
 
+        if (response.status == 502)
+            return {"status": "error", "message": "Не удалось связаться с сервером"}
+
         if (response?.ok)
             return await response.json()
 

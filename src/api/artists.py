@@ -94,17 +94,29 @@ def edit_artist(user: Optional[dict] = Depends(get_current_user), artist_params:
 
 
 @router.post("/artist-to-questions")
-def artist_to_questions(user: Optional[dict] = Depends(get_current_user), artist_id: int = Body(..., embed=True)) -> JSONResponse:
+def artist_to_questions(user: Optional[dict] = Depends(get_current_user), artist_id: int = Body(..., embed=True), list_name: str = Body(..., embed=True)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
     settings = Settings.from_dict(database.settings.find_one({"username": user["username"]}))
-    artists = settings.artists
+    prefer_list = set(settings.prefer_list)
+    ignore_list = set(settings.ignore_list)
 
-    if artist_id in artists:
-        artists = [artist for artist in artists if artist != artist_id]
-    else:
-        artists.append(artist_id)
+    if list_name == "prefer":
+        if artist_id in prefer_list:
+            prefer_list.remove(artist_id)
+        else:
+            prefer_list.add(artist_id)
 
-    database.settings.update_one({"username": user["username"]}, {"$set": {"artists": artists}})
-    return JSONResponse({"status": "success", "include": artist_id in artists})
+        ignore_list.discard(artist_id)
+
+    if list_name == "ignore":
+        if artist_id in ignore_list:
+            ignore_list.remove(artist_id)
+        else:
+            ignore_list.add(artist_id)
+
+        prefer_list.discard(artist_id)
+
+    database.settings.update_one({"username": user["username"]}, {"$set": {"prefer_list": list(prefer_list), "ignore_list": list(ignore_list)}})
+    return JSONResponse({"status": "success", "prefer": artist_id in prefer_list, "ignore": artist_id in ignore_list})

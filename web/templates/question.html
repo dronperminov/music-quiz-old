@@ -167,12 +167,10 @@
             </div>
             {% endif %}
 
-            <div class="table-block">
-                {% if user.role == "admin" %}
-                <div class="table-cell">
-                    <a href="/audios/{{audio.link}}" target="_blank"><button class="basic-button default-button">Редактировать</button></a>
+            <div class="table-block table-equal-block answer-buttons">
+                <div class="table-cell" id="ignore-btn">
+                    <button class="basic-button default-button" onclick="AddToIgnore({{audio.artists|map(attribute='id')|list}}, 'ignore')">В игнор</button>
                 </div>
-                {% endif %}
 
                 {% if question.type not in ["artist_by_track", "name_by_track"] %}
                 <div class="table-cell" id="full-track">
@@ -180,6 +178,14 @@
                 </div>
                 {% endif %}
             </div>
+
+            <div class="error" id="ignore-error"></div>
+
+            {% if user.role == "admin" %}
+            <div class="table-block">
+                <a href="/audios/{{audio.link}}" target="_blank"><button class="basic-button default-button">Редактировать</button></a>
+            </div>
+            {% endif %}
         </div>
     </div>
 

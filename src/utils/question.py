@@ -38,10 +38,16 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     incorrect_links = list({record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type})
     links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": last_links}
 
-    query = {**settings.to_query(question_type), "link": links_query}
-    audios = list(database.audios.find(query, {"link": 1, "_id": 0}))
-    audio = database.audios.find_one({"link": random.choice(audios)["link"]})
+    query = settings.to_query(question_type)
+    audios = list(database.audios.find({**query, "link": links_query}, {"link": 1, "_id": 0}))
 
+    if not audios:
+        audios = list(database.audios.find({**query, "link": {"$nin": last_links[-20:]}}, {"link": 1, "_id": 0}))
+
+    if not audios:
+        audios = list(database.audios.find(query, {"link": 1, "_id": 0}))
+
+    audio = database.audios.find_one({"link": random.choice(audios)["link"]})
     return question_type, audio
 
 

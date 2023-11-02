@@ -16,20 +16,25 @@ function SearchArtists() {
     window.location = `/artists?${params.join("&")}`
 }
 
-function SwitchArtistQuestion(artistId) {
+function SwitchList(artistId, listName) {
     let error = document.getElementById(`error-${artistId}`)
-    let icon = document.getElementById(`artist-question-${artistId}`)
+    let preferIcon = document.getElementById(`prefer-list-${artistId}`)
+    let ignoreIcon = document.getElementById(`ignore-list-${artistId}`)
     error.innerText = ""
 
-    SendRequest("/artist-to-questions", {artist_id: artistId}).then(response => {
+    SendRequest("/artist-to-questions", {artist_id: artistId, list_name: listName}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return
         }
 
-        if (response.include)
-            icon.classList.add("artist-question-selected-icon")
-        else
-            icon.classList.remove("artist-question-selected-icon")
+        preferIcon.classList.remove("artist-question-selected-icon")
+        ignoreIcon.classList.remove("artist-question-selected-icon")
+
+        if (response.prefer)
+            preferIcon.classList.add("artist-question-selected-icon")
+
+        if (response.ignore)
+            ignoreIcon.classList.add("artist-question-selected-icon")
     })
 }

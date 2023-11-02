@@ -15,7 +15,7 @@ class Settings:
     question_artists: List[str]
     genres: List[str]
     text_languages: List[str]
-    artists: List[int]
+    prefer_list: List[int]
     ignore_list: List[int]
     last_update: datetime
     show_questions_count: bool
@@ -31,11 +31,11 @@ class Settings:
         question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
         genres = data.get("genres", constants.GENRES)
         text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
-        artists = data.get("artists", [])
+        prefer_list = data.get("prefer_list", [])
         ignore_list = data.get("ignore_list", [])
         last_update = data.get("last_update", datetime(1900, 1, 1))
         show_questions_count = data.get("show_questions_count", True)
-        return cls(theme, question_years, questions, question_artists, genres, text_languages, artists, ignore_list, last_update, show_questions_count)
+        return cls(theme, question_years, questions, question_artists, genres, text_languages, prefer_list, ignore_list, last_update, show_questions_count)
 
     def to_dict(self) -> dict:
         return {
@@ -45,7 +45,7 @@ class Settings:
             "question_artists": self.question_artists,
             "genres": self.genres,
             "text_languages": self.text_languages,
-            "artists": self.artists,
+            "prefer_list": self.prefer_list,
             "ignore_list": self.ignore_list,
             "last_update": self.last_update,
             "show_questions_count": self.show_questions_count
@@ -63,8 +63,8 @@ class Settings:
             ]
         }
 
-        if self.artists:
-            query["$and"].append({"artists.id": {"$in": self.artists}})
+        if self.prefer_list:
+            query["$and"].append({"artists.id": {"$in": self.prefer_list}})
 
         if self.ignore_list:
             query["$and"].append({"artists.id": {"$nin": self.ignore_list}})

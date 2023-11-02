@@ -27,7 +27,9 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
     settings = Settings.from_dict(database.settings.find_one({"username": user["username"]}))
     audios_count = database.audios.count_documents(settings.to_query())
 
-    artists = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": settings.artists}}, {"id": 1, "name": 1})}
+    prefer_list = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": settings.prefer_list}}, {"id": 1, "name": 1})}
+    ignore_list = {artist["id"]: artist for artist in database.artists.find({"id": {"$in": settings.ignore_list}}, {"id": 1, "name": 1})}
+
     content = template.render(
         user=user,
         settings=settings,
@@ -35,7 +37,8 @@ def get_settings(user: Optional[dict] = Depends(get_current_user)) -> Response:
         version=get_static_hash(),
         have_statistic=database.statistic.find_one({"username": user["username"]}) is not None,
         question_years=get_default_question_years(),
-        artists=artists,
+        prefer_list=prefer_list,
+        ignore_list=ignore_list,
         audios_count=f'{audios_count} {get_word_form(audios_count, ["аудиозаписей", "аудиозаписи", "аудиозапись"])}',
         genres=constants.GENRES,
         genre2rus=constants.GENRE_TO_RUS,

@@ -1,4 +1,5 @@
 .artist-question-icon {
+    margin-left: 8px;
     fill: var(--placeholder-color);
 }
 

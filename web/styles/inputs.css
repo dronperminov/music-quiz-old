@@ -250,3 +250,8 @@
 .default-input::placeholder, .default-button::placeholder, .default-textarea::placeholder {
     color: var(--placeholder-color);
 }
+
+.scroll-multi-select {
+    max-height: 120px;
+    overflow: auto;
+}
