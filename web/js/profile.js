@@ -48,6 +48,15 @@ function UpdatePlayer(correct, response) {
     else {
         lyrics.classList.add("hidden")
     }
+
+    if ('mediaSession' in navigator) {
+        navigator.mediaSession.setPositionState(null)
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: response.track,
+            artist: response.artists.map((artist) => artist.name).join(", "),
+            artwork: []
+        });
+    }
 }
 
 function PlayNext() {

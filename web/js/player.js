@@ -111,11 +111,14 @@ Player.prototype.UpdateProgressBar = function() {
     if (this.onUpdate !== null)
         this.onUpdate(this.audio.currentTime)
 
-    let currentTime = this.audio.currentTime - this.startTime
-    let duration = this.endTime - this.startTime
+    let currentTime = Math.max(this.audio.currentTime - this.startTime, 0)
+    let duration = Math.max(this.endTime - this.startTime, 0.01)
 
     this.currentProgress.style.width = `${(currentTime / duration) * 100}%`
     this.time.innerText = `${this.TimeToString(currentTime)} / ${this.TimeToString(duration)}`
+
+    if ('setPositionState' in navigator.mediaSession)
+        navigator.mediaSession.setPositionState({duration: duration, playbackRate: this.audio.playbackRate, position: currentTime})
 }
 
 Player.prototype.Play = function() {
