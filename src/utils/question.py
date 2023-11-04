@@ -34,15 +34,15 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     question_weights = get_question_weights(settings, statistics)
     question_type = random.choices(settings.questions, weights=question_weights, k=1)[0]
 
-    last_links = list({record["link"] for record in statistics if record["correct"] and record["question_type"] == question_type})
+    last_links = [record["link"] for record in statistics]
     incorrect_links = list({record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type})
-    links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": last_links}
+    links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": list(set(last_links))}
 
     query = settings.to_query(question_type)
     audios = list(database.audios.find({**query, "link": links_query}, {"link": 1, "_id": 0}))
 
     if not audios:
-        audios = list(database.audios.find({**query, "link": {"$nin": last_links[-20:]}}, {"link": 1, "_id": 0}))
+        audios = list(database.audios.find({**query, "link": {"$nin": list(set(last_links[:20]))}}, {"link": 1, "_id": 0}))
 
     if not audios:
         audios = list(database.audios.find(query, {"link": 1, "_id": 0}))
@@ -144,13 +144,13 @@ def make_question(audio: dict, question_type: str) -> dict:
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
         question["answer"] = artists
-        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}" target="_blank">{artist["name"]}</a>' for artist in audio["artists"]])
+        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}">{artist["name"]}</a>' for artist in audio["artists"]])
         question["question_timecode"] = track_start
         question["question_seek"] = seek_start
         question["answer_timecode"] = ""
     elif question_type == constants.QUESTION_ARTIST_BY_INTRO:
         question["answer"] = artists
-        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}" target="_blank">{artist["name"]}</a>' for artist in audio["artists"]])
+        question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}">{artist["name"]}</a>' for artist in audio["artists"]])
         question["question_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
         question["answer_timecode"] = f'0,{round(lyrics[0]["time"] - 1, 2)}'
     elif question_type == constants.QUESTION_NAME_BY_TRACK:

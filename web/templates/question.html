@@ -73,7 +73,7 @@
                     </svg>
                 </div>
                 <div class="form-row-input text">
-                    {% for artist in audio.artists %}{% if loop.index > 1 %}, {% endif %}<a href="/artists/{{artist.id}}" target="_blank">{{artist.name}}</a>{% endfor %}
+                    {% for artist in audio.artists %}{% if loop.index > 1 %}, {% endif %}<a href="/artists/{{artist.id}}">{{artist.name}}</a>{% endfor %}
                 </div>
             </div>
             {% endif %}
@@ -183,7 +183,7 @@
 
             {% if user.role == "admin" %}
             <div class="table-block">
-                <a href="/audios/{{audio.link}}" target="_blank"><button class="basic-button default-button">Редактировать</button></a>
+                <a href="/audios/{{audio.link}}"><button class="basic-button default-button">Редактировать</button></a>
             </div>
             {% endif %}
         </div>
