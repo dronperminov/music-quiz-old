@@ -72,6 +72,10 @@ function PlayNext() {
 
         audio.removeAttribute("src")
         audio.setAttribute("data-link", response.link)
+
+        if (response.src !== "")
+            audio.setAttribute("data-src", response.src)
+
         Play().then(correct => UpdatePlayer(correct, response))
     })
 }

@@ -1,15 +1,21 @@
 function LoadAudio(audio, errorId = "error") {
-    let link = audio.getAttribute("data-link")
     let error = document.getElementById(errorId)
+    error.innerText = ""
 
-    return SendRequest("/get-direct-link", {track_id: link}).then(response => {
+    if (audio.hasAttribute("data-src")) {
+        return new Promise((resolve, reject) => {
+            audio.src = audio.getAttribute("data-src")
+            resolve(true)
+        })
+    }
+
+    return SendRequest("/get-direct-link", {track_id: audio.getAttribute("data-link")}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return false
         }
 
         audio.src = response.direct_link
-        error.innerText = ""
         return true
     })
 }
@@ -46,6 +52,7 @@ function PlayAudio(link) {
     let block = document.getElementById(`play-audio-${link}`)
 
     LoadAudio(audio, `error-${link}`).then(success => {
+        console.log(success)
         if (!success)
             return
 
