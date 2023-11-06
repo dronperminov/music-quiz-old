@@ -19,7 +19,7 @@ router = APIRouter()
 @router.get("/artists")
 def get_artists(user: Optional[dict] = Depends(get_current_user), search_params: ArtistsQuery = Depends()) -> Response:
     if not user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/login?back_url=/artists")
 
     if search_params.query == "" and search_params.genres is None and search_params.creation is None:
         return RedirectResponse(url="/artists")
@@ -60,7 +60,7 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
 @router.get("/artists/{artist_id}")
 def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user)) -> Response:
     if not user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url=f"/login?back_url=/artists/{artist_id}")
 
     settings = database.settings.find_one({"username": user["username"]})
     artist = database.artists.find_one({"id": artist_id})

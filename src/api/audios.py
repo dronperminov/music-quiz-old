@@ -21,7 +21,7 @@ router = APIRouter()
 @router.get("/audios")
 def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: AudiosQuery = Depends()) -> Response:
     if not user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/login?back_url=/audios")
 
     if search_params.is_empty():
         return RedirectResponse(url="/audios")
@@ -58,7 +58,7 @@ def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: 
 @router.get("/audios/{link}")
 def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Response:
     if not user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url=f"/login?back_url=/audios/{link}")
 
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
@@ -77,7 +77,7 @@ def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Re
 @router.get("/add-audios")
 def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response:
     if not user:
-        return RedirectResponse(url="/login")
+        return RedirectResponse(url="/login?back_url=/add-audios")
 
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
