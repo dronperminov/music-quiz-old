@@ -78,16 +78,16 @@ function SearchAudios() {
     window.location = `/audios?${params.join("&")}`   
 }
 
-function SeekPlayer(link, time) {
-    if (!players[link])
+function SeekPlayer(trackId, time) {
+    if (!players[trackId])
         return
 
-    players[link].Seek(time)
+    players[trackId].Seek(time)
 }
 
-function ToggleText(link) {
-    let block = document.getElementById(`lyrics-${link}`)
-    let icon = document.getElementById(`lyrics-icon-${link}`)
+function ToggleText(trackId) {
+    let block = document.getElementById(`lyrics-${trackId}`)
+    let icon = document.getElementById(`lyrics-icon-${trackId}`)
     block.classList.toggle("hidden")
     icon.classList.toggle("lyrics-selected-icon")
 }

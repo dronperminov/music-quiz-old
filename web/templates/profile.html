@@ -133,8 +133,6 @@
         let updater = null
 
         audio.addEventListener("loadedmetadata", () => {
-            let link = audio.getAttribute("data-link")
-
             if (updater === null)
                 updater = new LyricsUpdater("lyrics")
 

@@ -26,7 +26,7 @@ class MongoManager:
         self.questions = database[constants.MONGO_QUESTION_COLLECTION]
 
         self.audios.create_index([("artists.id", ASCENDING)])
-        self.audios.create_index([("link", ASCENDING)], unique=True)
+        self.audios.create_index([("track_id", ASCENDING)], unique=True)
         self.audios.create_index(["year"])
         self.audios.create_index(["creation"])
         self.audios.create_index(["lyrics"])
@@ -37,7 +37,7 @@ class MongoManager:
         self.statistic.create_index([("username", ASCENDING)])
         self.statistic.create_index(["datetime"])
         self.statistic.create_index(["question_type"])
-        self.statistic.create_index(["link"])
+        self.statistic.create_index(["track_id"])
 
         self.questions.create_index([("username", ASCENDING)])
 

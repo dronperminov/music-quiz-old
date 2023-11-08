@@ -8,7 +8,7 @@
     {% include "menu.html" %}
 
     <div class="question" id="question" data-question-type="{{question.type}}">
-        <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}_{{audio.album_id}}.mp3"{% endif %} data-link="{{audio.link}}" data-question-timecode="{{question.question_timecode}}" data-question-seek="{{question.question_seek}}" data-answer-timecode="{{question.answer_timecode}}" data-answer-seek="{{question.answer_seek}}" preload="metadata"></audio>
+        <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}.mp3"{% endif %} data-track-id="{{audio.track_id}}" data-question-timecode="{{question.question_timecode}}" data-question-seek="{{question.question_seek}}" data-answer-timecode="{{question.answer_timecode}}" data-answer-seek="{{question.answer_seek}}" preload="metadata"></audio>
 
         <div class="table-block table-block-no-spacing">
             <div class="table-cell form-row-top-icon">
@@ -183,7 +183,7 @@
 
             {% if user.role == "admin" %}
             <div class="table-block">
-                <a href="/audios/{{audio.link}}"><button class="basic-button default-button">Редактировать</button></a>
+                <a href="/audios/{{audio.track_id}}"><button class="basic-button default-button">Редактировать</button></a>
             </div>
             {% endif %}
         </div>

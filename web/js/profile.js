@@ -71,7 +71,7 @@ function PlayNext() {
         }
 
         audio.removeAttribute("src")
-        audio.setAttribute("data-link", response.link)
+        audio.setAttribute("data-track-id", response.track_id)
 
         if (response.src !== "")
             audio.setAttribute("data-src", response.src)

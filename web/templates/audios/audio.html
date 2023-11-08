@@ -7,7 +7,7 @@
     {% include "menu.html" %}
     <h1>Редактирование аудиозаписи</h1>
 
-    <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}_{{audio.album_id}}.mp3"{% endif %} data-link="{{audio.link}}" preload="metadata"></audio>
+    <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}.mp3"{% endif %} data-track-id="{{audio.track_id}}" preload="metadata"></audio>
     <div class="audio-player" id="player">
         {% include "components/player.html" %}
     </div>

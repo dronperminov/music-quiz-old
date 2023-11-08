@@ -26,15 +26,15 @@ function SaveArtist(artistId) {
     })
 }
 
-function RemoveAudio(link) {
+function RemoveAudio(trackId) {
     if (!confirm("Вы уверены, что хотите удалить эту аудиозапись?"))
         return
 
-    let block = document.getElementById(`audio-block-${link}`)
-    let error = document.getElementById(`error-${link}`)
+    let block = document.getElementById(`audio-block-${trackId}`)
+    let error = document.getElementById(`error-${trackId}`)
     error.innerText = ""
 
-    SendRequest("/remove-audio", {link: link}).then(response => {
+    SendRequest("/remove-audio", {track_id: trackId}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return

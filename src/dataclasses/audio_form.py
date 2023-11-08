@@ -6,7 +6,7 @@ from fastapi import Body
 
 @dataclass
 class AudioForm:
-    link: str = Body(..., embed=True)
+    track_id: str = Body(..., embed=True)
     artists: List[dict] = Body(..., embed=True)
     track: str = Body(..., embed=True)
     lyrics: List[dict] = Body(..., embed=True)

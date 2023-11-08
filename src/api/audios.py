@@ -55,15 +55,15 @@ def get_audios(user: Optional[dict] = Depends(get_current_user), search_params: 
     return HTMLResponse(content=content)
 
 
-@router.get("/audios/{link}")
-def get_audio(link: str, user: Optional[dict] = Depends(get_current_user)) -> Response:
+@router.get("/audios/{track_id}")
+def get_audio(track_id: str, user: Optional[dict] = Depends(get_current_user)) -> Response:
     if not user:
-        return RedirectResponse(url=f"/login?back_url=/audios/{link}")
+        return RedirectResponse(url=f"/login?back_url=/audios/{track_id}")
 
     if user["role"] != "admin":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
-    audio = database.audios.find_one({"link": link})
+    audio = database.audios.find_one({"track_id": track_id})
 
     if not audio:
         return make_error(message="Запрашиваемого аудио не существует", user=user)
@@ -102,7 +102,7 @@ def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = B
         return JSONResponse({"status": "error", "message": "Не удалось распарсить ни одного аудио"})
 
     if ignore_existing:
-        existed_track_ids = {audio["link"] for audio in database.audios.find({}, {"link": 1})}
+        existed_track_ids = {audio["track_id"] for audio in database.audios.find({}, {"track_id": 1})}
         track_ids = [track_id for track_id in track_ids if track_id not in existed_track_ids]
 
     return JSONResponse({"status": "success", "track_ids": track_ids})
@@ -140,9 +140,9 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    audio2link = {audio["link"]: audio for audio in audios}
-    audios = [audio for audio_link, audio in audio2link.items()]
-    database.audios.delete_many({"link": {"$in": [audio["link"] for audio in audios]}})
+    track_id2audio = {audio["track_id"]: audio for audio in audios}
+    audios = [audio for audio in track_id2audio.values()]
+    database.audios.delete_many({"track_id": {"$in": [audio["track_id"] for audio in audios]}})
     database.audios.insert_many(audios)
 
     existed_artists = {artist["id"] for artist in database.artists.find({}, {"id": 1})}
@@ -175,27 +175,27 @@ def update_audio(user: Optional[dict] = Depends(get_current_user), params: Audio
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    audio = database.audios.find_one({"link": params.link})
+    audio = database.audios.find_one({"track_id": params.track_id})
 
     if not audio:
         return JSONResponse({"status": "error", "message": "Указанная аудиозапись не найдена. Возможно, она была удалена"})
 
-    database.audios.update_one({"link": params.link}, {"$set": params.to_dict()}, upsert=True)
+    database.audios.update_one({"track_id": params.track_id}, {"$set": params.to_dict()}, upsert=True)
     return JSONResponse({"status": "success"})
 
 
 @router.post("/remove-audio")
-def remove_audio(user: Optional[dict] = Depends(get_current_user), link: str = Body(..., embed=True)) -> JSONResponse:
+def remove_audio(user: Optional[dict] = Depends(get_current_user), track_id: str = Body(..., embed=True)) -> JSONResponse:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
     if user["role"] != "admin":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    audio = database.audios.find_one({"link": link})
+    audio = database.audios.find_one({"track_id": track_id})
 
     if not audio:
         return JSONResponse({"status": "error", "message": "Указанная аудиозапись не найдена. Возможно, она уже была удалена"})
 
-    database.audios.delete_one({"link": link})
+    database.audios.delete_one({"track_id": track_id})
     return JSONResponse({"status": "success"})

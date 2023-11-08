@@ -2,7 +2,6 @@ import re
 from typing import Dict, List, Optional
 
 from Levenshtein import ratio
-from bs4 import BeautifulSoup
 from thefuzz import fuzz
 from yandex_music import Artist, Client
 from yandex_music.exceptions import NotFoundError
@@ -10,16 +9,10 @@ from yandex_music.exceptions import NotFoundError
 from src import constants
 
 TRACK_REGEX = re.compile(r"^.*/album/(?P<album>\d+)/track/(?P<track>\d+)(\?.*)?$")
+TRACK_ONLY_REGEX = re.compile(r"^.*/track/(?P<track>\d+)(\?.*)?$")
 PLAYLIST_REGEX = re.compile(r"^.*/users/(?P<username>[-\w]+)/playlists/(?P<playlist_id>\d+)(\?.*)?$")
 ARTIST_REGEX = re.compile(r"^.*/artist/(?P<artist>\d+)(/tracks)?(\?.*)?$")
-
-
-def parse_link(link: str) -> str:
-    regex = re.compile(r"/album/(?P<album>\d+)/track/(?P<track>\d+)")
-    match = regex.search(link)
-    album = match.group("album")
-    track = match.group("track")
-    return f"{track}:{album}"
+ALBUM_REGEX = re.compile(r"^.*/album/(?P<album>\d+)(/?\?.*)?$")
 
 
 def get_track_ids(code: str, token: str) -> List[str]:
@@ -33,24 +26,31 @@ def get_track_ids(code: str, token: str) -> List[str]:
             continue
 
         if match := TRACK_REGEX.search(line):
-            tracks.append(f'{match.group("track")}:{match.group("album")}')
+            tracks.append(match.group("track"))
+            continue
+
+        if match := TRACK_ONLY_REGEX.search(line):
+            tracks.extend(track.track_id.split(":")[0] for track in client.tracks(f'{match.group("track")}'))
             continue
 
         if match := PLAYLIST_REGEX.search(line):
             playlist = client.users_playlists(match.group("playlist_id"), match.group("username"))
-            tracks.extend(track.track.track_id for track in playlist.tracks)
+            tracks.extend(track.track.track_id.split(":")[0] for track in playlist.tracks)
             continue
 
         if match := ARTIST_REGEX.search(line):
             artist_tracks = client.artists_tracks(match.group("artist"), page_size=500)
-            tracks.extend(track.track_id for track in artist_tracks.tracks)
+            tracks.extend(track.track_id.split(":")[0] for track in artist_tracks.tracks)
+            continue
 
-    if tracks:
-        return tracks
+        if match := ALBUM_REGEX.search(line):
+            album = client.albums_with_tracks(match.group("album"))
 
-    soup = BeautifulSoup(code, "html.parser")
-    links = [f'https://music.yandex.ru/{a["href"]}' for a in soup.findAll("a", class_="d-track__title", href=True)]
-    return [parse_link(link) for link in links]
+            for volume in album.volumes:
+                tracks.extend(track.track_id.split(":")[0] for track in volume)
+            continue
+
+    return tracks
 
 
 def parse_lyrics(lyrics_str: str) -> List[dict]:
@@ -95,7 +95,6 @@ def parse_tracks(track_ids: List[str], token: str, make_link: bool) -> List[dict
         track_id, album_id = track.track_id.split(":")
 
         audio = {
-            "album_id": album_id,
             "track_id": track_id,
             "title": track.title,
             "artists": parse_artists(track.artists),

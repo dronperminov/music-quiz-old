@@ -4,7 +4,7 @@ from typing import Optional
 from src import constants
 from src.database import database
 from src.dataclasses.settings import Settings
-from src.utils.artists import get_artists_by_audio_links
+from src.utils.artists import get_artists_by_track_ids
 from src.utils.common import get_word_form
 
 
@@ -36,9 +36,9 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
     total_questions = correct_questions + incorrect_questions
 
     # вопросы по исполнителям
-    artists_questions = list(database.statistic.find({**query, "question_type": {"$in": constants.ARTIST_QUESTIONS}}, {"link": 1, "correct": 1}))
-    correct_artists = len(get_artists_by_audio_links([question["link"] for question in artists_questions if question["correct"]]))
-    incorrect_artists = len(get_artists_by_audio_links([question["link"] for question in artists_questions if not question["correct"]]))
+    artists_questions = list(database.statistic.find({**query, "question_type": {"$in": constants.ARTIST_QUESTIONS}}, {"track_id": 1, "correct": 1}))
+    correct_artists = len(get_artists_by_track_ids([question["track_id"] for question in artists_questions if question["correct"]]))
+    incorrect_artists = len(get_artists_by_track_ids([question["track_id"] for question in artists_questions if not question["correct"]]))
     total_artists = correct_artists + incorrect_artists
 
     # вопросы по текстам

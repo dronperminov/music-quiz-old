@@ -9,7 +9,7 @@ function LoadAudio(audio, errorId = "error") {
         })
     }
 
-    return SendRequest("/get-direct-link", {track_id: audio.getAttribute("data-link")}).then(response => {
+    return SendRequest("/get-direct-link", {track_id: audio.getAttribute("data-track-id")}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return false
@@ -24,39 +24,39 @@ function InitPlayers() {
     let players = {}
 
     for (let audio of document.getElementsByTagName("audio")) {
-        let link = audio.getAttribute("data-link")
+        let trackId = audio.getAttribute("data-track-id")
 
         audio.addEventListener("loadedmetadata", () => {
-            let updater = new LyricsUpdater(`lyrics-${link}`)
-            let player = new Player(`player-${link}`, audio, (currentTime) => updater.Update(currentTime))
+            let updater = new LyricsUpdater(`lyrics-${trackId}`)
+            let player = new Player(`player-${trackId}`, audio, (currentTime) => updater.Update(currentTime))
             player.ResetTimecode()
             player.Init()
             player.Play()
-            players[link] = player
+            players[trackId] = player
         })
 
-        audio.addEventListener("play", () => PausePlayers(link))
+        audio.addEventListener("play", () => PausePlayers(trackId))
     }
 
     return players
 }
 
-function PausePlayers(targetLink) {
-    for (let link of Object.keys(players))
-        if (link != targetLink)
-            players[link].Pause()
+function PausePlayers(targetTrackId) {
+    for (let trackId of Object.keys(players))
+        if (trackId != targetTrackId)
+            players[trackId].Pause()
 }
 
-function PlayAudio(link) {
-    let audio = document.getElementById(`audio-${link}`)
-    let block = document.getElementById(`play-audio-${link}`)
+function PlayAudio(trackId) {
+    let audio = document.getElementById(`audio-${trackId}`)
+    let block = document.getElementById(`play-audio-${trackId}`)
 
-    LoadAudio(audio, `error-${link}`).then(success => {
+    LoadAudio(audio, `error-${trackId}`).then(success => {
         console.log(success)
         if (!success)
             return
 
-        PausePlayers(link)
+        PausePlayers(trackId)
 
         block.classList.remove("table-block")
         block.children[1].classList.remove("table-cell")
@@ -87,13 +87,13 @@ function SaveAudio() {
         return
 
     let audio = document.getElementById("audio")
-    let link = audio.getAttribute("data-link")
+    let track_id = audio.getAttribute("data-track-id")
 
     let button = document.getElementById("save-btn")
     let error = document.getElementById("error")
     error.innerText = ""
 
-    SendRequest("/update-audio", {link, artists, track, lyrics, year, creation}).then(response => {
+    SendRequest("/update-audio", {track_id, artists, track, lyrics, year, creation}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return
@@ -108,11 +108,11 @@ function RemoveAudio() {
         return
 
     let audio = document.getElementById("audio")
-    let link = audio.getAttribute("data-link")
+    let trackId = audio.getAttribute("data-track-id")
     let error = document.getElementById("error")
     error.innerText = ""
 
-    SendRequest("/remove-audio", {link: link}).then(response => {
+    SendRequest("/remove-audio", {track_id: trackId}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return

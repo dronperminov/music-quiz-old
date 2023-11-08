@@ -34,20 +34,20 @@ def get_question_params(settings: Settings, username: str) -> Tuple[str, dict]:
     question_weights = get_question_weights(settings, statistics)
     question_type = random.choices(settings.questions, weights=question_weights, k=1)[0]
 
-    last_links = [record["link"] for record in statistics]
-    incorrect_links = list({record["link"] for record in statistics if not record["correct"] and record["question_type"] == question_type})
-    links_query = {"$in": incorrect_links} if incorrect_links and random.random() < constants.REPEAT_PROBABILITY else {"$nin": list(set(last_links))}
+    last_track_idss = [record["track_id"] for record in statistics]
+    incorrect_track_ids = list({record["track_id"] for record in statistics if not record["correct"] and record["question_type"] == question_type})
+    track_ids_query = {"$in": incorrect_track_ids} if incorrect_track_ids and random.random() < constants.REPEAT_PROBABILITY else {"$nin": list(set(last_track_idss))}
 
     query = settings.to_query(question_type)
-    audios = list(database.audios.find({**query, "link": links_query}, {"link": 1, "_id": 0}))
+    audios = list(database.audios.find({**query, "track_id": track_ids_query}, {"track_id": 1, "_id": 0}))
 
     if not audios:
-        audios = list(database.audios.find({**query, "link": {"$nin": list(set(last_links[:20]))}}, {"link": 1, "_id": 0}))
+        audios = list(database.audios.find({**query, "track_id": {"$nin": list(set(last_track_idss[:20]))}}, {"track_id": 1, "_id": 0}))
 
     if not audios:
-        audios = list(database.audios.find(query, {"link": 1, "_id": 0}))
+        audios = list(database.audios.find(query, {"track_id": 1, "_id": 0}))
 
-    audio = database.audios.find_one({"link": random.choice(audios)["link"]})
+    audio = database.audios.find_one({"track_id": random.choice(audios)["track_id"]})
     return question_type, audio
 
 
@@ -132,7 +132,7 @@ def get_question_title(question_type: str, audio: dict) -> str:
 
 def make_question(audio: dict, question_type: str) -> dict:
     question = {
-        "link": audio["link"],
+        "track_id": audio["track_id"],
         "type": question_type,
         "title": get_question_title(question_type, audio)
     }
@@ -201,7 +201,7 @@ def get_question_and_audio(username: str, settings: Settings) -> Tuple[Optional[
     if not question["type"] in settings.questions:
         return None, None
 
-    audio = database.audios.find_one({**settings.to_query(question["type"]), "link": question["link"]})
+    audio = database.audios.find_one({**settings.to_query(question["type"]), "track_id": question["track_id"]})
 
     if not audio:
         return None, None
