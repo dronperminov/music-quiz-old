@@ -54,6 +54,7 @@ Player.prototype.UpdateLoop = function() {
 }
 
 Player.prototype.Init = function() {
+    this.audioDuration = this.audio.duration
     this.audio.currentTime = this.startTime
     this.audio.pause()
 
@@ -105,6 +106,14 @@ Player.prototype.TimeToString = function(time) {
 }
 
 Player.prototype.UpdateProgressBar = function() {
+    if (this.audioDuration == 0 && this.audio.duration > 0) {
+        this.audio.currentTime = this.startTime
+        this.audioDuration = this.audio.duration
+
+        if (this.endTime === 0)
+            this.endTime = this.audio.duration
+    }
+
     if ((this.audio.currentTime >= this.endTime || this.audio.ended) && this.onNext === null)
         this.audio.currentTime = this.startTime
 
@@ -117,7 +126,7 @@ Player.prototype.UpdateProgressBar = function() {
     this.currentProgress.style.width = `${(currentTime / duration) * 100}%`
     this.time.innerText = `${this.TimeToString(currentTime)} / ${this.TimeToString(duration)}`
 
-    if ('setPositionState' in navigator.mediaSession)
+    if ("mediaSession" in navigator)
         navigator.mediaSession.setPositionState({duration: duration, playbackRate: this.audio.playbackRate, position: currentTime})
 }
 
@@ -138,7 +147,7 @@ Player.prototype.ProgressMouseDown = function(x) {
     this.paused = this.audio.paused
     this.pressed = true
 
-    let part = x / this.progressBar.clientWidth
+    let part = Math.max(0, Math.min(1, x / this.progressBar.clientWidth))
     this.audio.currentTime = this.startTime + part * (this.endTime - this.startTime)
     this.audio.pause()
 
@@ -149,7 +158,7 @@ Player.prototype.ProgressMouseMove = function(x) {
     if (!this.pressed)
         return
 
-    let part = x / this.progressBar.clientWidth
+    let part = Math.max(0, Math.min(1, x / this.progressBar.clientWidth))
     this.audio.currentTime = this.startTime + part * (this.endTime - this.startTime)
     this.UpdateProgressBar()
 }
