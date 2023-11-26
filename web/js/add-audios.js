@@ -151,6 +151,7 @@ function AddParsedAudio(audio) {
     let div = MakeElement("audio-form", block)
     div.setAttribute("data-track-id", audio.track_id)
     div.setAttribute("data-chorus", audio.chorus)
+    div.setAttribute("data-source", audio.source)
 
     let caption = MakeElement("audio-caption", div, {innerText: `${artists.join(", ")} - ${audio.title}`})
     let removeIcon = MakeElement("audio-close-icon", div, {innerHTML: REMOVE_SVG, title: "Удалить"})
@@ -270,6 +271,7 @@ function GetAudios() {
         let audio = {}
         audio["track_id"] = audioBlock.getAttribute("data-track-id")
         audio["chorus"] = audioBlock.getAttribute("data-chorus") == "true"
+        audio["source"] = audioBlock.getAttribute("data-source")
 
         for (let inputBlock of audioBlock.getElementsByClassName("form-row-input")) {
             let input = inputBlock.children[0]
