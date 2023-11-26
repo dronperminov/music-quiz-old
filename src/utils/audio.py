@@ -101,7 +101,8 @@ def parse_tracks(track_ids: List[str], token: str, make_link: bool) -> List[dict
             "year": 0,
             "lyrics": None,
             "creation": [],
-            "chorus": False
+            "chorus": False,
+            "source": "yandex-music"
         }
 
         album = client.albums([album_id])[0]
