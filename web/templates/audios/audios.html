@@ -87,7 +87,7 @@
             <div class="table-block table-block-no-spacing">
                 <div class="table-cell">
                     <div class="text">
-                        <b>{% if user.role == "admin" %}<a href="/audios/{{audio.track_id}}">{{name}}</a>{% else %}{{name}}{% endif %}</b>:
+                        <b>{% if user.role != "user" %}<a href="/audios/{{audio.track_id}}">{{name}}</a>{% else %}{{name}}{% endif %}</b>:
                     </div>
 
                     {% if audio.creation %}

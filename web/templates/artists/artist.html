@@ -10,7 +10,7 @@
     <h1 class="top">Исполнитель {{artist.name}}</h1>
 
     <div class="content">
-        {% if user.role == "admin" %}
+        {% if user.role != "user" %}
         <div class="right">
             <svg id="prefer-list-{{artist.id}}" class="artist-question-icon {% if artist.id in settings.prefer_list %}artist-question-selected-icon{% endif %}" onclick="SwitchList({{artist.id}}, 'prefer')" height="16px" width="16px" xmlns="http://www.w3.org/2000/svg" viewBox="3 3 18 18">
                 <path d="M20.808,11.079C19.829,16.132,12,20.5,12,20.5s-7.829-4.368-8.808-9.421C2.227,6.1,5.066,3.5,8,3.5a4.444,4.444,0,0,1,4,2,4.444,4.444,0,0,1,4-2C18.934,3.5,21.773,6.1,20.808,11.079Z"/>
@@ -119,7 +119,7 @@
                 </div>
                 {% endif %}
 
-                {% if user.role == "admin" %}
+                {% if user.role != "user" %}
                 <div class="table-cell table-cell-no-width">
                     <div class="form-row-icon-interactive icons-controls">
                         <a href="/audios/{{audio.track_id}}">

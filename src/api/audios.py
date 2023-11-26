@@ -60,7 +60,7 @@ def get_audio(track_id: str, user: Optional[dict] = Depends(get_current_user)) -
     if not user:
         return RedirectResponse(url=f"/login?back_url=/audios/{track_id}")
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
     audio = database.audios.find_one({"track_id": track_id})
@@ -79,7 +79,7 @@ def get_add_audios(user: Optional[dict] = Depends(get_current_user)) -> Response
     if not user:
         return RedirectResponse(url="/login?back_url=/add-audios")
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return make_error(message="Эта страница доступна только администраторам.", user=user)
 
     settings = database.settings.find_one({"username": user["username"]})
@@ -93,7 +93,7 @@ def parse_audios(user: Optional[dict] = Depends(get_current_user), code: str = B
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     track_ids = get_track_ids(code, random.choice(tokens))
@@ -113,7 +113,7 @@ def parse_audio(user: Optional[dict] = Depends(get_current_user), track_ids: Lis
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     tracks = parse_tracks(track_ids, random.choice(tokens), make_link)
@@ -137,7 +137,7 @@ def add_audios(user: Optional[dict] = Depends(get_current_user), audios: List[di
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     track_id2audio = {audio["track_id"]: audio for audio in audios}
@@ -172,7 +172,7 @@ def update_audio(user: Optional[dict] = Depends(get_current_user), params: Audio
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     audio = database.audios.find_one({"track_id": params.track_id})
@@ -189,7 +189,7 @@ def remove_audio(user: Optional[dict] = Depends(get_current_user), track_id: str
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     audio = database.audios.find_one({"track_id": track_id})

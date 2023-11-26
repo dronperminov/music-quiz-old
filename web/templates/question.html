@@ -181,7 +181,7 @@
 
             <div class="error" id="ignore-error"></div>
 
-            {% if user.role == "admin" %}
+            {% if user.role != "user" %}
             <div class="table-block">
                 <a href="/audios/{{audio.track_id}}"><button class="basic-button default-button">Редактировать</button></a>
             </div>

@@ -86,7 +86,7 @@ def edit_artist(user: Optional[dict] = Depends(get_current_user), artist_params:
     if not user:
         return JSONResponse({"status": "error", "message": "Пользователь не залогинен"})
 
-    if user["role"] != "admin":
+    if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
     database.artists.update_one({"id": artist_params.artist_id}, {"$set": {"creation": artist_params.creation, "genres": artist_params.genres}})

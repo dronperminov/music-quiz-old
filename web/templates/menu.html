@@ -26,7 +26,7 @@
 </div>
 {% endif %}
 
-{% if page == "audios" and user.role == "admin" %}
+{% if page == "audios" and user.role != "user" %}
 <div class="top-right-icon top-icon" title="Добавление аудио">
     <a href="/add-audios">
         <svg class="top-fill-icon" width="30px" height="30px" viewBox="-3 0 32 32" xmlns="http://www.w3.org/2000/svg">
