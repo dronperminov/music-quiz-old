@@ -78,6 +78,7 @@ def radio_next(user: Optional[dict] = Depends(get_current_user)) -> JSONResponse
     audio = database.audios.find_one({"track_id": random.choice(audios)["track_id"]})
     audio_src = f'https://music.plush-anvil.ru/audios/{audio["track_id"]}.mp3' if audio["downloaded"] else ""
     artist_src = f'https://music.plush-anvil.ru/artists/{audio["artists"][0]["id"]}.mp3'
+    lyrics = audio.get("lyrics", None)
 
     return JSONResponse({
         "status": "success",
@@ -85,6 +86,6 @@ def radio_next(user: Optional[dict] = Depends(get_current_user)) -> JSONResponse
         "src": audio_src,
         "artists": audio["artists"],
         "track": audio["track"],
-        "lyrics": audio.get("lyrics", []),
+        "lyrics": lyrics if lyrics else [],
         "artist_src": artist_src
     })
