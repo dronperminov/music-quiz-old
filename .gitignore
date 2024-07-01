@@ -2,6 +2,8 @@
 __pycache__
 venv
 backups
+scripts
 web/audios
 tokens.txt
 web/images/profiles
+web/images/artists_covers

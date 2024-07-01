@@ -32,6 +32,12 @@ def get_question(user: Optional[dict] = Depends(get_current_user)) -> Response:
         database.questions.delete_one({"username": user["username"]})
         database.questions.insert_one({"username": user["username"], **question})
 
+    if audio:
+        artists = database.artists.find({"id": {"$in": [artist["id"] for artist in audio["artists"]]}})
+        artist2cover = {artist["id"]: artist.get("cover", "") for artist in artists}
+        for artist in audio["artists"]:
+            artist["cover"] = artist2cover[artist["id"]]
+
     template = templates.get_template("question.html")
     content = template.render(user=user, settings=settings, page="question", version=get_static_hash(), audio=audio, question=question)
     return HTMLResponse(content=content)

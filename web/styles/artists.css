@@ -11,3 +11,15 @@
 .artist-question-selected-icon {
     fill: var(--border-color) !important;
 }
+
+.artist-cover {
+    text-align: center;
+    height: 200px;
+}
+
+.artist-cover img {
+    border-radius: 100%;
+    border: 2px solid #fff;
+    max-width: 100%;
+    max-height: 100%;
+}

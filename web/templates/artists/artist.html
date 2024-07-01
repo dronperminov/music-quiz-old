@@ -7,6 +7,13 @@
 </head>
 <body>
     {% include "menu.html" %}
+
+    {% if artist.cover %}
+    <div class="artist-cover">
+        <img src="/images/artists_covers/{{artist.cover}}">
+    </div>
+    {% endif %}
+
     <h1 class="top">Исполнитель {{artist.name}}</h1>
 
     <div class="content">
