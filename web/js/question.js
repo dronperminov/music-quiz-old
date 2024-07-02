@@ -46,6 +46,9 @@ function CheckAnswer(isCorrect) {
 }
 
 function AddToIgnore(artistIds) {
+    if (!confirm("Вы уверены, что хотие добавить трек в список игнорируемых?"))
+        return
+
     let error = document.getElementById("ignore-error")
     error.innerText = ""
 
