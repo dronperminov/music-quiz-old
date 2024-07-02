@@ -28,7 +28,7 @@ def get_question(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
     if not question:
         question_type, audio = get_question_params(settings, user["username"])
-        question = make_question(audio, question_type)
+        question = make_question(audio, question_type, settings.change_playback_rate)
         database.questions.delete_one({"username": user["username"]})
         database.questions.insert_one({"username": user["username"], **question})
 

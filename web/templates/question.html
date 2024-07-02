@@ -8,11 +8,14 @@
     {% include "menu.html" %}
 
     <div class="question" id="question" data-question-type="{{question.type}}">
-        <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}.mp3"{% endif %} data-track-id="{{audio.track_id}}" data-question-timecode="{{question.question_timecode}}" data-question-seek="{{question.question_seek}}" data-answer-timecode="{{question.answer_timecode}}" data-answer-seek="{{question.answer_seek}}" preload="metadata"></audio>
+        <audio id="audio" {% if audio.downloaded %}data-src="https://music.plush-anvil.ru/audios/{{audio.track_id}}.mp3"{% endif %} data-track-id="{{audio.track_id}}" data-question-timecode="{{question.question_timecode}}" data-question-playback-rate="{{question.question_playback_rate}}" data-question-seek="{{question.question_seek}}" data-answer-timecode="{{question.answer_timecode}}" data-answer-seek="{{question.answer_seek}}" preload="metadata"></audio>
 
         <div class="table-block table-block-no-spacing">
             <div class="table-cell form-row-top-icon">
                 <div class="question-header" id="question-title">{{question.title}}:</div>
+                {% if question.question_playback_rate != 1 %}
+                <div class="info" id="playback-rate-info">скорость аудио изменена: {{question.question_playback_rate|round(2)}}x</div>
+                {% endif %}
             </div>
             <div class="table-cell table-cell-no-width form-row-top-icon">
                 <div class="form-row-icon-interactive question-settings" title="настройки">
@@ -223,6 +226,7 @@
             let updater = new LyricsUpdater("lyrics")
             player = new Player("player", audio, currentTime => updater.Update(currentTime))
             player.ParseTimecode(audio.getAttribute("data-question-timecode"))
+            player.SetPlaybackRate(+audio.getAttribute("data-question-playback-rate"))
             player.Init()
 
             let seek = audio.getAttribute("data-question-seek")

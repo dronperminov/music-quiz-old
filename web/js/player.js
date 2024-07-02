@@ -143,6 +143,14 @@ Player.prototype.Seek = function(time) {
     this.UpdateProgressBar()
 }
 
+Player.prototype.SetPlaybackRate = function(rate) {
+    this.audio.playbackRate = rate
+}
+
+Player.prototype.ResetPlaybackRate = function() {
+    this.audio.playbackRate = 1
+}
+
 Player.prototype.ProgressMouseDown = function(x) {
     this.paused = this.audio.paused
     this.pressed = true

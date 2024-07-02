@@ -7,7 +7,13 @@ function ShowAnswer(player) {
     let audio = document.getElementById("audio")
     let timecode = audio.getAttribute("data-answer-timecode")
     let seek = audio.getAttribute("data-answer-seek")
+    let info = document.getElementById("playback-rate-info")
+
+    if (info !== null)
+        info.classList.add("hidden")
+
     player.ParseTimecode(timecode)
+    player.ResetPlaybackRate()
 
     if (seek !== "")
         player.Seek(+seek)

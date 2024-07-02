@@ -130,11 +130,12 @@ def get_question_title(question_type: str, audio: dict) -> str:
     raise ValueError(f'Invalid question type "{question_type}"')
 
 
-def make_question(audio: dict, question_type: str) -> dict:
+def make_question(audio: dict, question_type: str, can_change_playback: bool) -> dict:
     question = {
         "track_id": audio["track_id"],
         "type": question_type,
-        "title": get_question_title(question_type, audio)
+        "title": get_question_title(question_type, audio),
+        "question_playback_rate": 1
     }
 
     artists = [artist["name"] for artist in audio["artists"]]
@@ -148,6 +149,9 @@ def make_question(audio: dict, question_type: str) -> dict:
         question["question_timecode"] = track_start
         question["question_seek"] = seek_start
         question["answer_timecode"] = ""
+
+        if can_change_playback and random.random() < 0.5:
+            question["question_playback_rate"] = random.choice([0.25, 0.5, 0.75, 1.5, 2, 3, 4])
     elif question_type == constants.QUESTION_ARTIST_BY_INTRO:
         question["answer"] = artists
         question["answer_string"] = ", ".join([f'<a href="/artists/{artist["id"]}">{artist["name"]}</a>' for artist in audio["artists"]])
@@ -200,6 +204,9 @@ def get_question_and_audio(username: str, settings: Settings) -> Tuple[Optional[
 
     if not question["type"] in settings.questions:
         return None, None
+
+    if not settings.change_playback_rate or "question_playback_rate" not in question:
+        question["question_playback_rate"] = 1
 
     audio = database.audios.find_one({**settings.to_query(question["type"]), "track_id": question["track_id"]})
 

@@ -51,6 +51,10 @@ function SaveSettings() {
     if (autoPlay === null)
         return
 
+    let changePlaybackRate = GetMultiSelect("change-playback-rate", null)
+    if (changePlaybackRate === null)
+        return
+
     let questionYears = GetMultiSelect("question-years", null, "Не выбран ни один год выхода")
     if (questionYears === null)
         return
@@ -90,7 +94,8 @@ function SaveSettings() {
         prefer_list: preferList.map(artist => +artist),
         ignore_list: ignoreList.map(artist => +artist),
         show_questions_count: showQuestionsCount.length > 0,
-        auto_play: autoPlay.length > 0
+        auto_play: autoPlay.length > 0,
+        change_playback_rate: changePlaybackRate.length > 0
     }
 
     let button = document.getElementById("save-btn")
