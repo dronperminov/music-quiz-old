@@ -62,14 +62,20 @@
 
             <h3>Дополнительно:</h3>
             <div class="artists-covers">
-            {% for artist in audio.artists %}
+                {% for artist in audio.artists %}
                 {% if artist.cover %}
                 <div class="artist-cover text">
                     <a href="/artists/{{artist.id}}"><img src="/images/artists_covers/{{artist.cover}}"></a>
                     <a href="/artists/{{artist.id}}">{{artist.name}}</a>
                 </div>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
+
+                {% if audio.cover %}
+                <div class="artist-cover">
+                    <img src="/images/audios_covers/{{audio.cover}}">
+                </div>
+                {% endif %}
             </div>
 
             {% if question.type not in ["artist_by_track", "artist_by_intro"] %}

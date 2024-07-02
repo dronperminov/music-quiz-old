@@ -83,6 +83,7 @@ def radio_next(user: Optional[dict] = Depends(get_current_user)) -> JSONResponse
     return JSONResponse({
         "status": "success",
         "track_id": audio["track_id"],
+        "cover": audio.get("cover", ""),
         "src": audio_src,
         "artists": audio["artists"],
         "track": audio["track"],

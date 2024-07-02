@@ -50,11 +50,16 @@ function UpdatePlayer(correct, response) {
     }
 
     if ('mediaSession' in navigator) {
+        let artwork = []
+
+        if (response.cover !== "")
+            artwork.push({src: `/images/audios_covers/${response.cover}`, sizes: "400x400", type: "image/jpg"})
+
         navigator.mediaSession.setPositionState(null)
         navigator.mediaSession.metadata = new MediaMetadata({
             title: response.track,
             artist: response.artists.map((artist) => artist.name).join(", "),
-            artwork: []
+            artwork: artwork
         });
     }
 }
