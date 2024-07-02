@@ -232,6 +232,10 @@
                     artwork: []
                 });
             }
+
+            {% if settings.auto_play %}
+            player.Play()
+            {% endif %}
         })
 
         LoadAudio(audio)

@@ -19,6 +19,7 @@ class Settings:
     ignore_list: List[int]
     last_update: datetime
     show_questions_count: bool
+    auto_play: bool
 
     @classmethod
     def from_dict(cls: "Settings", data: Optional[dict]) -> "Settings":
@@ -35,7 +36,8 @@ class Settings:
         ignore_list = data.get("ignore_list", [])
         last_update = data.get("last_update", datetime(1900, 1, 1))
         show_questions_count = data.get("show_questions_count", True)
-        return cls(theme, question_years, questions, question_artists, genres, text_languages, prefer_list, ignore_list, last_update, show_questions_count)
+        auto_play = data.get("auto_play", False)
+        return cls(theme, question_years, questions, question_artists, genres, text_languages, prefer_list, ignore_list, last_update, show_questions_count, auto_play)
 
     def to_dict(self) -> dict:
         return {
@@ -48,7 +50,8 @@ class Settings:
             "prefer_list": self.prefer_list,
             "ignore_list": self.ignore_list,
             "last_update": self.last_update,
-            "show_questions_count": self.show_questions_count
+            "show_questions_count": self.show_questions_count,
+            "auto_play": self.auto_play
         }
 
     def to_audio_query(self) -> dict:

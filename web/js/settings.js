@@ -47,6 +47,10 @@ function SaveSettings() {
     if (showQuestionsCount === null)
         return
 
+    let autoPlay = GetMultiSelect("auto-play", null)
+    if (autoPlay === null)
+        return
+
     let questionYears = GetMultiSelect("question-years", null, "Не выбран ни один год выхода")
     if (questionYears === null)
         return
@@ -85,7 +89,8 @@ function SaveSettings() {
         text_languages: textLanguages,
         prefer_list: preferList.map(artist => +artist),
         ignore_list: ignoreList.map(artist => +artist),
-        show_questions_count: showQuestionsCount.length > 0
+        show_questions_count: showQuestionsCount.length > 0,
+        auto_play: autoPlay.length > 0
     }
 
     let button = document.getElementById("save-btn")
