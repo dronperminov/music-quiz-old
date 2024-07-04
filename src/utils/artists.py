@@ -1,5 +1,8 @@
+import re
 from collections import defaultdict
 from typing import List
+
+from yandex_music import Client, exceptions
 
 from src.database import database
 from src.utils.audio import get_lyrics_creation
@@ -33,3 +36,50 @@ def get_artists_by_track_ids(track_ids: List[str]) -> List[int]:
     audios = database.audios.find({"track_id": {"$in": track_ids}}, {"artists": 1})
     artists = {artist["id"] for audio in audios for artist in audio["artists"]}
     return list(artists)
+
+
+def get_artist_form(artist_id: int, client: Client, max_retries: int = 3) -> str:
+    text = ""
+
+    for _ in range(max_retries):
+        try:
+            info = client._request.get(f"{client.base_url}/artists/{artist_id}/brief-info")["artist"]
+            text = info.get("description", {"text": "<none>"})["text"].replace("\n", " ")
+            break
+        except TypeError:
+            text = "<error>"
+            break
+        except exceptions.TimedOutError:
+            text = "<timeout error>"
+
+    form2variant = {
+        "group": ["группа"],
+        "singer_man": ["певец"],
+        "singer_woman": ["певица"],
+        "artist_man": ["исполнитель", "рэпер"],
+        "artist_woman": ["исполнительница", "рэперша"],
+        "musician": ["музыкант"],
+        "project": ["проект"],
+        "duet": ["дуэт"],
+        "trio": ["трио"],
+        "dj": ["диджей", "ди-джей"],
+        "via": ["вокально-инструментальный ансамбль", "виа"],
+        "composer": ["композитор"]
+    }
+
+    variant2form = {}
+
+    for form, form_variants in form2variant.items():
+        for variant in form_variants:
+            variant2form[variant] = form
+
+    variants = []
+    for variant in form2variant.values():
+        variants.extend(variant)
+
+    matched_variants = re.findall(rf'\b({"|".join(variants)})\b', text.lower())
+
+    if len(matched_variants) > 0:
+        return variant2form[matched_variants[0]]
+
+    return "default"

@@ -84,6 +84,9 @@
                     {% for genre in artist.genres %}{% if loop.index > 1 %}, {% endif %}{{genre2rus[genre]}}{% endfor %}
                 </div>
                 {% endif %}
+
+                <div class="text"><b>Форма</b>: <a href="https://www.google.com/search?q={{artist.name}}" target="_blank">{{forms[artist.form][0] if artist.form != "default" else "&lt;исполнитель&gt;"}}</a></div>
+
                 <div class="error" id="error-{{artist.id}}"></div>
             </div>
             <div class="table-cell table-cell-no-width">
@@ -96,6 +99,12 @@
                     <path fill-rule="evenodd" d="M5.781 4.414a7 7 0 019.62 10.039l-9.62-10.04zm-1.408 1.42a7 7 0 009.549 9.964L4.373 5.836zM10 1a9 9 0 100 18 9 9 0 000-18z"/>
                 </svg>
             </div>
+
+            {% if artist.cover %}
+            <div class="artist-cover-cell">
+                <img src="/images/artists_covers/{{artist.cover}}" loading="lazy">
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endfor %}

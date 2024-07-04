@@ -4,13 +4,14 @@ from typing import List, Optional
 import yandex_music.exceptions
 from fastapi import APIRouter, Body, Depends
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
+from yandex_music import Client
 
 from src import constants
 from src.api import make_error, templates, tokens
 from src.database import database
 from src.dataclasses.audio_form import AudioForm
 from src.dataclasses.audios_query import AudiosQuery
-from src.utils.artists import get_artists_creation
+from src.utils.artists import get_artist_form, get_artists_creation
 from src.utils.audio import get_track_ids, parse_artist_genres, parse_direct_link, parse_tracks
 from src.utils.auth import get_current_user
 from src.utils.common import get_static_hash, get_word_form
@@ -121,13 +122,16 @@ def parse_audio(user: Optional[dict] = Depends(get_current_user), track_ids: Lis
 
 
 def add_artists(new_artists: dict, token: str) -> None:
+    client = Client(token).init()
+
     artist_ids = [artist_id for artist_id in new_artists]
-    artist_genres = parse_artist_genres(artist_ids, token)
+    artist_genres = parse_artist_genres(artist_ids, client)
     artist_creation = get_artists_creation(artist_ids)
 
     for artist_id, artist in new_artists.items():
         artist["genres"] = artist_genres[artist_id]
         artist["creation"] = list(artist_creation[artist_id])
+        artist["form"] = get_artist_form(artist_id, client)
 
     database.artists.insert_many(new_artists.values())
 

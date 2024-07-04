@@ -1,5 +1,7 @@
 import random
 
+from yandex_music import Client
+
 from src.api import tokens
 from src.database import database
 from src.utils.artists import get_artists_creation
@@ -13,8 +15,9 @@ def main():
         {"creation.0": {"$exists": False}}
     ]}))
 
+    client = Client(random.choice(tokens)).init()
     artist_ids = [artist["id"] for artist in artists]
-    artist_genres = parse_artist_genres(artist_ids, random.choice(tokens))
+    artist_genres = parse_artist_genres(artist_ids, client)
     artist_creation = get_artists_creation(artist_ids)
 
     for artist in artists:

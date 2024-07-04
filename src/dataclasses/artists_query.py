@@ -21,7 +21,9 @@ class ArtistsQuery:
 
         query = dict()
 
-        if self.query:
+        if self.query == "<default>":
+            query["form"] = "default"
+        elif self.query:
             query["name"] = {"$regex": escape_query(self.query), "$options": "i"}
 
         and_conditions = []

@@ -133,8 +133,7 @@ def parse_direct_link(track_id: str, token: str) -> str:
     return info.get_direct_link()
 
 
-def parse_artist_genres(artist_ids: List[int], token: str) -> Dict[int, List[str]]:
-    client = Client(token)
+def parse_artist_genres(artist_ids: List[int], client: Client) -> Dict[int, List[str]]:
     genres = dict()
 
     for artist_id, artist in zip(artist_ids, client.artists(artist_ids)):

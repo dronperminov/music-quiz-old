@@ -52,7 +52,8 @@ def get_artists(user: Optional[dict] = Depends(get_current_user), search_params:
         search_creation=search_params.creation if search_params.creation else [],
         artist2count=artist2count,
         creation2rus=constants.CREATION_TO_RUS,
-        genre2rus=constants.GENRE_TO_RUS
+        genre2rus=constants.GENRE_TO_RUS,
+        forms=constants.ARTIST_FORMS
     )
     return HTMLResponse(content=content)
 
