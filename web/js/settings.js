@@ -95,7 +95,8 @@ function SaveSettings() {
         ignore_list: ignoreList.map(artist => +artist),
         show_questions_count: showQuestionsCount.length > 0,
         auto_play: autoPlay.length > 0,
-        change_playback_rate: changePlaybackRate.length > 0
+        change_playback_rate: changePlaybackRate.length > 0,
+        hits: document.getElementById("hits").value
     }
 
     let button = document.getElementById("save-btn")

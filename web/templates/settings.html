@@ -99,6 +99,21 @@
             </div>
         </div>
 
+        <div class="form-row" title="Хиты">
+            <div class="form-row-icon" id="hits-icon">
+                <svg class="form-svg-fill-icon" width="24px" height="24px" viewBox="3 3 58 58" role="img" xmlns="http://www.w3.org/2000/svg" stroke-width="2" fill="none">
+                    <path d="M32 2L16 18h10v15h12V18h10z"></path><path d="M32 62c-3.308 0-6-2.848-6-6.348v-9.307C26 42.848 28.692 40 32 40s6 2.848 6 6.346v9.307C38 59.152 35.308 62 32 62m0-18.617c-1.654 0-3 1.33-3 2.963v9.307c0 1.633 1.346 2.965 3 2.965s3-1.332 3-2.965v-9.307c0-1.633-1.346-2.963-3-2.963"></path><path d="M22 40H10v3h4.5v19h3V43H22z"></path><path d="M48 40h-6v22h3v-9.309h3c3.308 0 6-2.848 6-6.348C54 42.846 51.308 40 48 40m0 9.309h-3v-5.926h3c1.654 0 3 1.328 3 2.961s-1.346 2.965-3 2.965"></path>
+                </svg>
+            </div>
+            <div class="form-row-input">
+                <select class="basic-input default-input" id="hits" onchange="ChangeField('hits')">
+                    <option value="all" {% if settings.hits == "all" %}selected{% endif %}>все треки</option>
+                    <option value="only-hits" {% if settings.hits == "only-hits" %}selected{% endif %}>только хиты (ТОП-5)</option>
+                    <option value="no-hits" {% if settings.hits == "no-hits" %}selected{% endif %}>без хитов (ниже ТОП-5)</option>
+                </select>
+            </div>
+        </div>
+
         <div class="form-row" title="Годы выхода">
             <div class="form-row-icon" id="question-years-icon">
                 <svg class="form-svg-fill-icon" xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 456.726 456.726">

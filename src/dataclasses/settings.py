@@ -21,37 +21,27 @@ class Settings:
     show_questions_count: bool
     auto_play: bool
     change_playback_rate: bool
+    hits: str
 
     @classmethod
     def from_dict(cls: "Settings", data: Optional[dict]) -> "Settings":
         if data is None:
             data = {}
 
-        theme = data.get("theme", "light")
-        question_years = data.get("question_years", get_default_question_years())
-        questions = data.get("questions", constants.QUESTIONS)
-        question_artists = data.get("question_artists", constants.QUESTION_ARTISTS)
-        genres = data.get("genres", constants.GENRES)
-        text_languages = data.get("text_languages", constants.TEXT_LANGUAGES)
-        prefer_list = data.get("prefer_list", [])
-        ignore_list = data.get("ignore_list", [])
-        last_update = data.get("last_update", datetime(1900, 1, 1))
-        show_questions_count = data.get("show_questions_count", True)
-        auto_play = data.get("auto_play", False)
-        change_playback_rate = data.get("change_playback_rate", False)
         return cls(
-            theme,
-            question_years,
-            questions,
-            question_artists,
-            genres,
-            text_languages,
-            prefer_list,
-            ignore_list,
-            last_update,
-            show_questions_count,
-            auto_play,
-            change_playback_rate
+            theme=data.get("theme", "light"),
+            question_years=data.get("question_years", get_default_question_years()),
+            questions=data.get("questions", constants.QUESTIONS),
+            question_artists=data.get("question_artists", constants.QUESTION_ARTISTS),
+            genres=data.get("genres", constants.GENRES),
+            text_languages=data.get("text_languages", constants.TEXT_LANGUAGES),
+            prefer_list=data.get("prefer_list", []),
+            ignore_list=data.get("ignore_list", []),
+            last_update=data.get("last_update", datetime(1900, 1, 1)),
+            show_questions_count=data.get("show_questions_count", True),
+            auto_play=data.get("auto_play", False),
+            change_playback_rate=data.get("change_playback_rate", False),
+            hits=data.get("hits", "all")
         )
 
     def to_dict(self) -> dict:
@@ -67,7 +57,8 @@ class Settings:
             "last_update": self.last_update,
             "show_questions_count": self.show_questions_count,
             "auto_play": self.auto_play,
-            "change_playback_rate": self.change_playback_rate
+            "change_playback_rate": self.change_playback_rate,
+            "hits": self.hits
         }
 
     def to_audio_query(self) -> dict:
@@ -87,6 +78,11 @@ class Settings:
 
         if self.ignore_list:
             query["$and"].append({"artists.id": {"$nin": self.ignore_list}})
+
+        if self.hits == "only-hits":
+            query["$and"].append({"position": {"$exists": True, "$lte": 5}})
+        elif self.hits == "no-hits":
+            query["$and"].append({"position": {"$exists": True, "$gt": 5}})
 
         return query
 

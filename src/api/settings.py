@@ -77,8 +77,7 @@ async def update_settings(request: Request, user: Optional[dict] = Depends(get_c
     settings = Settings.from_dict(data)
     current_settings = Settings.from_dict(database.settings.find_one({"username": user["username"]}))
 
-    if set(settings.questions) != set(current_settings.questions):
-        settings.last_update = datetime.now()
+    settings.last_update = datetime.now() if set(settings.questions) != set(current_settings.questions) else current_settings.last_update
 
     database.users.update_one({"username": user["username"]}, {"$set": {"fullname": data["fullname"]}})
     database.settings.update_one({"username": user["username"]}, {"$set": settings.to_dict()}, upsert=True)
