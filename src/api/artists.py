@@ -76,7 +76,8 @@ def get_artist(artist_id: int, user: Optional[dict] = Depends(get_current_user))
         audios=audios,
         genres=constants.GENRES,
         creation2rus=constants.CREATION_TO_RUS,
-        genre2rus=constants.GENRE_TO_RUS
+        genre2rus=constants.GENRE_TO_RUS,
+        forms=constants.ARTIST_FORMS
     )
     return HTMLResponse(content=content)
 
@@ -89,7 +90,7 @@ def edit_artist(user: Optional[dict] = Depends(get_current_user), artist_params:
     if user["role"] == "user":
         return JSONResponse({"status": "error", "message": "Пользователь не является администратором"})
 
-    database.artists.update_one({"id": artist_params.artist_id}, {"$set": {"creation": artist_params.creation, "genres": artist_params.genres}})
+    database.artists.update_one({"id": artist_params.artist_id}, {"$set": artist_params.to_dict()})
     return JSONResponse({"status": "success"})
 
 

@@ -110,13 +110,21 @@ def get_chorus_question(lyrics: List[dict]) -> Tuple[int, int]:
 
 
 def get_question_title(question_type: str, audio: dict) -> str:
-    artist = "исполнителя" if len(audio["artists"]) == 1 else "исполнителей"
+    artists = list(database.artists.find({"id": {"$in": [artist["id"] for artist in audio["artists"]]}}))
+    id2form = {artist["id"]: artist.get("form", "default") for artist in artists}
+    forms = [constants.ARTIST_FORMS[id2form[artist["id"]]][1] for artist in audio["artists"]]
+
+    if len(audio["artists"]) == 1:
+        artist = forms[0]
+    else:
+        *first, last = forms
+        artist = ", ".join(first) + " и " + last
 
     if question_type == constants.QUESTION_ARTIST_BY_TRACK:
-        return f"Назовите {artist} песни"
+        return f"Назовите {artist}"
 
     if question_type == constants.QUESTION_ARTIST_BY_INTRO:
-        return f"Назовите {artist} песни по её вступлению"
+        return f"Назовите {artist} по вступлению"
 
     if question_type == constants.QUESTION_NAME_BY_TRACK:
         return "Назовите название песни"

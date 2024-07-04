@@ -12,11 +12,13 @@ function SaveArtist(artistId) {
     if (genres === null)
         return
 
+    let form = document.getElementById("form").value
+
     let button = document.getElementById("save-btn")
     let error = document.getElementById("error")
     error.innerText = ""
 
-    SendRequest("/edit-artist", {artist_id: artistId, creation: creation, genres: genres}).then(response => {
+    SendRequest("/edit-artist", {artist_id: artistId, creation: creation, genres: genres, form: form}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
             return
