@@ -130,6 +130,7 @@ function ParseAudio(trackIds) {
     let currentCount = document.getElementById("current-count")
     let error = document.getElementById("error")
     let makeLink = document.getElementById("show-player").checked
+    let withText = document.getElementById("with-text").checked
 
     return SendRequest("/parse-audio", {track_ids: trackIds, make_link: makeLink}).then(response => {
         if (response.status != "success") {
@@ -138,7 +139,8 @@ function ParseAudio(trackIds) {
         }
 
         for (let track of response.tracks)
-            AddParsedAudio(track)
+            if (!withText || track.lyrics)
+                AddParsedAudio(track)
 
         currentCount.innerText = trackIds.length + +currentCount.innerText
     })
