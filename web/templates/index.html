@@ -24,9 +24,9 @@
             <div class="place">
                 {% if username %}
                 <div class="place-user-profile">
-                    <img src="{{statistics[username].image}}" alt="Аватарка пользователя {{username}}">
+                    <a href="/profile?username={{username}}"><img src="{{statistics[username].image}}" alt="Аватарка пользователя {{username}}"></a>
                 </div>
-                <div class="place-user-name">{{username}}</div>
+                <div class="place-user-name text"><a href="/profile?username={{username}}">{{username}}</a></div>
                 <div class="place-user-score">
                     {{statistics[username].score.value}}%<br>
 
@@ -51,10 +51,10 @@
                 </div>
 
                 <div class="user-profile">
-                    <img src="{{statistics[username]['image']}}" alt="Аватарка пользователя {{username}}">
+                    <a href="/profile?username={{username}}"><img src="{{statistics[username]['image']}}" alt="Аватарка пользователя {{username}}"></a>
                 </div>
                 <div class="user-info">
-                    <div class="user-name">{{username}}</div>
+                    <div class="user-name text"><a href="/profile?username={{username}}">{{username}}</a></div>
                     <div class="user-score">
                         {{statistics[username].score.value}}%
                         {% if statistics[username].show_questions_count %}

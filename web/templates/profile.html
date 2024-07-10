@@ -1,5 +1,5 @@
 {% include "header.html" %}
-<title>{{user.username}} | music-quiz</title>
+<title>{% if show_user.username != user.username %}Профиль пользователя {% endif %}{{show_user.username}} | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/year_grid.css?v={{version}}">
@@ -9,12 +9,12 @@
     {% include "menu.html" %}
 
     <div class="profile-image">
-        <img src="{{user.image_src}}" alt="Аватар пользователя {{user.username}}">
+        <img src="{{show_user.image_src}}" alt="Аватар пользователя {{show_user.username}}">
     </div>
 
     <div class="profile">
         <div class="profile-name">
-            {{user.fullname}}<br>
+            {{show_user.fullname}}<br>
         </div>
 
         <div class="statistic">
@@ -73,7 +73,7 @@
             </div>
         </div>
 
-        <div class="form-row radio">
+        <div class="form-row radio{% if user.username != show_user.username %} hidden{% endif %}">
             <div class="radio-header">Бесконечное радио</div>
             <div class="text" id="caption"></div>
 

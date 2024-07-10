@@ -1,7 +1,7 @@
 import random
 from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 
 from src import constants
@@ -48,13 +48,21 @@ def index(user: Optional[dict] = Depends(get_current_user)) -> HTMLResponse:
 
 
 @router.get("/profile")
-def profile(user: Optional[dict] = Depends(get_current_user)) -> Response:
+def profile(user: Optional[dict] = Depends(get_current_user), username: str = Query("")) -> Response:
     if not user:
         return RedirectResponse(url="/login?back_url=/profile")
 
+    show_user = database.users.find_one({"username": {"$regex": f"^{username}$", "$options": "i"}}) if username else user
+
+    if show_user is None or username.lower() == user["username"].lower():
+        return RedirectResponse(url="/profile")
+
+    if show_user != user and show_user["username"] != username:
+        return RedirectResponse(url=f'/profile?username={show_user["username"]}')
+
     settings = database.settings.find_one({"username": user["username"]})
-    statistic = get_statistic(user["username"])
-    content_statistic = get_content_statistic(user["username"])
+    statistic = get_statistic(show_user["username"])
+    content_statistic = get_content_statistic(show_user["username"])
 
     template = templates.get_template("profile.html")
     content = template.render(
@@ -62,6 +70,7 @@ def profile(user: Optional[dict] = Depends(get_current_user)) -> Response:
         settings=settings,
         page="profile",
         version=get_static_hash(),
+        show_user=show_user,
         statistic=statistic,
         content_statistic=content_statistic,
         questions=constants.QUESTIONS,
