@@ -1,0 +1,77 @@
+.year-grid-scrollable {
+	overflow-x: auto;
+	margin-bottom: 5px;
+}
+
+.year-grid {
+	min-width: 767px;
+
+	display: grid;
+	grid-auto-flow: column;
+	grid-template-rows: 20px repeat(7, 1fr) 2fr 1fr;
+	grid-template-columns: 1.5em;
+	grid-gap: 4px;
+	grid-auto-columns: minmax(0, 1fr);
+	margin-bottom: 5px;
+	color: var(--text-bg-color);
+}
+
+.year-grid * {
+	box-sizing: border-box;
+}
+
+.year-grid .year-grid-month-cell {
+	align-content: end;
+	font-weight: bold;
+	font-size: 0.7em;
+}
+
+.year-grid-day-cell, .year-grid-skip-cell {
+	aspect-ratio: 1;
+}
+
+.year-grid-weekday-cell {
+	align-content: center;
+	font-weight: bold;
+	font-size: 0.6em;
+	text-align: right;
+	padding-right: 3px;
+}
+
+.year-grid-day-cell {
+	border-radius: 15%;
+	border: 1px solid var(--placeholder-color);
+}
+
+.year-grid-week-cell {
+	font-size: 0.5em;
+	text-align: right;
+	align-content: center;
+	writing-mode: vertical-rl;
+}
+
+.year-grid-markers {
+	display: inline-grid;
+	grid-auto-flow: column;
+	grid-gap: 5px;
+	margin-bottom: 5px;
+}
+
+.year-grid-marker {
+	color: #aaaaaa;
+	cursor: pointer;
+	border-radius: 5px;
+	padding: 5px 10px;
+	text-align: center;
+}
+
+.year-grid-marker-active {
+	background: #0969da;
+	color: #ffffff;
+}
+
+@media (max-width: 767px) {
+	.year-grid {
+		grid-gap: 1px;
+	}
+}

@@ -88,7 +88,7 @@ def year2target(year: int, target_years: List[int]) -> int:
 
 
 def get_content_statistic(username: str) -> dict:
-    statistics = list(database.statistic.find({"username": username}, {"correct": 1, "track_id": 1}))
+    statistics = list(database.statistic.find({"username": username}, {"correct": 1, "track_id": 1, "datetime": 1}))
 
     track_ids = list({statistic["track_id"] for statistic in statistics})
     track_id2audio = {audio["track_id"]: audio for audio in database.audios.find({"track_id": {"$in": track_ids}, "year": {"$gt": 0}})}
@@ -117,5 +117,6 @@ def get_content_statistic(username: str) -> dict:
     return {
         "target_years": [0] + target_years + [datetime.now().year + 1],
         "years": years_statistic,
-        "artists": artists2count
+        "artists": artists2count,
+        "all": statistics
     }

@@ -2,6 +2,7 @@
 <title>{{user.username}} | music-quiz</title>
 <link rel="stylesheet" type="text/css" href="/styles/player.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/audio.css?v={{version}}">
+<link rel="stylesheet" type="text/css" href="/styles/year_grid.css?v={{version}}">
 <link rel="stylesheet" type="text/css" href="/styles/profile.css?v={{version}}">
 </head>
 <body>
@@ -120,9 +121,12 @@
             </div>
         </div>
 
-        <h2>Подробная статистика</h2>
+        <h3>Активность</h3>
+        <div id="year-grid"></div>
+
+        <h3>Подробная статистика</h3>
         <div class="info">Показана информация обо всех вопросах без учёта их типов. Один и тот же трек, загаданный в разных вопросах, мог попасть как в корректные, так и в некорректные ответы.</div>
-        <details open>
+        <details>
             <summary>Распределение по годам</summary>
             <div class="text"><b>Всего (количество)</b>:</div>
             <div class="scrollable">
@@ -140,7 +144,7 @@
             </div>
         </details>
 
-        <details open>
+        <details>
             <summary>Исполнители (ТОП-20)</summary>
             <div class="text"><b>Корректно</b>:</div>
             <div class="scrollable">
@@ -169,6 +173,7 @@
     <script src="/js/fetch.js?v={{version}}"></script>
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/bar_chart.js?v={{version}}"></script>
+    <script src="/js/year_grid.js?v={{version}}"></script>
     <script src="/js/audio.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
     <script src="/js/profile.js?v={{version}}"></script>
@@ -200,6 +205,7 @@
         }
     </script>
 
+    {% if statistic.questions.total > 0 %}
     <script>
         let years_statistics = [
             {% for year in content_statistic.target_years[:-1] %}
@@ -215,7 +221,15 @@
         new BarChart({barColor: "#478bb3", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-chart", years_statistics, "label", "total")
         new BarChart({barColor: "#57c75a", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-correct-chart", years_statistics, "label", "correct")
         new BarChart({barColor: "#ec6b56", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-incorrect-chart", years_statistics, "label", "incorrect")
+
+        let grid = new YearGrid("year-grid", [
+            {% for statistic in content_statistic.all %}
+            "{{statistic.datetime.year}}-{{statistic.datetime.month}}-{{statistic.datetime.day}}",
+            {% endfor %}
+        ], ["#ebedf0", "#9be9a8", "#40c463", "#30a14e", "#216e39"])
     </script>
+    {% endif %}
+
     {% include "footer.html" %}
 </body>
 </html>
