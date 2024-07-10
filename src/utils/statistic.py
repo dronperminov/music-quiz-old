@@ -1,5 +1,6 @@
-import datetime
-from typing import Optional
+from collections import defaultdict
+from datetime import datetime
+from typing import List, Optional
 
 from src import constants
 from src.database import database
@@ -8,7 +9,7 @@ from src.utils.artists import get_artists_by_track_ids
 from src.utils.common import get_word_form
 
 
-def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, day_end: Optional[datetime.datetime] = None) -> dict:
+def get_statistic(username: str, day_start: Optional[datetime] = None, day_end: Optional[datetime] = None) -> dict:
     query = {"username": username}
     settings = Settings.from_dict(database.settings.find_one(query))
 
@@ -75,4 +76,40 @@ def get_statistic(username: str, day_start: Optional[datetime.datetime] = None, 
         "correct2count": correct2count,
         "incorrect2count": incorrect2count,
         "percents": percents
+    }
+
+
+def year2target(year: int, target_years: List[int]) -> int:
+    for i, target_year in enumerate(target_years):
+        if year < target_year:
+            return i
+
+    return len(target_years)
+
+
+def get_content_statistic(username: str) -> dict:
+    statistics = list(database.statistic.find({"username": username}, {"_id": 0, "username": 0}))
+    track_id2statistic = {statistic["track_id"]: statistic for statistic in statistics}
+
+    audio_ids = list({statistic["track_id"] for statistic in statistics})
+    track_id2audio = {audio["track_id"]: audio for audio in database.audios.find({"track_id": {"$in": audio_ids}, "year": {"$gt": 0}})}
+
+    target_years = [0, 1980, 1990, 2000, 2005, 2010, 2015, 2020]
+    years_statistic = [{"correct": 0, "incorrect": 0} for _ in range(len(target_years) + 1)]
+    artists2count = {"correct": defaultdict(int), "incorrect": defaultdict(int)}
+
+    for track_id, audio in track_id2audio.items():
+        key = "correct" if track_id2statistic[track_id]["correct"] else "incorrect"
+        years_statistic[year2target(audio["year"], target_years)][key] += 1
+
+        for artist in audio["artists"]:
+            artists2count[key][(artist["id"], artist["name"])] += 1
+
+    for key, artist_statistic in artists2count.items():
+        artists2count[key] = sorted([(count, name) for name, count in artist_statistic.items()], reverse=True)
+
+    return {
+        "target_years": target_years + [datetime.now().year + 1],
+        "years": years_statistic,
+        "artists": artists2count
     }

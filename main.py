@@ -14,7 +14,7 @@ from src.api.audios import router as audios_router
 from src.api.auth import router as auth_router
 from src.api.question import router as question_router
 from src.api.settings import router as settings_router
-from src.api.statistis import router as statistic_router
+from src.api.statistics import router as statistic_router
 from src.database import database
 
 

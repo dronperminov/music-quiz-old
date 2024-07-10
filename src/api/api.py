@@ -10,7 +10,7 @@ from src.database import database
 from src.dataclasses.settings import Settings
 from src.utils.auth import get_current_user
 from src.utils.common import get_static_hash
-from src.utils.statistic import get_statistic
+from src.utils.statistic import get_content_statistic, get_statistic
 
 router = APIRouter()
 
@@ -54,6 +54,7 @@ def profile(user: Optional[dict] = Depends(get_current_user)) -> Response:
 
     settings = database.settings.find_one({"username": user["username"]})
     statistic = get_statistic(user["username"])
+    content_statistic = get_content_statistic(user["username"])
 
     template = templates.get_template("profile.html")
     content = template.render(
@@ -62,6 +63,7 @@ def profile(user: Optional[dict] = Depends(get_current_user)) -> Response:
         page="profile",
         version=get_static_hash(),
         statistic=statistic,
+        content_statistic=content_statistic,
         questions=constants.QUESTIONS,
         question2rus=constants.QUESTION_TO_RUS
     )

@@ -118,10 +118,50 @@
                 </div>
             </div>
         </div>
+
+        <h2>Подробная статистика</h2>
+        <details open>
+            <summary>Распределение по годам</summary>
+            <div class="text"><b>Корректно</b>:</div>
+            <div class="scrollable">
+                <svg class="chart" id="years-correct-chart"></svg>
+            </div>
+
+            <div class="text"><b>Некорректно</b>:</div>
+            <div class="scrollable">
+                <svg class="chart" id="years-incorrect-chart"></svg>
+            </div>
+        </details>
+
+        <details open>
+            <summary>Исполнители (ТОП-20)</summary>
+            <div class="text"><b>Корректно</b>:</div>
+            <div class="scrollable">
+                <table>
+                    <tr><th>№</th><th>Исполнитель</th><th>Кол-во</th></tr>
+                    {% for count, (artist_id, artist_name) in content_statistic.artists.correct[:20] %}
+                    <tr><td class="zero-width">{{loop.index}}</td><td class="text"><a href="/artists/{{artist_id}}">{{artist_name}}</a></td><td class="zero-width">{{count}}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <br>
+
+            <div class="text"><b>Некорректно</b>:</div>
+            <div class="scrollable">
+                <table>
+                    <tr><th>№</th><th>Исполнитель</th><th>Кол-во</th></tr>
+                    {% for count, (artist_id, artist_name) in content_statistic.artists.incorrect[:20] %}
+                    <tr><td class="zero-width">{{loop.index}}</td><td class="text"><a href="/artists/{{artist_id}}">{{artist_name}}</a></td><td class="zero-width">{{count}}</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+        </details>
     </div>
 
     <script src="/js/fetch.js?v={{version}}"></script>
     <script src="/js/utils.js?v={{version}}"></script>
+    <script src="/js/bar_chart.js?v={{version}}"></script>
     <script src="/js/audio.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
     <script src="/js/profile.js?v={{version}}"></script>
@@ -151,6 +191,21 @@
         if ('mediaSession' in navigator) {
             navigator.mediaSession.setActionHandler('nexttrack', PlayNext)
         }
+    </script>
+
+    <script>
+        const YEARS_STATISTICS = [
+            {% for year in content_statistic.target_years[:-1] %}
+            {
+                label: {% if loop.index == 1 %}"< {{content_statistic.target_years[loop.index] - 1}}"{% else %}"{{year}}-{{content_statistic.target_years[loop.index] - 1}}"{% endif %},
+                correct: {{content_statistic.years[loop.index0].correct}},
+                incorrect: {{content_statistic.years[loop.index0].incorrect}}
+            },
+            {% endfor %}
+        ]
+
+        new BarChart({barColor: "#57c75a", maxRectWidth: 100}).Plot("years-correct-chart", YEARS_STATISTICS, "label", "correct")
+        new BarChart({barColor: "#f65c51", maxRectWidth: 100}).Plot("years-incorrect-chart", YEARS_STATISTICS, "label", "incorrect")
     </script>
     {% include "footer.html" %}
 </body>
