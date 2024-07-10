@@ -121,10 +121,11 @@ table {
     color: var(--content-text-color);
     border-collapse: collapse;
     width: 100%;
+    font-family: Roboto;
 }
 
 td, th {
-    border: 1px solid #fff;
+    border: 1px solid var(--content-text-color);
     min-width: 50px;
     padding: 5px;
 }

@@ -11,3 +11,6 @@ extend-immutable-calls = Body, Depends, OAuth2PasswordBearer, File, Header, Quer
 
 exclude = .git, __pycache__, .idea, venv, scripts
 ignore = ANN101
+
+per-file-ignores =
+    src/api/statistics.py:A005
