@@ -33,9 +33,16 @@ function CheckAnswer(isCorrect) {
     let error = document.getElementById("check-answer-error")
     error.innerText = ""
 
+    let buttons = [document.getElementById("answer-correct-btn"), document.getElementById("answer-incorrect-btn")]
+    for (let button of buttons)
+        button.setAttribute("disabled", "")
+
     SendRequest("/add-statistic", {question_type: questionType, track_id: trackId, correct: isCorrect}).then(response => {
         if (response.status != "success") {
             error.innerText = response.message
+
+            for (let button of buttons)
+                button.removeAttribute("disabled")
             return
         }
 

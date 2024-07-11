@@ -54,11 +54,11 @@
 
             <div class="table-block table-equal-block answer-buttons" id="check-answer">
                 <div class="table-cell">
-                    <button class="basic-button green-button" onclick="CheckAnswer(true)">Я знаю</button>
+                    <button class="basic-button green-button" id="answer-correct-btn" onclick="CheckAnswer(true)">Я знаю</button>
                 </div>
 
                 <div class="table-cell">
-                    <button class="basic-button red-button" onclick="CheckAnswer(false)">Я не знаю</button>
+                    <button class="basic-button red-button" id="answer-incorrect-btn" onclick="CheckAnswer(false)">Я не знаю</button>
                 </div>
             </div>
             <div class="error" id="check-answer-error"></div>
