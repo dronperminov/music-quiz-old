@@ -96,6 +96,7 @@ def get_content_statistic(username: str) -> dict:
     target_years = [1980, 1990, 2000, 2005, 2010, 2015, 2020]
     years_statistic = [{"correct": 0, "incorrect": 0, "total": 0} for _ in range(len(target_years) + 1)]
     artists2count = {"correct": defaultdict(int), "incorrect": defaultdict(int)}
+    creation2count = defaultdict(int)
 
     for statistic in statistics:
         if statistic["track_id"] not in track_id2audio:
@@ -111,12 +112,19 @@ def get_content_statistic(username: str) -> dict:
         for artist in audio["artists"]:
             artists2count[key][(artist["id"], artist["name"])] += 1
 
+        for creation in audio["creation"]:
+            creation2count[constants.CREATION_TO_RUS[creation]] += 1
+
     for key, artist_statistic in artists2count.items():
         artists2count[key] = sorted([(count, name) for name, count in artist_statistic.items()], reverse=True)
+
+    total_creation = max(sum(creation2count.values()), 1)
+    creation2count = sorted([(count / total_creation * 100, creation) for creation, count in creation2count.items()], reverse=True)
 
     return {
         "target_years": [0] + target_years + [datetime.now().year + 1],
         "years": years_statistic,
         "artists": artists2count,
+        "creation": creation2count,
         "all": statistics
     }

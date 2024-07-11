@@ -74,7 +74,8 @@ def profile(user: Optional[dict] = Depends(get_current_user), username: str = Qu
         statistic=statistic,
         content_statistic=content_statistic,
         questions=constants.QUESTIONS,
-        question2rus=constants.QUESTION_TO_RUS
+        question2rus=constants.QUESTION_TO_RUS,
+        creation2color=constants.CREATION_RUS2COLOR
     )
     return HTMLResponse(content=content)
 

@@ -127,20 +127,31 @@
         <h3>Подробная статистика</h3>
         <div class="info">Показана информация обо всех вопросах без учёта их типов. Один и тот же трек, загаданный в разных вопросах, мог попасть как в корректные, так и в некорректные ответы.</div>
         <details>
+            <summary>Распределение по языкам</summary>
+            <div class="scrollable">
+                <svg class="chart" id="creation-chart"></svg>
+            </div>
+
+            {% for count, creation in content_statistic.creation %}
+            <div class="text"><span class="circle" style="background: {{creation2color[creation]}}"></span> <b>{{creation}}</b>: {{count|round(2)}}%</div>
+            {% endfor %}
+        </details>
+
+        <details>
             <summary>Распределение по годам</summary>
             <div class="text"><b>Всего (количество)</b>:</div>
             <div class="scrollable">
-                <svg class="chart" id="years-chart"></svg>
+                <svg class="bar-chart" id="years-chart"></svg>
             </div>
 
             <div class="text"><b>Корректно (%)</b>:</div>
             <div class="scrollable">
-                <svg class="chart" id="years-correct-chart"></svg>
+                <svg class="bar-chart" id="years-correct-chart"></svg>
             </div>
 
             <div class="text"><b>Некорректно (%)</b>:</div>
             <div class="scrollable">
-                <svg class="chart" id="years-incorrect-chart"></svg>
+                <svg class="bar-chart" id="years-incorrect-chart"></svg>
             </div>
         </details>
 
@@ -173,6 +184,7 @@
     <script src="/js/fetch.js?v={{version}}"></script>
     <script src="/js/utils.js?v={{version}}"></script>
     <script src="/js/bar_chart.js?v={{version}}"></script>
+    <script src="/js/chart.js?v={{version}}"></script>
     <script src="/js/year_grid.js?v={{version}}"></script>
     <script src="/js/audio.js?v={{version}}"></script>
     <script src="/js/player.js?v={{version}}"></script>
@@ -218,9 +230,16 @@
             {% endfor %}
         ]
 
+        let creation_data = [
+            {% for count, creation in content_statistic.creation %}
+            {value: {{count}}, color: "{{creation2color[creation]}}"},
+            {% endfor %}
+        ]
+
         new BarChart({barColor: "#478bb3", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-chart", years_statistics, "label", "total")
         new BarChart({barColor: "#57c75a", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-correct-chart", years_statistics, "label", "correct")
         new BarChart({barColor: "#ec6b56", maxRectWidth: 100, labelColor: "var(--text-bg-color)"}).Plot("years-incorrect-chart", years_statistics, "label", "incorrect")
+        new Chart().Plot("creation-chart", creation_data)
 
         let grid = new YearGrid("year-grid", [
             {% for statistic in content_statistic.all %}

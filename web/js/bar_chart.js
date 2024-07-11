@@ -4,7 +4,7 @@ function BarChart(config = null) {
 
     this.padding = config.padding || 5
     this.topPadding = config.topPadding || 18
-    this.bottomPadding = config.bottomPadding || 25
+    this.bottomPadding = config.bottomPadding || 10
     this.minRectWidth = config.minRectWidth || 48
     this.maxRectWidth = config.maxRectWidth || 60
     this.radius = config.radius || 5
